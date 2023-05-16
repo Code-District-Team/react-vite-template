@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --mode production",
+    "build:qa": "vite build --mode qa",
+    "build:uat": "vite build --mode uat",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "prettify": "prettier --write \"src/**/*.{js,jsx}\"",
     "preview": "vite preview",
