@@ -1,7 +1,7 @@
 import { HomeOutlined } from "@ant-design/icons";
 import { Button, Result } from "antd";
 
-const SomethingWentWrong = () => {
+export default function SomethingWentWrong() {
   return (
     <Result
       status="500"
@@ -14,6 +14,4 @@ const SomethingWentWrong = () => {
       }
     />
   );
-};
-
-export default SomethingWentWrong;
+}
