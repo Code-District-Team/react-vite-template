@@ -1,15 +1,4 @@
-// Template for a route
-// {
-//   path: '/login',
-//   name: "Login",
-//   component: Login,
-//   authenticated: false,
-//   roles: [],
-//   children: [],
-//   exact: true,
-//   layout: LoggedInPageLayout
-// },
-
+import { Counter } from "~/features/counter/Counter";
 import Dashboard from "~/features/dashboard/dashboard";
 import ForgotPassword from "~/features/forgotPassword/forgotPassword";
 import Login from "~/features/login/login";
@@ -22,6 +11,20 @@ import Users from "~/features/users/users";
 import GuestPageLayout from "~/layout/guestPageLayout";
 import LoggedInPageLayout from "~/layout/loggedInPageLayout";
 import K from "~/utilities/constants";
+
+/* 
+  * Template for a route
+  {
+    path: '/login',
+    name: "Login",
+    component: Login,
+    authenticated: false,
+    roles: [],
+    children: [],
+    exact: true,
+    layout: LoggedInPageLayout
+  }
+*/
 
 const defaultCrudChildren = [
   { path: "/details/:id", name: "Details" },
@@ -73,20 +76,27 @@ const routes = [
     layout: LoggedInPageLayout,
   },
   {
-    path: "/unauthorized",
-    name: "Unauthorized",
-    component: Unauthorized,
-    authenticated: true,
-    roles: [],
-    layout: GuestPageLayout,
-  },
-  {
     path: "/",
     name: "Dashboard",
     exact: true,
     component: Dashboard,
     authenticated: true,
     layout: LoggedInPageLayout,
+  },
+  {
+    path: "/counter",
+    name: "Counter",
+    exact: true,
+    component: Counter,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/unauthorized",
+    name: "Unauthorized",
+    component: Unauthorized,
+    authenticated: true,
+    roles: [],
+    layout: GuestPageLayout,
   },
   {
     path: "*",
