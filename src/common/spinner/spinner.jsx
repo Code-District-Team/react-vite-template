@@ -1,0 +1,11 @@
+import { Spin } from "antd";
+import { usePromiseTracker } from "react-promise-tracker";
+
+export default function Spinner({ children }) {
+  const { promiseInProgress } = usePromiseTracker();
+  return (
+    <Spin spinning={promiseInProgress} size="large">
+      {children}
+    </Spin>
+  );
+}
