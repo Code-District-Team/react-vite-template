@@ -1,9 +1,9 @@
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
-import NetworkCall from "network/networkCall";
 import K from "~/utilities/constants";
 import { redirectToLogin } from "~/utilities/generalUtility";
 import { saveUserData } from "~/redux/user/userSlice";
+import NetworkCall from "~/network/networkCall";
 
 export default class User {
   // API call using thunk.

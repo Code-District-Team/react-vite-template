@@ -1,4 +1,3 @@
-import { Button } from "antd";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -55,7 +54,6 @@ export function Counter() {
         >
           Add Async
         </button>
-        <Button>hey</Button>
       </div>
     </div>
   );
