@@ -77,7 +77,7 @@ img {
   float: right;
 
   .loggedin-user-dd {
-    & > a {
+    &>a {
       @extend .font-weight-medium;
       color: #262626;
 

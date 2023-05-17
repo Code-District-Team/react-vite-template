@@ -3,12 +3,12 @@ import CryptoJS from "crypto-js";
 import NetworkCall from "network/networkCall";
 import K from "~/utilities/constants";
 import { redirectToLogin } from "~/utilities/generalUtility";
-// import { saveUserData } from "redux/user/userSlice";
+import { saveUserData } from "~/redux/user/userSlice";
 
 export default class User {
   // API call using thunk.
   static loginCall(email, password, remember) {
-    return async () => {
+    return async (dispatch) => {
       const user = await NetworkCall.fetch(Request.loginUser(email, password));
       let encryptedUser = CryptoJS.AES.encrypt(
         JSON.stringify(user),
@@ -22,7 +22,7 @@ export default class User {
       });
 
       // * here we can store loggedIn user date to redux store
-      // dispatch(saveUserData(user));
+      dispatch(saveUserData(user));
 
       return user;
     };
