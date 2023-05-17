@@ -1,5 +1,5 @@
-import K from "utilities/constants";
-import User from "models/user/user";
+import User from "~/models/user";
+import K from "~/utilities/constants";
 
 export default class Request {
   constructor(
@@ -29,7 +29,7 @@ export default class Request {
       password,
     };
     return new Request(
-      K.Network.URL.LoginUser,
+      K.Network.URL.Auth.Login,
       K.Network.Method.POST,
       body,
       K.Network.Header.Type.Json,
@@ -42,7 +42,7 @@ export default class Request {
       email,
     };
     return new Request(
-      K.Network.URL.ForgotPassword,
+      K.Network.URL.Auth.ForgotPassword,
       K.Network.Method.POST,
       body,
       K.Network.Header.Type.Json,
@@ -56,7 +56,7 @@ export default class Request {
       token,
     };
     return new Request(
-      K.Network.URL.ResetPassword,
+      K.Network.URL.Auth.ResetPassword,
       K.Network.Method.POST,
       body,
       K.Network.Header.Type.Json,

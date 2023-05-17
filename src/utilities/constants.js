@@ -12,14 +12,11 @@ const K = {
         BasePort: import.meta.env.VITE_CLIENT_BASE_PORT,
       },
 
-      // Assignment
-      LoginUser: "/auth/signin",
-
-      // Forget password
-      ForgotPassword: "/user/send_password_reset_token",
-
-      //Reset password
-      ResetPassword: "/user/reset_password",
+      Auth: {
+        Login: "/auth/signin",
+        ForgotPassword: "/user/send_password_reset_token",
+        ResetPassword: "/user/reset_password",
+      },
     },
     Method: {
       GET: "GET",

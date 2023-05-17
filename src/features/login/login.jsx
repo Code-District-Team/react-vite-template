@@ -27,10 +27,9 @@ export default function Login() {
   }, []);
 
   const onFinish = async (values) => {
-    const encryptedPass = md5(values.password);
     try {
       await dispatch(
-        User.loginCall(values.email, encryptedPass, values.remember)
+        User.loginCall(values.email, md5(values.password), values.remember)
       );
       redirectToUrl("/");
     } catch (error) {
@@ -47,7 +46,7 @@ export default function Login() {
         <h4>Login to your account</h4>
         <Form
           form={form}
-          name="basic"
+          name="login-form"
           initialValues={{
             remember: true,
           }}

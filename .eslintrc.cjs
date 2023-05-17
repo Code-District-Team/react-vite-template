@@ -12,6 +12,7 @@ module.exports = {
   rules: {
     "react-refresh/only-export-components": "warn",
     "no-var": "error",
+    "no-debugger": "warn",
     "no-dupe-keys": "error",
     "no-unused-vars": "error",
     "no-duplicate-imports": "error",

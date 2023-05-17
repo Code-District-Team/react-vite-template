@@ -1,9 +1,10 @@
-import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
+import Cookies from "js-cookie";
+import NetworkCall from "~/network/networkCall";
+import Request from "~/network/request";
+import { saveUserData } from "~/redux/user/userSlice";
 import K from "~/utilities/constants";
 import { redirectToLogin } from "~/utilities/generalUtility";
-import { saveUserData } from "~/redux/user/userSlice";
-import NetworkCall from "~/network/networkCall";
 
 export default class User {
   // API call using thunk.
@@ -14,7 +15,7 @@ export default class User {
         JSON.stringify(user),
         K.Cookie.Key.EncryptionKey
       );
-      console.log(encryptedUser);
+      console.info(encryptedUser);
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
         path: "/",
         domain: K.Network.URL.Client.BaseHost,
@@ -39,7 +40,6 @@ export default class User {
   //Forgot password
   static async forgotPassword(email) {
     const user = await NetworkCall.fetch(Request.forgotPassword(email));
-    console.log("User: ", user);
     return user;
   }
 
@@ -54,7 +54,7 @@ export default class User {
         JSON.stringify(user),
         K.Cookie.Key.EncryptionKey
       );
-      console.log(encryptedUser);
+      console.info(encryptedUser);
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
         path: "/",
         domain: K.Network.URL.Client.BaseHost,
