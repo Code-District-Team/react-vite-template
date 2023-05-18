@@ -41,7 +41,7 @@ export default function Login() {
   return (
     <div className="login-container">
       <div className="lc-logo">
-        <img src={Logo} alt="" />
+        <img src={Logo} alt="logo" />
       </div>
       <Card bordered={false} className="login-card">
         <h4>Login to your account</h4>

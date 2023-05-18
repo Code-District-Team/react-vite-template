@@ -25,6 +25,11 @@ const defaultChildren = (basePath) => [
 
 const navigations = [
   {
+    name: "Dashboard",
+    path: "/",
+    icon: <DashboardOutlined />,
+  },
+  {
     name: "Projects",
     // path: "/projects",
     icon: <ProjectOutlined />,
@@ -36,11 +41,6 @@ const navigations = [
     // path: "/users",
     icon: <UserOutlined />,
     children: defaultChildren("/users"),
-  },
-  {
-    name: "Dashboard",
-    path: "/",
-    icon: <DashboardOutlined />,
   },
 ];
 

@@ -37,7 +37,7 @@ export default function Sider({ collapsed, setCollapsed }) {
       trigger={null}
     >
       <div className="ant-layout-sider-logo">
-        <img src={Logo} alt="" />
+        <img src={Logo} alt="logo" />
       </div>
 
       {

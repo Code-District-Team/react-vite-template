@@ -27,7 +27,7 @@ export default function SetPassword() {
   return (
     <div className="login-container">
       <div className="lc-logo">
-        <img src={Logo} alt="" />
+        <img src={Logo} alt="logo" />
       </div>
       <Card bordered={false} className="login-card">
         <h4>Set Password</h4>
