@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import User from "~/models/user";
 import K from "~/utilities/constants";
-import { isRolePresent } from "~/utilities/generalUtility";
+import { isPermissionPresent } from "~/utilities/generalUtility";
 
 export default function RouteWithSubRoutes({ route }) {
   if (
@@ -19,9 +19,11 @@ export default function RouteWithSubRoutes({ route }) {
         />
       );
     // Check roles
-    const hasRole = isRolePresent(route.roles, [K.Roles.Admin]);
+    const hasPermission = isPermissionPresent(route.permission, [
+      K.Permissions.Admin,
+    ]);
 
-    if (hasRole) {
+    if (hasPermission) {
       const component = (
         <route.component {...route} route={route}></route.component>
       );

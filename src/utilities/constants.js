@@ -55,7 +55,7 @@ const K = {
       EncryptionKey: "logged_in_user",
     },
   },
-  Roles: {
+  Permissions: {
     Admin: "Admin",
     User: "User",
   },

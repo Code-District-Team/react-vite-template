@@ -10,24 +10,30 @@ import K from "~/utilities/constants";
 //     name: 'User',
 //     path: '/user/list',
 //     icon: <ProjectOutlined />,
-//     roles: [],
+//     permission: [],
 //     children: [], // If item has children, then the path field will be ignored.
 // }
 
 const defaultChildren = (basePath) => [
-  { path: basePath, name: "List" },
-  { path: `${basePath}/store/create`, name: "Create", roles: [K.Roles.Admin] },
+  { path: `${basePath}`, name: "List" },
+  {
+    path: `${basePath}/store/create`,
+    name: "Create",
+    roles: [K.Permissions.Admin],
+  },
 ];
 
 const navigations = [
   {
     name: "Projects",
+    // path: "/projects",
     icon: <ProjectOutlined />,
-    roles: [],
+    permission: [],
     children: defaultChildren("/projects"),
   },
   {
     name: "Users",
+    // path: "/users",
     icon: <UserOutlined />,
     children: defaultChildren("/users"),
   },

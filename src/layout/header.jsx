@@ -4,27 +4,40 @@ import {
   MenuUnfoldOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Avatar, Dropdown, Layout, Menu } from "antd";
+import { Avatar, Dropdown, Layout } from "antd";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import User from "~/models/user";
 
 export default function Header({ collapsed, toggle }) {
   const { Header } = Layout;
+  const navigate = useNavigate();
 
-  const menu = (
-    <Menu>
-      <Menu.Item key="0">
-        <a href="#">Profile</a>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <a href="#">Change Password</a>
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="3" onClick={() => User.logoutCall()}>
-        Logout
-      </Menu.Item>
-    </Menu>
-  );
+  const handleMenuClick = ({ key }) => {
+    const actions = {
+      1: () => navigate("/profile", { replace: true }),
+      3: () => User.logoutCall(),
+    };
+    actions[key]();
+  };
+  const items = [
+    {
+      key: 1,
+      label: "Profile",
+    },
+    {
+      key: 2,
+      label: "Change Password",
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: 3,
+      label: "Log Out",
+    },
+  ];
+
   return (
     <Header>
       {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
@@ -33,13 +46,15 @@ export default function Header({ collapsed, toggle }) {
       })}
       <div className="app-header-right">
         <div className="loggedin-user-dd">
-          <Dropdown overlay={menu} trigger={["click"]}>
+          <Dropdown
+            menu={{ items, onClick: handleMenuClick }}
+            trigger={["click"]}
+          >
             <a
-              href="#menu"
               className="ant-dropdown-link"
               onClick={(e) => e.preventDefault()}
             >
-              <Avatar icon={<UserOutlined />} /> {User.getName()}{" "}
+              <Avatar icon={<UserOutlined />} /> {User.getName()}
               <DownOutlined />
             </a>
           </Dropdown>

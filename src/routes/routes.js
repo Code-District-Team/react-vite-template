@@ -19,7 +19,7 @@ import K from "~/utilities/constants";
     name: "Login",
     component: Login,
     authenticated: false,
-    roles: [],
+    permission: [],
     children: [],
     exact: true,
     layout: LoggedInPageLayout
@@ -61,9 +61,9 @@ const routes = [
     name: "Projects",
     component: Projects,
     authenticated: true,
-    roles: [K.Roles.Admin],
+    permission: [K.Permissions.Admin],
     exact: true,
-    children: defaultCrudChildren,
+    children: defaultCrudChildren, // TODO: need to implement children functionality in routes
     layout: LoggedInPageLayout,
   },
   {
@@ -71,8 +71,8 @@ const routes = [
     name: "Users",
     component: Users,
     authenticated: true,
-    roles: [],
-    children: defaultCrudChildren,
+    permission: [],
+    exact: true,
     layout: LoggedInPageLayout,
   },
   {
@@ -95,7 +95,6 @@ const routes = [
     name: "Unauthorized",
     component: Unauthorized,
     authenticated: true,
-    roles: [],
     layout: GuestPageLayout,
   },
   {

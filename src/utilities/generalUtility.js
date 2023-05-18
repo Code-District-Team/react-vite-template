@@ -37,19 +37,19 @@ export const isDecimalRegex = () => {
   return new RegExp("^\\d+\\.?\\d*$");
 };
 
-export const isRolePresent = (roles, userRoles) => {
-  let hasRole = true;
-  if (roles && roles.length > 0) {
-    let roleFound = false;
-    for (const routeRole of roles ?? []) {
-      if (userRoles.includes(routeRole)) {
-        roleFound = true;
+export const isPermissionPresent = (permission, userRoles) => {
+  let hasPermission = true;
+  if (permission && permission.length > 0) {
+    let permissionFound = false;
+    for (const obj of userRoles?.permissions ?? []) {
+      if (obj.code === K.Permissions.Admin || permission === obj.code) {
+        permissionFound = true;
         break;
       }
     }
-    hasRole = roleFound;
+    hasPermission = permissionFound;
   }
-  return hasRole;
+  return hasPermission;
 };
 
 export const redirectToLogin = (error = "") => {
@@ -116,6 +116,21 @@ export const camelCaseKeys = (obj) =>
     }),
     {}
   );
+
+export const camelCaseKeysRecursively = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.map((v) => camelCaseKeysRecursively(v));
+  } else if (obj != null && obj.constructor === Object) {
+    return Object.keys(obj).reduce(
+      (result, key) => ({
+        ...result,
+        [snakeToCamel(key)]: camelCaseKeysRecursively(obj[key]),
+      }),
+      {}
+    );
+  }
+  return obj;
+};
 
 export const deleteQueryParam = (key) => {
   const queryParams = new URLSearchParams(window.location.search);
