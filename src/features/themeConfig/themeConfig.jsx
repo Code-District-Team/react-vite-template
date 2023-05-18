@@ -9,7 +9,10 @@ export default function ThemeConfig({ children }) {
           // borderRadius: "12px",
         },
         components: {
-          Layout: { colorBgBody: "#E5E5E5", colorBgHeader: "#7dbcea" },
+          Layout: {
+            colorBgBody: "#E5E5E5",
+            // colorBgHeader: "#7dbcea"
+          },
           // Button: { borderRadius: "12px !important" },
         },
       }}

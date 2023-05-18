@@ -2,6 +2,7 @@ import { ArrowLeftOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Card, Divider, Form, Input, message } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
+import Logo from "~/assets/images/logo.svg";
 import User from "~/models/user";
 import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
 
@@ -21,7 +22,7 @@ export default function ForgotPassword() {
     <React.Fragment>
       <div className="login-container">
         <div className="lc-logo">
-          <img src="images/logo.png" alt="" />
+          <img src={Logo} alt="" />
         </div>
         <Card bordered={false} className="login-card">
           <h4>Forgot Password</h4>

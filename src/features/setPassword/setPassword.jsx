@@ -3,6 +3,7 @@ import { Button, Card, Checkbox, Form, Input } from "antd";
 import md5 from "md5";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import Logo from "~/assets/images/logo.svg";
 import User from "~/models/user";
 
 export default function SetPassword() {
@@ -26,7 +27,7 @@ export default function SetPassword() {
   return (
     <div className="login-container">
       <div className="lc-logo">
-        <img src="images/logo.png" alt="" />
+        <img src={Logo} alt="" />
       </div>
       <Card bordered={false} className="login-card">
         <h4>Set Password</h4>

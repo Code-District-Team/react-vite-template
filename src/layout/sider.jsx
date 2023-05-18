@@ -1,7 +1,7 @@
 import { Layout, Menu } from "antd";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import Logo from "~/assets/images/logo.png";
+import Logo from "~/assets/images/logo.svg";
 import navigations from "./navigations";
 
 export default function Sider({ collapsed, setCollapsed }) {
