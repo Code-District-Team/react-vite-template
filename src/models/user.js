@@ -64,9 +64,7 @@ export default class User {
     };
   }
 
-  // Selectors
-
-  // Helpers
+  // * Helpers
   static getUserObjectFromCookies() {
     let cookieUser = Cookies.get(K.Cookie.Key.User);
     let bytes = cookieUser
