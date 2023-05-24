@@ -9,8 +9,21 @@ import { redirectToLogin } from "~/utilities/generalUtility";
 export default class User {
   // API call using thunk.
   static loginCall(email, password, remember) {
+    const body = {
+      email,
+      password,
+    };
+    // * Request Instance
+    const request = new Request(
+      K.Network.URL.Auth.Login,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {}
+    );
+
     return async (dispatch) => {
-      const user = await NetworkCall.fetch(Request.loginUser(email, password));
+      const user = await NetworkCall.fetch(request);
       let encryptedUser = CryptoJS.AES.encrypt(
         JSON.stringify(user),
         K.Cookie.Key.EncryptionKey
@@ -39,17 +52,37 @@ export default class User {
 
   //Forgot password
   static async forgotPassword(email) {
-    const user = await NetworkCall.fetch(Request.forgotPassword(email));
+    const body = {
+      email,
+    };
+    const request = new Request(
+      K.Network.URL.Auth.ForgotPassword,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {}
+    );
+
+    const user = await NetworkCall.fetch(request);
     return user;
   }
 
   //Reset password
-  static resetPassword(newPassword, token, remember) {
+  static resetPassword(password, token, remember) {
+    const body = {
+      password,
+      token,
+    };
+    const request = new Request(
+      K.Network.URL.Auth.ResetPassword,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {}
+    );
+
     return async () => {
-      const user = await NetworkCall.fetch(
-        Request.resetPassword(newPassword, token),
-        true
-      );
+      const user = await NetworkCall.fetch(request, true);
       let encryptedUser = CryptoJS.AES.encrypt(
         JSON.stringify(user),
         K.Cookie.Key.EncryptionKey
@@ -65,6 +98,7 @@ export default class User {
   }
 
   // * Helpers
+
   static getUserObjectFromCookies() {
     let cookieUser = Cookies.get(K.Cookie.Key.User);
     let bytes = cookieUser

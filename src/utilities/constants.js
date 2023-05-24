@@ -14,8 +14,10 @@ const K = {
 
       Auth: {
         Login: "/auth/signin",
-        ForgotPassword: "/user/send_password_reset_token",
-        ResetPassword: "/user/reset_password",
+        SignUp: "/auth/signup",
+        ResetPassword: "/auth/set-password",
+        ForgotPassword: "/auth/forget-password",
+        ChangePassword: "/auth/change-password",
       },
     },
     Method: {

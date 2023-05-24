@@ -21,46 +21,4 @@ export default class Request {
     this.body = body;
     this.headers = headers;
   }
-
-  // User calls.
-  static loginUser(email, password) {
-    const body = {
-      email,
-      password,
-    };
-    return new Request(
-      K.Network.URL.Auth.Login,
-      K.Network.Method.POST,
-      body,
-      K.Network.Header.Type.Json,
-      {}
-    );
-  }
-
-  static forgotPassword(email) {
-    const body = {
-      email,
-    };
-    return new Request(
-      K.Network.URL.Auth.ForgotPassword,
-      K.Network.Method.POST,
-      body,
-      K.Network.Header.Type.Json,
-      {}
-    );
-  }
-
-  static resetPassword(password, token) {
-    const body = {
-      password,
-      token,
-    };
-    return new Request(
-      K.Network.URL.Auth.ResetPassword,
-      K.Network.Method.POST,
-      body,
-      K.Network.Header.Type.Json,
-      {}
-    );
-  }
 }
