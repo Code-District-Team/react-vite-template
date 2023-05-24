@@ -1,12 +1,20 @@
 const K = {
   Network: {
     URL: {
-      // Development
       Base: import.meta.env.VITE_BASE_URL,
       BaseAPI: import.meta.env.VITE_BASE_API_URL,
       DomainName: import.meta.env.VITE_CLIENT_DOMAIN_NAME,
       Timeout: import.meta.env.VITE_TIMEOUT,
-      Protocol: import.meta.env.VITE_PROTOCOL,
+      Protocol: import.meta.env.VITE_CLIENT_PROTOCOL,
+      isMultiTenant: import.meta.env.VITE_IS_MULTI_TENANT === "true", // * Converting into boolean
+      TenantURL: (domainPrefix = "") => {
+        return (
+          import.meta.env.VITE_CLIENT_PROTOCOL +
+          "://" +
+          domainPrefix +
+          import.meta.env.VITE_TENANT_PARTIAL_URL
+        );
+      },
       Client: {
         BaseHost: import.meta.env.VITE_CLIENT_BASE_HOST,
         BasePort: import.meta.env.VITE_CLIENT_BASE_PORT,
@@ -52,6 +60,10 @@ const K = {
     },
   },
   Cookie: {
+    Domain:
+      import.meta.env.VITE_IS_MULTI_TENANT === "true"
+        ? "." + import.meta.env.VITE_CLIENT_BASE_HOST
+        : import.meta.env.VITE_CLIENT_BASE_HOST,
     Key: {
       User: "user",
       EncryptionKey: "logged_in_user",

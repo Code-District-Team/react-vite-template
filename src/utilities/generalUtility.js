@@ -1,6 +1,7 @@
 import { message } from "antd";
 import K from "./constants";
 import history from "./history";
+import User from "~/models/user";
 
 export const handleError = (error) => {
   console.error(error);
@@ -52,6 +53,24 @@ export const isPermissionPresent = (permission, userRoles) => {
   return hasPermission;
 };
 
+export const redirectIfInvalidTenant = () => {
+  const cookieDomainPrefix = User.getTenant();
+  const hostArray = window.location.hostname.split(".");
+  const urlDomainPrefix = hostArray.length > 0 ? hostArray[0] : "";
+  const path = window.location.pathname;
+  const search = window.location.search;
+  if (
+    !cookieDomainPrefix &&
+    (urlDomainPrefix === "www" ||
+      urlDomainPrefix === "localhost" ||
+      urlDomainPrefix === K.Network.URL.DomainName)
+  )
+    return false;
+  if (cookieDomainPrefix !== urlDomainPrefix) {
+    redirectToUrl(path + search, cookieDomainPrefix);
+  }
+};
+
 export const redirectToLogin = (error = "") => {
   if (typeof window !== "undefined") {
     let newUrl =
@@ -68,10 +87,11 @@ export const redirectToLogin = (error = "") => {
   }
 };
 
-export const redirectToUrl = (path) => {
+export const redirectToUrl = (path, domainPrefix = "") => {
   window.location =
     window.location.protocol +
     "//" +
+    (domainPrefix ? domainPrefix + "." : "") +
     K.Network.URL.Client.BaseHost +
     ":" +
     K.Network.URL.Client.BasePort +

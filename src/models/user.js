@@ -31,7 +31,7 @@ export default class User {
       console.info(encryptedUser);
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
         path: "/",
-        domain: K.Network.URL.Client.BaseHost,
+        domain: K.Cookie.Domain,
         expires: remember ? 365 : "",
       });
 
@@ -45,7 +45,7 @@ export default class User {
   static logoutCall(error = "") {
     Cookies.remove(K.Cookie.Key.User, {
       path: "/",
-      domain: K.Network.URL.Client.BaseHost,
+      domain: K.Cookie.Domain,
     });
     redirectToLogin(error);
   }
@@ -90,7 +90,7 @@ export default class User {
       console.info(encryptedUser);
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
         path: "/",
-        domain: K.Network.URL.Client.BaseHost,
+        domain: K.Cookie.Domain,
         expires: remember ? 365 : "",
       });
       return user;
