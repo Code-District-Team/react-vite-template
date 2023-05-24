@@ -1,14 +1,14 @@
 import "antd/dist/reset.css";
 import { Route, Routes } from "react-router-dom";
 import ErrorBoundary from "~/common/errorBoundary/errorBoundary";
-import ThemeConfig from "~/features/themeConfig/themeConfig";
+import ThemeProvider from "~/features/theme/themeProvider";
 import RouteWithSubRoutes from "~/routes/routeWithSubRoutes";
 import routes from "~/routes/routes";
 
 export default function App() {
   return (
     <ErrorBoundary>
-      <ThemeConfig>
+      <ThemeProvider>
         <Routes>
           {routes.map((route, i) => (
             <Route
@@ -18,7 +18,7 @@ export default function App() {
             />
           ))}
         </Routes>
-      </ThemeConfig>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }

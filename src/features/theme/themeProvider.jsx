@@ -1,6 +1,6 @@
 import { ConfigProvider } from "antd";
 
-export default function ThemeConfig({ children }) {
+export default function ThemeProvider({ children }) {
   return (
     <ConfigProvider
       theme={{
