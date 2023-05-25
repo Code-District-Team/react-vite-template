@@ -1,4 +1,3 @@
-import "antd/dist/reset.css";
 import { Route, Routes } from "react-router-dom";
 import ErrorBoundary from "~/common/errorBoundary/errorBoundary";
 import ThemeProvider from "~/features/theme/themeProvider";
