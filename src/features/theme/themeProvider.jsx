@@ -13,7 +13,6 @@ export default function ThemeProvider({ children }) {
             colorBgBody: "#E5E5E5",
             // colorBgHeader: "#7dbcea"
           },
-          // Button: { borderRadius: "12px !important" },
         },
       }}
       getPopupContainer={(node) => {
