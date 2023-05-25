@@ -32,7 +32,8 @@ export default function Login() {
       await dispatch(
         User.loginCall(values.email, md5(values.password), values.remember)
       );
-      redirectToUrl("/");
+
+      redirectToUrl("/"); // * Pass domainPrefix as 2nd argumnet in case of multi tenant
     } catch (error) {
       setFieldErrorsFromServer(error, form, values);
     }

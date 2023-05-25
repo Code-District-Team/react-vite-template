@@ -19,7 +19,8 @@ export default class User {
       K.Network.Method.POST,
       body,
       K.Network.Header.Type.Json,
-      {}
+      {},
+      false
     );
 
     return async (dispatch) => {
@@ -31,7 +32,7 @@ export default class User {
       console.info(encryptedUser);
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
         path: "/",
-        domain: K.Cookie.Domain,
+        domain: K.Network.URL.Client.BaseHost,
         expires: remember ? 365 : "",
       });
 
@@ -45,7 +46,7 @@ export default class User {
   static logoutCall(error = "") {
     Cookies.remove(K.Cookie.Key.User, {
       path: "/",
-      domain: K.Cookie.Domain,
+      domain: K.Network.URL.Client.BaseHost,
     });
     redirectToLogin(error);
   }
@@ -60,7 +61,8 @@ export default class User {
       K.Network.Method.POST,
       body,
       K.Network.Header.Type.Json,
-      {}
+      {},
+      false
     );
 
     const user = await NetworkCall.fetch(request);
@@ -78,7 +80,8 @@ export default class User {
       K.Network.Method.POST,
       body,
       K.Network.Header.Type.Json,
-      {}
+      {},
+      false
     );
 
     return async () => {
@@ -90,7 +93,7 @@ export default class User {
       console.info(encryptedUser);
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
         path: "/",
-        domain: K.Cookie.Domain,
+        domain: K.Network.URL.Client.BaseHost,
         expires: remember ? 365 : "",
       });
       return user;
@@ -121,11 +124,16 @@ export default class User {
     return this.getUserObjectFromCookies().apiToken ?? "";
   }
 
-  static getName() {
-    return this.getUserObjectFromCookies().name ?? "";
+  static getFullName() {
+    const { firstName, lastName } = this.getUserObjectFromCookies();
+    return firstName?.concat(" ", lastName) ?? "";
   }
 
   static getEmail() {
     return this.getUserObjectFromCookies().email ?? "";
+  }
+
+  static getTenant() {
+    return this.getUserObjectFromCookies().tenant?.domainPrefix ?? "";
   }
 }

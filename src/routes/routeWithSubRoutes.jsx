@@ -1,13 +1,19 @@
 import { Navigate } from "react-router-dom";
 import User from "~/models/user";
 import K from "~/utilities/constants";
-import { isPermissionPresent } from "~/utilities/generalUtility";
+import {
+  isPermissionPresent,
+  redirectIfInvalidTenant,
+} from "~/utilities/generalUtility";
 
 export default function RouteWithSubRoutes({ route }) {
   if (
     !route.authenticated ||
     (route.authenticated && User.isTokenAvailable())
   ) {
+    // * Check domain prefix
+    if (K.Network.URL.IsMultiTenant) redirectIfInvalidTenant();
+
     if (
       ["/login", "/forgot-password", "/set-password"].includes(route.path) &&
       User.isTokenAvailable()
@@ -18,7 +24,7 @@ export default function RouteWithSubRoutes({ route }) {
           to={{ pathname: "/", state: { from: route.location } }}
         />
       );
-    // Check roles
+    // Check permission
     const hasPermission = isPermissionPresent(route.permission, [
       K.Permissions.Admin,
     ]);

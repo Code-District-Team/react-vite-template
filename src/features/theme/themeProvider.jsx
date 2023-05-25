@@ -22,9 +22,13 @@ export default function ThemeProvider({ children }) {
         }
         return document.body;
       }}
-      // renderEmpty={() => <Empty />}
     >
       {children}
     </ConfigProvider>
   );
 }
+
+/**
+ * Customize theme available tokens
+ * https://ant.design/docs/react/customize-theme#api
+ */

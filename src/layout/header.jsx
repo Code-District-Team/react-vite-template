@@ -54,7 +54,7 @@ export default function Header({ collapsed, toggle }) {
               className="ant-dropdown-link"
               onClick={(e) => e.preventDefault()}
             >
-              <Avatar icon={<UserOutlined />} /> {User.getName()}
+              <Avatar icon={<UserOutlined />} /> {User.getFullName()}
               <DownOutlined />
             </a>
           </Dropdown>

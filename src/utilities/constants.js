@@ -6,7 +6,7 @@ const K = {
       DomainName: import.meta.env.VITE_CLIENT_DOMAIN_NAME,
       Timeout: import.meta.env.VITE_TIMEOUT,
       Protocol: import.meta.env.VITE_CLIENT_PROTOCOL,
-      isMultiTenant: import.meta.env.VITE_IS_MULTI_TENANT === "true", // * Converting into boolean
+      IsMultiTenant: import.meta.env.VITE_IS_MULTI_TENANT === "true", // * Converting into boolean
       TenantURL: (domainPrefix = "") => {
         return (
           import.meta.env.VITE_CLIENT_PROTOCOL +
@@ -60,10 +60,6 @@ const K = {
     },
   },
   Cookie: {
-    Domain:
-      import.meta.env.VITE_IS_MULTI_TENANT === "true"
-        ? "." + import.meta.env.VITE_CLIENT_BASE_HOST
-        : import.meta.env.VITE_CLIENT_BASE_HOST,
     Key: {
       User: "user",
       EncryptionKey: "logged_in_user",
