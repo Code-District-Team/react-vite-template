@@ -17,9 +17,9 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.0.1",
+    "@ant-design/icons": "^5.1.2",
     "@reduxjs/toolkit": "^1.9.5",
-    "antd": "^5.5.0",
+    "antd": "^5.5.1",
     "axios": "^1.4.0",
     "crypto-js": "^4.1.1",
     "js-cookie": "^3.0.5",
@@ -31,7 +31,7 @@
     "react-dom": "^18.2.0",
     "react-promise-tracker": "^2.1.1",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^6.11.1"
+    "react-router-dom": "^6.11.2"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
