@@ -22,7 +22,6 @@ export default class User {
       {},
       false
     );
-
     return async (dispatch) => {
       const user = await NetworkCall.fetch(request);
       let encryptedUser = CryptoJS.AES.encrypt(
