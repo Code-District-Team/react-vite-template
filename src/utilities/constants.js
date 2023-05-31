@@ -26,10 +26,6 @@ const K = {
         ResetPassword: "/auth/set-password",
         ForgotPassword: "/auth/forget-password",
         ChangePassword: "/auth/change-password",
-        getUsers: "/users/get",
-      },
-      userList: {
-        getUsers: "/users/get",
       },
     },
     Method: {

@@ -1,5 +1,3 @@
-import TableList from "~/common/tableList/tableList";
-
-export default function User() {
-  return <TableList />;
+export default function Users() {
+  return <div>Users</div>;
 }
