@@ -1,18 +1,16 @@
-import React from "react";
 import { Layout } from "antd";
+import { Outlet } from "react-router-dom";
 import Spinner from "~/common/spinner/spinner";
 
 const { Content } = Layout;
 
-export default function GuestPageLayout({ children }) {
+export default function GuestPageLayout() {
   return (
-    <React.Fragment>
-      <Layout className="guest-layout">
-        <Content>
-          {children}
-          <Spinner></Spinner>
-        </Content>
-      </Layout>
-    </React.Fragment>
+    <Layout className="guest-layout">
+      <Content>
+        <Outlet />
+        <Spinner></Spinner>
+      </Content>
+    </Layout>
   );
 }

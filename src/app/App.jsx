@@ -9,12 +9,16 @@ export default function App() {
     <ErrorBoundary>
       <ThemeProvider>
         <Routes>
-          {routes.map((route, i) => (
+          {routes.map((route) => (
             <Route
-              key={i}
-              path={route.path}
-              element={<RouteWithSubRoutes route={route} />}
-            />
+              key={route.name}
+              element={route.layout ? <route.layout /> : null}
+            >
+              <Route
+                path={route.path}
+                element={<RouteWithSubRoutes route={route} />}
+              />
+            </Route>
           ))}
         </Routes>
       </ThemeProvider>

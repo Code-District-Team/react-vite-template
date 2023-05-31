@@ -30,14 +30,7 @@ export default function RouteWithSubRoutes({ route }) {
     ]);
 
     if (hasPermission) {
-      const component = (
-        <route.component {...route} route={route}></route.component>
-      );
-      return route.layout ? (
-        <route.layout>{component}</route.layout>
-      ) : (
-        component
-      );
+      return <route.component {...route} route={route}></route.component>;
     } else {
       return <Navigate replace to={{ pathname: "/unauthorized" }} />;
     }

@@ -1,14 +1,15 @@
 import { Layout } from "antd";
 import { useState } from "react";
+import { Outlet } from "react-router-dom";
 import Spinner from "~/common/spinner/spinner";
-import Header from "./header";
-import Sider from "./sider";
 import Footer from "./footer";
+import Header from "./header";
 import styles from "./layout.module.scss";
+import Sider from "./sider";
 
 const { Content } = Layout;
 
-export default function LoggedInPageLayout({ children }) {
+export default function LoggedInPageLayout() {
   const [collapsed, setCollapsed] = useState(false);
 
   const toggle = () => {
@@ -21,7 +22,7 @@ export default function LoggedInPageLayout({ children }) {
       <Layout className={styles["site-layout"]}>
         <Header collapsed={collapsed} toggle={toggle} />
         <Content>
-          {children}
+          <Outlet />
           <Spinner></Spinner>
         </Content>
         <Footer />
