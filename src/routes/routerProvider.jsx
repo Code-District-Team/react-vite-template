@@ -1,6 +1,6 @@
 import {
   Route,
-  RouterProvider,
+  RouterProvider as Provider,
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
@@ -28,6 +28,6 @@ const router = createBrowserRouter(
   )
 );
 
-export default function Routes() {
-  return <RouterProvider router={router} />;
+export default function RouterProvider() {
+  return <Provider router={router} />;
 }
