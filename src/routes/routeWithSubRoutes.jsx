@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import User from "~/models/user";
 import K from "~/utilities/constants";
 import {
@@ -30,14 +30,7 @@ export default function RouteWithSubRoutes({ route }) {
     ]);
 
     if (hasPermission) {
-      const component = (
-        <route.component {...route} route={route}></route.component>
-      );
-      return route.layout ? (
-        <route.layout>{component}</route.layout>
-      ) : (
-        component
-      );
+      return <Outlet />;
     } else {
       return <Navigate replace to={{ pathname: "/unauthorized" }} />;
     }
