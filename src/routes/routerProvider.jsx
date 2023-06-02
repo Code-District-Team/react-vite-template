@@ -10,7 +10,16 @@ import routes from "./routes";
 const router = createBrowserRouter(
   createRoutesFromElements(
     routes.map((route) => (
-      <Route key={route.path} element={<AccessControl route={route} />}>
+      <Route
+        key={route.path}
+        element={
+          <AccessControl
+            routePath={route.path}
+            routePermission={route.permission}
+            isAuthenticated={route.authenticated}
+          />
+        }
+      >
         <Route
           path={route.path}
           element={

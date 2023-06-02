@@ -6,40 +6,31 @@ import {
   redirectIfInvalidTenant,
 } from "~/utilities/generalUtility";
 
-export default function AccessControl({ route }) {
-  if (
-    !route.authenticated ||
-    (route.authenticated && User.isTokenAvailable())
-  ) {
+export default function AccessControl({
+  routePath,
+  isAuthenticated,
+  routePermission,
+}) {
+  if (!isAuthenticated || (isAuthenticated && User.isTokenAvailable())) {
     // * Check domain prefix
     if (K.Network.URL.IsMultiTenant) redirectIfInvalidTenant();
 
     if (
-      ["/login", "/forgot-password", "/set-password"].includes(route.path) &&
+      ["/login", "/forgot-password", "/set-password"].includes(routePath) &&
       User.isTokenAvailable()
     )
-      return (
-        <Navigate
-          replace
-          to={{ pathname: "/", state: { from: route.location } }}
-        />
-      );
+      return <Navigate to="/" replace />;
     // Check permission
-    const hasPermission = isPermissionPresent(route.permission, [
+    const hasPermission = isPermissionPresent(routePermission, [
       K.Permissions.Admin,
     ]);
 
     if (hasPermission) {
       return <Outlet />;
     } else {
-      return <Navigate replace to={{ pathname: "/unauthorized" }} />;
+      return <Navigate to="/unauthorized" replace />;
     }
   } else {
-    return (
-      <Navigate
-        replace
-        to={{ pathname: "/login", state: { from: route.location } }}
-      />
-    );
+    return <Navigate to="/login" replace />;
   }
 }
