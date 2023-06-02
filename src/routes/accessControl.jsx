@@ -6,7 +6,7 @@ import {
   redirectIfInvalidTenant,
 } from "~/utilities/generalUtility";
 
-export default function RouteWithSubRoutes({ route }) {
+export default function AccessControl({ route }) {
   if (
     !route.authenticated ||
     (route.authenticated && User.isTokenAvailable())

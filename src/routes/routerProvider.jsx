@@ -4,13 +4,13 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import RouteWithSubRoutes from "./routeWithSubRoutes";
+import AccessControl from "./accessControl";
 import routes from "./routes";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     routes.map((route) => (
-      <Route key={route.path} element={<RouteWithSubRoutes route={route} />}>
+      <Route key={route.path} element={<AccessControl route={route} />}>
         <Route
           path={route.path}
           element={
