@@ -8,22 +8,25 @@ const columns = [
     title: "ID",
     dataIndex: "id",
     key: "id",
-    // render: (text) => <a>{text}</a>,
+    sorter: (a, b) => a.id - b.id,
   },
   {
     title: "Email",
     dataIndex: "email",
     key: "email",
+    sorter: (a, b) => a.email.localeCompare(b.email),
   },
   {
     title: "First Name",
     dataIndex: "firstName",
     key: "firstName",
+    sorter: (a, b) => a.firstName.localeCompare(b.firstName),
   },
   {
     title: "Last Name",
     dataIndex: "lastName",
     key: "lastName",
+    sorter: (a, b) => a.lastName.localeCompare(b.lastName),
   },
 ];
 
