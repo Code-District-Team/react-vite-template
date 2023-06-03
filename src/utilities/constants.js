@@ -51,6 +51,7 @@ const K = {
         File: "file",
       },
     },
+    ResponseType: { Blob: "blob", Json: "json" },
     StatusCode: {
       NotModified: 304,
       Unauthorized: 401,

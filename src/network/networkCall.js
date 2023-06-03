@@ -15,6 +15,7 @@ export default class NetworkCall {
               url: request.url,
               data: request.body,
               headers: request.headers,
+              responseType: request.responseType,
               validateStatus: (status) => {
                 return (
                   (status >= 200 && status < 300) ||
@@ -28,6 +29,7 @@ export default class NetworkCall {
             url: request.url,
             data: request.body,
             headers: request.headers,
+            responseType: request.responseType,
             validateStatus: (status) => {
               return (
                 (status >= 200 && status < 300) ||
