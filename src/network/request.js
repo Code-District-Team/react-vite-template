@@ -8,7 +8,8 @@ export default class Request {
     body = null,
     defaultHeaderType = K.Network.Header.Type.Json,
     headers = {},
-    isTenant = K.Network.URL.IsMultiTenant
+    isTenant = K.Network.URL.IsMultiTenant,
+    responseType = K.Network.ResponseType.Json
   ) {
     const token = User.getToken();
     const domainPrefix = User.getTenant();
@@ -24,5 +25,6 @@ export default class Request {
     this.method = method;
     this.body = body;
     this.headers = headers;
+    this.responseType = responseType;
   }
 }
