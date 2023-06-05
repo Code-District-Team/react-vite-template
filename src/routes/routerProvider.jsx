@@ -16,7 +16,7 @@ const router = createBrowserRouter(
           <AccessControl
             routePath={route.path}
             routePermission={route.permission}
-            isAuthenticated={route.authenticated}
+            isAuthenticatedRoute={route.authenticated}
           />
         }
       >

@@ -8,10 +8,13 @@ import {
 
 export default function AccessControl({
   routePath,
-  isAuthenticated,
+  isAuthenticatedRoute,
   routePermission,
 }) {
-  if (!isAuthenticated || (isAuthenticated && User.isTokenAvailable())) {
+  if (
+    !isAuthenticatedRoute ||
+    (isAuthenticatedRoute && User.isTokenAvailable())
+  ) {
     // * Check domain prefix
     if (K.Network.URL.IsMultiTenant) redirectIfInvalidTenant();
 
