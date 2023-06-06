@@ -52,8 +52,10 @@ const AgList = () => {
 
   const resetSearchFilter = () => {
     // Reset the filter model
-
     gridRef.current.api.setFilterModel({});
+    gridRef.current.columnApi.applyColumnState({
+      defaultState: { sort: null },
+    });
     gridRef.current.api.setQuickFilter("");
     document.getElementById("filter-text-box").value = "";
   };
