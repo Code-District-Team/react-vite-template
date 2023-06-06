@@ -22,6 +22,13 @@ const defaultChildren = (basePath) => [
     roles: [K.Permissions.Admin],
   },
 ];
+const projectChildren = (basePath) => [
+  {
+    path: `${basePath}/AgGrid`,
+    name: "Ag-Grid",
+    roles: [K.Permissions.Admin],
+  },
+];
 
 const navigations = [
   {
@@ -34,7 +41,7 @@ const navigations = [
     // path: "/projects",
     icon: <ProjectOutlined />,
     permission: [],
-    children: defaultChildren("/projects"),
+    children: projectChildren("/projects"),
   },
   {
     name: "Users",

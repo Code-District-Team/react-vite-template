@@ -1,3 +1,4 @@
+import AgGridList from "~/features/AgGrid List/agGridList";
 import { Counter } from "~/features/counter/Counter";
 import Dashboard from "~/features/dashboard/dashboard";
 import ForgotPassword from "~/features/forgotPassword/forgotPassword";
@@ -102,6 +103,14 @@ const routes = [
     name: "Not Found",
     component: NotFound,
     layout: GuestPageLayout,
+  },
+  {
+    path: "/projects/AgGrid",
+    name: "Ag-Grid",
+    component: AgGridList,
+    authenticated: true,
+    permission: [],
+    layout: LoggedInPageLayout,
   },
 ];
 
