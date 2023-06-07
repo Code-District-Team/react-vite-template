@@ -4,7 +4,6 @@ import userList from "~/models/userList";
 import Input from "antd/es/input/Input";
 
 const columns = (searchedText) => {
-  console.log("search text", searchedText);
   return [
     {
       title: "ID",
@@ -63,16 +62,14 @@ const TableList = () => {
   //   }
   // };
   useEffect(() => {
-    console.log("Came in ");
     const fetchData = async () => {
       try {
         const list = await userList.getUserList({
           pageNo: 1,
           pageSize: 10,
         });
-        console.log("List", list);
+
         setData(list.data.users);
-        console.log("hs bList", list.data.users);
         // setFilteredData(list.data.users);
       } catch (error) {
         message.error(error);
@@ -88,11 +85,9 @@ const TableList = () => {
         name="searchValue"
         placeholder={"Input search text"}
         onSearch={(value) => {
-          console.log("onsearch value", value);
           setSearchedText(value);
         }}
         onChange={(e) => {
-          console.log("onchange value", e.target.value);
           setSearchedText(e.target.value);
         }}
       />
