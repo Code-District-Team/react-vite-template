@@ -1,7 +1,6 @@
-import { Table, message } from "antd";
+import { Input, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import userList from "~/models/userList";
-import Input from "antd/es/input/Input";
 
 const columns = (searchedText) => {
   return [
@@ -43,24 +42,9 @@ const columns = (searchedText) => {
 };
 
 const TableList = () => {
-  const [data, setData] = useState();
-  // const [filteredData, setFilteredData] = useState();
+  const [data, setData] = useState([]);
   const [searchedText, setSearchedText] = useState("");
 
-  // const onSearch = (value) => {
-  //   if (value == "") {
-  //     setFilteredData(data);
-  //   } else {
-  //     setFilteredData(
-  //       data.filter(
-  //         (obj) =>
-  //           obj.firstName.toUpperCase().includes(value.toUpperCase()) ||
-  //           obj.lastName.toUpperCase().includes(value.toUpperCase()) ||
-  //           obj.email.toUpperCase().includes(value.toUpperCase())
-  //       )
-  //     );
-  //   }
-  // };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -70,7 +54,6 @@ const TableList = () => {
         });
 
         setData(list.data.users);
-        // setFilteredData(list.data.users);
       } catch (error) {
         message.error(error);
       }
@@ -81,8 +64,6 @@ const TableList = () => {
   return (
     <>
       <Input.Search
-        style={{ marginBottom: 4 }}
-        name="searchValue"
         placeholder={"Input search text"}
         onSearch={(value) => {
           setSearchedText(value);
