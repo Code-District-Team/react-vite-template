@@ -26,10 +26,14 @@ import K from "~/utilities/constants";
   }
 */
 
-const defaultCrudChildren = [
-  { path: "/details/:id", name: "Details" },
-  { path: "/store/:id", name: "Edit" },
-];
+/* const defaultCrudChildren = [
+  {
+    path: "store/create",
+    name: "Create",
+    // component: CreateProjects,
+    // layout: LoggedInPageLayout,
+  },
+]; */
 
 const routes = [
   {
@@ -62,8 +66,7 @@ const routes = [
     component: Projects,
     authenticated: true,
     permission: [K.Permissions.Admin],
-    exact: true,
-    children: defaultCrudChildren, // TODO: need to implement children functionality in routes
+    // children: defaultCrudChildren, // TODO: need to implement children functionality in routes
     layout: LoggedInPageLayout,
   },
   {
@@ -72,13 +75,11 @@ const routes = [
     component: Users,
     authenticated: true,
     permission: [],
-    exact: true,
     layout: LoggedInPageLayout,
   },
   {
     path: "/",
     name: "Dashboard",
-    exact: true,
     component: Dashboard,
     authenticated: true,
     layout: LoggedInPageLayout,
@@ -86,7 +87,6 @@ const routes = [
   {
     path: "/counter",
     name: "Counter",
-    exact: true,
     component: Counter,
     layout: LoggedInPageLayout,
   },

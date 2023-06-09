@@ -1,10 +1,10 @@
 import { Layout } from "antd";
 import { useState } from "react";
 import Spinner from "~/common/spinner/spinner";
-import Header from "./header";
-import Sider from "./sider";
 import Footer from "./footer";
+import Header from "./header";
 import styles from "./layout.module.scss";
+import Sider from "./sider";
 
 const { Content } = Layout;
 
