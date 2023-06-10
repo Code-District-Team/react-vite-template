@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import AccessControl from "./accessControl";
 import routes from "./routes";
+import ErrorBoundary from "~/common/errorBoundary/errorBoundary";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -13,11 +14,13 @@ const router = createBrowserRouter(
       <Route
         key={route.path}
         element={
-          <AccessControl
-            routePath={route.path}
-            routePermission={route.permission}
-            isAuthenticatedRoute={route.authenticated}
-          />
+          <ErrorBoundary>
+            <AccessControl
+              routePath={route.path}
+              routePermission={route.permission}
+              isAuthenticatedRoute={route.authenticated}
+            />
+          </ErrorBoundary>
         }
       >
         <Route
