@@ -3,7 +3,7 @@ import TableList from "~/common/tableList/tableList";
 
 export default function User() {
   return (
-    <Card>
+    <Card className="m-3">
       <TableList />
     </Card>
   );
