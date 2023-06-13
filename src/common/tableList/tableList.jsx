@@ -1,5 +1,6 @@
+import { Input, Table } from "antd";
+import { debounce } from "lodash";
 import { useState } from "react";
-import { Table, Input, Card } from "antd";
 import { numberSorting, stringSorting } from "~/utilities/generalUtility";
 
 const columns = (searchedText) => [
@@ -56,25 +57,33 @@ const columns = (searchedText) => [
 const tableData = [
   {
     id: "1",
-    firstName: "John",
-    lastName: "Brown",
-    email: "johnbrown@gmail.com",
-    age: 32,
+    firstName: "Usama",
+    lastName: "Mehmood",
+    email: "usama.mehmood@codedistrict.com",
+    age: 26,
     address: "New York No. 1 Lake Park",
   },
   {
     id: "2",
-    firstName: "Jim",
-    lastName: "Green",
-    email: "jimgreen@gmail.com",
-    age: 42,
+    firstName: "Haseeb",
+    lastName: "Awan",
+    email: "haseeb.awan@codedistrict.com",
+    age: 30,
     address: "London No. 1 Lake Park",
   },
   {
     id: "3",
-    firstName: "Joe",
-    lastName: "Black",
-    email: "joeblack@gmail.com",
+    firstName: "Ahmed",
+    lastName: "Ehsan",
+    email: "ahmed.ehsan@codedistrict.com",
+    age: 32,
+    address: "Sydney No. 1 Lake Park",
+  },
+  {
+    id: "4",
+    firstName: "Ali",
+    lastName: "Ehsan",
+    email: "ali.ehsan@codedistrict.com",
     age: 32,
     address: "Sydney No. 1 Lake Park",
   },
@@ -83,26 +92,26 @@ const tableData = [
 const TableList = () => {
   const [searchedText, setSearchedText] = useState("");
 
+  const onSearch = (param) => {
+    let value = undefined;
+    if (param.target) value = param.target.value;
+    else value = param;
+    setSearchedText(value ? value : "");
+  };
+
   return (
     <>
-      <Card className="ant-layout">
-        <Input.Search
-          style={{ marginBottom: 4 }}
-          name="searchValue"
-          placeholder="Input search text"
-          onSearch={(value) => {
-            setSearchedText(value);
-          }}
-          onChange={(e) => {
-            setSearchedText(e.target.value);
-          }}
-        />
-        <Table
-          rowKey="id"
-          columns={columns(searchedText)}
-          dataSource={tableData}
-        />
-      </Card>
+      <Input.Search
+        allowClear
+        placeholder="Input search text"
+        onSearch={onSearch}
+        onChange={debounce(onSearch, 500)}
+      />
+      <Table
+        rowKey="id"
+        columns={columns(searchedText)}
+        dataSource={tableData}
+      />
     </>
   );
 };
