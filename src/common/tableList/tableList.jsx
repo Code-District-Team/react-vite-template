@@ -16,8 +16,7 @@ const columns = (searchedText) => [
     filteredValue: [searchedText],
     onFilter: (value, record) => {
       return (
-        record.id.toString() === value ||
-        record.age.toString() === value ||
+        [record.id.toString(), record.age.toString()].includes(value) ||
         record.firstName.toLowerCase().includes(value.toLowerCase()) ||
         record.lastName.toLowerCase().includes(value.toLowerCase()) ||
         record.email.toLowerCase().includes(value.toLowerCase()) ||
