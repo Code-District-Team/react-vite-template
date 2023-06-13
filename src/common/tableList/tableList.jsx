@@ -16,7 +16,7 @@ const columns = (searchedText) => [
     filteredValue: [searchedText],
     onFilter: (value, record) => {
       return (
-        [record.id.toString(), record.age.toString()].includes(value) ||
+        [record.id, record.age].includes(+value) ||
         record.firstName.toLowerCase().includes(value.toLowerCase()) ||
         record.lastName.toLowerCase().includes(value.toLowerCase()) ||
         record.email.toLowerCase().includes(value.toLowerCase()) ||
@@ -55,7 +55,7 @@ const columns = (searchedText) => [
 
 const tableData = [
   {
-    id: "1",
+    id: 1,
     firstName: "Usama",
     lastName: "Mehmood",
     email: "usama.mehmood@codedistrict.com",
@@ -63,7 +63,7 @@ const tableData = [
     address: "New York No. 1 Lake Park",
   },
   {
-    id: "2",
+    id: 2,
     firstName: "Haseeb",
     lastName: "Awan",
     email: "haseeb.awan@codedistrict.com",
@@ -71,7 +71,7 @@ const tableData = [
     address: "London No. 1 Lake Park",
   },
   {
-    id: "3",
+    id: 3,
     firstName: "Ahmed",
     lastName: "Ehsan",
     email: "ahmed.ehsan@codedistrict.com",
@@ -79,7 +79,7 @@ const tableData = [
     address: "Sydney No. 1 Lake Park",
   },
   {
-    id: "4",
+    id: 4,
     firstName: "Ali",
     lastName: "Ehsan",
     email: "ali.ehsan@codedistrict.com",
