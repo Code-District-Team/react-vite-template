@@ -102,7 +102,9 @@ const TableList = () => {
     <>
       <Input.Search
         allowClear
-        placeholder="Input search text"
+        className="mb-3"
+        size="large"
+        placeholder="Search"
         onSearch={onSearch}
         onChange={debounce(onSearch, 500)}
       />
