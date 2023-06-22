@@ -1,0 +1,96 @@
+body {
+  font-family: "sf_pro_displayregular";
+}
+
+img {
+  max-width: 100%;
+}
+
+.text-primary {
+  color: $text-primary;
+}
+
+.font-weight {
+  &-normal {
+    font-family: "sf_pro_displayregular";
+  }
+
+  &-medium {
+    font-family: "sf_pro_displaymedium";
+  }
+
+  &-semibold {
+    font-family: "sf_pro_displaysemibold";
+  }
+
+  &-bold {
+    font-family: "sf_pro_displaybold";
+  }
+}
+
+.ant-layout {
+  min-height: 100vh;
+
+  &-sider {
+    @extend .bg-white;
+    box-shadow: 2px 0px 8px rgba(0, 0, 0, 0.15);
+    margin-right: 1px;
+
+    &-logo {
+      max-width: 135px;
+      margin: 30px auto;
+    }
+  }
+
+  &-header {
+    @extend .bg-white;
+  }
+
+  &.guest-layout {
+    .ant-layout-content {
+      @extend .d-flex, .align-items-center, .position-relative;
+    }
+  }
+}
+
+.ant-spin {
+  @extend .position-absolute, .w-100, .h-100;
+  left: 0%;
+  top: 0%;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 999;
+
+  .ant-spin-dot-spin {
+    @extend .position-absolute;
+    top: 50%;
+    left: 50%;
+    margin: -20px 0 0 -20px;
+  }
+}
+
+.ant-form-item-explain,
+.ant-form-item-extra {
+  font-size: 11px;
+}
+
+.app-header-right {
+  float: right;
+
+  .loggedin-user-dd {
+    &>a {
+      @extend .font-weight-medium;
+      color: #262626;
+
+      .ant-avatar,
+      .anticon {
+        margin: 0 5px;
+      }
+
+      .anticon {
+        &-down {
+          color: #8c8c8c;
+        }
+      }
+    }
+  }
+}

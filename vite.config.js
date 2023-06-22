@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       open: true,
-      // https: true,
+      https: env.VITE_CLIENT_PROTOCOL === "https",
       host: env.VITE_CLIENT_BASE_HOST,
       port: env.VITE_CLIENT_BASE_PORT,
     },

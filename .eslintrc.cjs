@@ -12,9 +12,11 @@ module.exports = {
   rules: {
     "react-refresh/only-export-components": "warn",
     "no-var": "error",
+    "no-debugger": "warn",
     "no-dupe-keys": "error",
     "no-unused-vars": "error",
     "no-duplicate-imports": "error",
+    "no-prototype-builtins": "warn",
     "array-callback-return": "error",
     "react-hooks/exhaustive-deps": "off",
     "react/prop-types": "off", // * Disable prop-types

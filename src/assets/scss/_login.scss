@@ -1,0 +1,26 @@
+.login-container {
+  @extend .w-100;
+  max-width: 330px;
+  margin: auto;
+  padding: 3rem 0;
+}
+
+.lc-logo {
+  @extend .text-center;
+  margin-bottom: 3rem;
+
+  img {
+    max-width: 200px;
+  }
+}
+
+.login-card {
+  /* @extend .bg-white;
+    padding: 24px;
+    border-radius: 2px; */
+  h4 {
+    @extend .mb-4, .text-center;
+    font-size: 20px;
+    font-family: "Playfair Display", serif;
+  }
+}
