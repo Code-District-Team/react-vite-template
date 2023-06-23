@@ -1,38 +1,38 @@
 import { LockOutlined } from "@ant-design/icons";
-import { Button, Card, Checkbox, Form, Input } from "antd";
+import { Button, Card, Form, Input } from "antd";
 import md5 from "md5";
 import { useDispatch } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
-import Logo from "~/assets/images/logo.svg";
 import User from "~/models/user";
+import {
+  redirectToUrl,
+  setFieldErrorsFromServer,
+} from "~/utilities/generalUtility";
 
-export default function SetPassword() {
+const ChangePassword = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    const token = location.search.substring(7);
-    console.log("token", token);
+    // console.log("change password", values);
     try {
-      dispatch(
-        User.resetPassword(md5(values.password), token, values.remember)
+      await dispatch(
+        User.ChangePassword(
+          md5(values.oldpassword),
+          md5(values.password),
+          values.remember
+        )
       );
-      // const { from } = { from: { path: "/" } };
-      console.log("state", location.state);
-      navigate("/");
+
+      redirectToUrl("/"); // * Pass domainPrefix as 2nd argumnet in case of multi tenant
     } catch (error) {
-      console.error(error);
+      setFieldErrorsFromServer(error, form, values);
     }
   };
-
   return (
     <div className="login-container">
-      <div className="lc-logo">
-        <img src={Logo} alt="logo" />
-      </div>
+      <div className="lc-logo">{/* <img src={Logo} alt="logo" /> */}</div>
       <Card bordered={false} className="login-card">
-        <h4>Set Password</h4>
+        <h4>Change Password</h4>
         <Form
           name="set-password-form"
           initialValues={{
@@ -41,6 +41,27 @@ export default function SetPassword() {
           onFinish={onFinish}
           layout="vertical"
         >
+          <Form.Item
+            name="oldpassword"
+            rules={[
+              {
+                required: true,
+                message: "Please input your old password!",
+              },
+              {
+                min: 8,
+                message: "Password must be atleast 8 characters long!",
+              },
+            ]}
+          >
+            <Input.Password
+              prefix={
+                <LockOutlined className="site-form-item-icon text-primary" />
+              }
+              placeholder="Old Password"
+              size="large"
+            />
+          </Form.Item>
           <Form.Item
             name="password"
             rules={[
@@ -58,7 +79,7 @@ export default function SetPassword() {
               prefix={
                 <LockOutlined className="site-form-item-icon text-primary" />
               }
-              placeholder="Password"
+              placeholder="New Password"
               size="large"
             />
           </Form.Item>
@@ -86,9 +107,9 @@ export default function SetPassword() {
             />
           </Form.Item>
 
-          <Form.Item name="remember" valuePropName="checked">
+          {/* <Form.Item name="remember" valuePropName="checked">
             <Checkbox>Remember me</Checkbox>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item noStyle>
             <Button block size="large" type="primary" htmlType="submit">
               Done
@@ -98,4 +119,6 @@ export default function SetPassword() {
       </Card>
     </div>
   );
-}
+};
+
+export default ChangePassword;

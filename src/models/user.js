@@ -73,10 +73,10 @@ export default class User {
   static resetPassword(password, token, remember) {
     const body = {
       password,
-      token,
+      // token,
     };
     const request = new Request(
-      K.Network.URL.Auth.ResetPassword,
+      K.Network.URL.Auth.ResetPassword + "/" + token,
       K.Network.Method.POST,
       body,
       K.Network.Header.Type.Json,
@@ -99,7 +99,38 @@ export default class User {
       return user;
     };
   }
+  // Change Password
 
+  static ChangePassword(oldPassword, newPassword, remember) {
+    const body = {
+      oldPassword,
+      newPassword,
+      // token,
+    };
+    const request = new Request(
+      K.Network.URL.Auth.ChangePassword,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {},
+      false
+    );
+
+    return async () => {
+      const user = await NetworkCall.fetch(request, true);
+      let encryptedUser = CryptoJS.AES.encrypt(
+        JSON.stringify(user),
+        K.Cookie.Key.EncryptionKey
+      );
+      console.info(encryptedUser);
+      Cookies.set(K.Cookie.Key.User, encryptedUser, {
+        path: "/",
+        domain: K.Network.URL.Client.BaseHost,
+        expires: remember ? 365 : "",
+      });
+      return user;
+    };
+  }
   // * Helpers
 
   static getUserObjectFromCookies() {
