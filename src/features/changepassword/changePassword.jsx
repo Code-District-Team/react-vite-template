@@ -13,7 +13,6 @@ const ChangePassword = () => {
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    // console.log("change password", values);
     try {
       await dispatch(
         User.ChangePassword(

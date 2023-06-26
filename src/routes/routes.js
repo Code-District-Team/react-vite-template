@@ -1,4 +1,4 @@
-import ChangePassword from "~/features/changepassword/ChangePassword";
+import ChangePassword from "~/features/changepassword/changePassword";
 import { Counter } from "~/features/counter/Counter";
 import Dashboard from "~/features/dashboard/dashboard";
 import ForgotPassword from "~/features/forgotPassword/forgotPassword";
