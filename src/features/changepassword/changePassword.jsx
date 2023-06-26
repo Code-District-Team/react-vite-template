@@ -15,7 +15,7 @@ const ChangePassword = () => {
   const onFinish = async (values) => {
     try {
       await dispatch(
-        User.ChangePassword(
+        User.changePassword(
           md5(values.oldpassword),
           md5(values.password),
           values.remember

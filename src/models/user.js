@@ -101,11 +101,10 @@ export default class User {
   }
   // Change Password
 
-  static ChangePassword(oldPassword, newPassword, remember) {
+  static changePassword(oldPassword, newPassword, remember) {
     const body = {
       oldPassword,
       newPassword,
-      // token,
     };
     const request = new Request(
       K.Network.URL.Auth.ChangePassword,
