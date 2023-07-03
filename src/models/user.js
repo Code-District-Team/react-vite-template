@@ -101,7 +101,7 @@ export default class User {
   }
   // Change Password
 
-  static changePassword(oldPassword, newPassword, remember) {
+  static async changePassword(oldPassword, newPassword) {
     const body = {
       oldPassword,
       newPassword,
@@ -115,20 +115,9 @@ export default class User {
       false
     );
 
-    return async () => {
-      const user = await NetworkCall.fetch(request, true);
-      let encryptedUser = CryptoJS.AES.encrypt(
-        JSON.stringify(user),
-        K.Cookie.Key.EncryptionKey
-      );
-      console.info(encryptedUser);
-      Cookies.set(K.Cookie.Key.User, encryptedUser, {
-        path: "/",
-        domain: K.Network.URL.Client.BaseHost,
-        expires: remember ? 365 : "",
-      });
-      return user;
-    };
+    const user = await NetworkCall.fetch(request, true);
+
+    return user;
   }
   // * Helpers
 
