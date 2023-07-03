@@ -24,7 +24,6 @@ const ChangePassword = () => {
       <Card bordered={false} className="login-card">
         <div className="login-container">
           <div className="lc-logo">{/* <img src={Logo} alt="logo" /> */}</div>
-          {/* <Card bordered={false} className="login-card"> */}
           <h4>Change Password</h4>
           <Form
             name="set-password-form"
@@ -99,10 +98,6 @@ const ChangePassword = () => {
                 size="large"
               />
             </Form.Item>
-
-            {/* <Form.Item name="remember" valuePropName="checked">
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item> */}
             <Form.Item noStyle>
               <Button block size="large" type="primary" htmlType="submit">
                 Done

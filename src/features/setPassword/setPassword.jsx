@@ -13,14 +13,11 @@ export default function SetPassword() {
 
   const onFinish = async (values) => {
     const token = location.search.substring(7);
-    console.log("token", token);
     try {
       dispatch(
         User.resetPassword(md5(values.password), token, values.remember)
       );
       message.success("Your password has been changed successfully.");
-      // const { from } = { from: { path: "/" } };
-      console.log("state", location.state);
       navigate("/");
     } catch (error) {
       console.error(error);

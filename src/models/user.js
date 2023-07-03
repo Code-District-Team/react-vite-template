@@ -73,7 +73,6 @@ export default class User {
   static resetPassword(password, token, remember) {
     const body = {
       password,
-      // token,
     };
     const request = new Request(
       K.Network.URL.Auth.ResetPassword + "/" + token,
