@@ -73,10 +73,9 @@ export default class User {
   static resetPassword(password, token, remember) {
     const body = {
       password,
-      token,
     };
     const request = new Request(
-      K.Network.URL.Auth.ResetPassword,
+      K.Network.URL.Auth.ResetPassword + "/" + token,
       K.Network.Method.POST,
       body,
       K.Network.Header.Type.Json,
@@ -99,7 +98,26 @@ export default class User {
       return user;
     };
   }
+  // Change Password
 
+  static async changePassword(oldPassword, newPassword) {
+    const body = {
+      oldPassword,
+      newPassword,
+    };
+    const request = new Request(
+      K.Network.URL.Auth.ChangePassword,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {},
+      false
+    );
+
+    const user = await NetworkCall.fetch(request, true);
+
+    return user;
+  }
   // * Helpers
 
   static getUserObjectFromCookies() {

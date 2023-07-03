@@ -17,6 +17,7 @@ export default function Header({ collapsed, toggle }) {
     const actions = {
       1: () => navigate("/profile", { replace: true }),
       3: () => User.logoutCall(),
+      2: () => navigate("/change-password", { replace: true }),
     };
     actions[key]();
   };

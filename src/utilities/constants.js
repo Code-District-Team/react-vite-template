@@ -23,7 +23,7 @@ const K = {
       Auth: {
         Login: "/auth/signin",
         SignUp: "/auth/signup",
-        ResetPassword: "/auth/set-password",
+        ResetPassword: "/auth/reset-password",
         ForgotPassword: "/auth/forget-password",
         ChangePassword: "/auth/change-password",
       },

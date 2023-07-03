@@ -1,3 +1,4 @@
+import ChangePassword from "~/features/changepassword/changePassword";
 import { Counter } from "~/features/counter/Counter";
 import Dashboard from "~/features/dashboard/dashboard";
 import ForgotPassword from "~/features/forgotPassword/forgotPassword";
@@ -60,6 +61,7 @@ const routes = [
     component: SetPassword,
     layout: GuestPageLayout,
   },
+
   {
     path: "/projects",
     name: "Projects",
@@ -88,6 +90,12 @@ const routes = [
     path: "/counter",
     name: "Counter",
     component: Counter,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/change-password",
+    name: "ChangePassword",
+    component: ChangePassword,
     layout: LoggedInPageLayout,
   },
   {

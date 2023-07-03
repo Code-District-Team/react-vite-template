@@ -1,5 +1,5 @@
 import { LockOutlined } from "@ant-design/icons";
-import { Button, Card, Checkbox, Form, Input } from "antd";
+import { Button, Card, Checkbox, Form, Input, message } from "antd";
 import md5 from "md5";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -17,8 +17,8 @@ export default function SetPassword() {
       dispatch(
         User.resetPassword(md5(values.password), token, values.remember)
       );
-      const { from } = location.state || { from: { path: "/" } };
-      navigate.replace(from);
+      message.success("Your password has been changed successfully.");
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
