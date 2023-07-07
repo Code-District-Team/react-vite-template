@@ -1,22 +1,31 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Form, Input, Space } from "antd";
+import { Button, Card, Form, Input } from "antd";
 import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
 import User from "~/models/user";
-import Logo from "~/assets/images/logo.svg";
+
 function ProfilePage() {
   const [form] = Form.useForm();
-  const [editUpdate, setEditUpdate] = useState(true);
+  // Profile data state
+  const [profileData, setProfileData] = useState({
+    // Add more fields as needed
+  });
+  // const [editMode, setEditMode] = useState(false);
   const fetchProfileData = async () => {
     try {
       const data = await User.ProfileData();
-      // setProfileData(data);
+      setProfileData(data);
+      console.log(profileData);
       form.setFieldsValue(data);
+      console.log({ data });
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
+    // Fetch profile data from the server and update the state
+    // form.setFieldsValue({ firstname: "profileData?.firstName" });
     fetchProfileData();
+    //form.setFieldValue("firstName", "DSDSD");
   }, []);
 
   const onFinish = async (values) => {
@@ -26,68 +35,50 @@ function ProfilePage() {
         firstName: values.firstName,
         lastName: values.lastName,
         mobilePhone: values.mobilePhone,
-        address: values.address,
       };
       await User.UpdateProfileData(body);
+      // setProfileData(values);
+      // redirectToUrl("/"); // * Pass domainPrefix as 2nd argument in case of multi tenant
     } catch (error) {
       setFieldErrorsFromServer(error, form, values);
     }
   };
-  const handleEdit = () => {
-    setEditUpdate(false);
-  };
 
-  const handleCancelEdit = () => {
-    setEditUpdate(true);
-  };
   return (
-    <div className="login-container-profile">
-      <div className="lc-logo">
-        <img src={Logo} alt="logo" />
-      </div>
-      <Card>
+    <Card>
+      <div>
         <h1>Profile Page</h1>
 
         <Form
           onFinish={onFinish}
           form={form}
           name="profile-form"
-          initialValues={{ remember: true }}
+          initialValues={{ remember: true, firstName: "Haseeeb" }}
         >
           <Form.Item name={"firstName"} label={"FirstName  "}>
-            <Input disabled={editUpdate} />
+            <Input />
           </Form.Item>
           <Form.Item label="Last Name:" name="lastName">
-            <Input type="text" disabled={editUpdate} />
+            <Input type="text" />
           </Form.Item>
-          <Form.Item label="Email:" name="email">
-            <Input type="text" disabled={editUpdate} />
-          </Form.Item>
+
           <Form.Item label="Mobile Phone:" name="mobilePhone">
-            <Input type="text" disabled={editUpdate} />
+            <Input type="text" />
           </Form.Item>
           <Form.Item label="Address:" name="address">
-            <Input type="text" disabled={editUpdate} />
+            <Input type="text" />
           </Form.Item>
 
-          <Form.Item label="Status:" name="status" className="mb-0">
-            <Input type="text" disabled={editUpdate} />
+          <Form.Item label="Status:" name="status">
+            <Input type="text" />
           </Form.Item>
-          <Space>
-            <Button type="primary" htmlType="submit">
-              Save
-            </Button>
 
-            <Button type="primary" onClick={handleEdit}>
-              Edit
-            </Button>
-            <Button type="primary" onClick={handleCancelEdit}>
-              Cancel
-            </Button>
-          </Space>
+          <Button type="primary" htmlType="submit">
+            Save
+          </Button>
         </Form>
-      </Card>
-    </div>
+      </div>
+    </Card>
   );
 }
 
