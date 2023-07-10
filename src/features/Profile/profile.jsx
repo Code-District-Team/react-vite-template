@@ -6,10 +6,15 @@ import Logo from "~/assets/images/logo.svg";
 function ProfilePage() {
   const [form] = Form.useForm();
   const [editUpdate, setEditUpdate] = useState(true);
+  // const [idValue, setIdValue] = useState("");
+  // let id = "";
   const fetchProfileData = async () => {
     try {
       const data = await User.ProfileData();
       // setProfileData(data);
+      console.log("new data", data);
+      // id = data.id;
+      // setIdValue(id);
       form.setFieldsValue(data);
     } catch (error) {
       console.log(error);
@@ -27,8 +32,11 @@ function ProfilePage() {
         lastName: values.lastName,
         mobilePhone: values.mobilePhone,
         address: values.address,
+        id: values.id,
       };
       await User.UpdateProfileData(body);
+      fetchProfileData();
+      setEditUpdate(true);
     } catch (error) {
       setFieldErrorsFromServer(error, form, values);
     }
@@ -40,6 +48,7 @@ function ProfilePage() {
   const handleCancelEdit = () => {
     setEditUpdate(true);
   };
+
   return (
     <div className="login-container-profile">
       <div className="lc-logo">
@@ -54,6 +63,8 @@ function ProfilePage() {
           name="profile-form"
           initialValues={{ remember: true }}
         >
+          <Form.Item name={"id"} label={"id"} style={{ display: "none" }} />
+
           <Form.Item name={"firstName"} label={"FirstName  "}>
             <Input disabled={editUpdate} />
           </Form.Item>
@@ -61,7 +72,7 @@ function ProfilePage() {
             <Input type="text" disabled={editUpdate} />
           </Form.Item>
           <Form.Item label="Email:" name="email">
-            <Input type="text" disabled={editUpdate} />
+            <Input type="text" disabled={true} />
           </Form.Item>
           <Form.Item label="Mobile Phone:" name="mobilePhone">
             <Input type="text" disabled={editUpdate} />
@@ -74,16 +85,20 @@ function ProfilePage() {
             <Input type="text" disabled={editUpdate} />
           </Form.Item>
           <Space>
-            <Button type="primary" htmlType="submit">
-              Save
-            </Button>
-
-            <Button type="primary" onClick={handleEdit}>
-              Edit
-            </Button>
-            <Button type="primary" onClick={handleCancelEdit}>
-              Cancel
-            </Button>
+            {!editUpdate ? (
+              <div>
+                <Button type="primary" htmlType="submit">
+                  Save
+                </Button>{" "}
+                <Button type="primary" onClick={handleCancelEdit}>
+                  Cancel
+                </Button>{" "}
+              </div>
+            ) : (
+              <Button type="primary" onClick={handleEdit}>
+                Edit
+              </Button>
+            )}
           </Space>
         </Form>
       </Card>
