@@ -82,7 +82,7 @@ function ProfilePage() {
           </Form.Item>
 
           <Form.Item label="Status:" name="status" className="mb-0">
-            <Input type="text" disabled={editUpdate} />
+            <Input type="text" disabled={true} />
           </Form.Item>
           <Space>
             {!editUpdate ? (
