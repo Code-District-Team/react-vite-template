@@ -111,7 +111,7 @@ export default class User {
     return await NetworkCall.fetch(request, true);
   }
   //Update Profile Data
-  static async UpdateProfileData(body) {
+  static async UpdateProfileData(body, remember) {
     const request = new Request(
       K.Network.URL.Users.UpdateProfileData,
       K.Network.Method.PUT,
@@ -122,6 +122,20 @@ export default class User {
     );
 
     const user = await NetworkCall.fetch(request, true);
+    const data = User.getUserObjectFromCookies();
+    const cookieData = {
+      apiToken: data?.apiToken,
+      user,
+    };
+    let encryptedUser = CryptoJS.AES.encrypt(
+      JSON.stringify(cookieData),
+      K.Cookie.Key.EncryptionKey
+    );
+    Cookies.set(K.Cookie.Key.User, encryptedUser, {
+      path: "/",
+      domain: K.Network.URL.Client.BaseHost,
+      expires: remember ? 365 : "",
+    });
 
     return user;
   }
@@ -143,6 +157,10 @@ export default class User {
 
   static isTokenAvailable() {
     return this.getUserObjectFromCookies().apiToken ? true : false;
+  }
+
+  static getId() {
+    return this.getUserObjectFromCookies().user?.id ?? "";
   }
 
   static getToken() {

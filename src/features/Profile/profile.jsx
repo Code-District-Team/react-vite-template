@@ -5,34 +5,17 @@ import User from "~/models/user";
 import Logo from "~/assets/images/logo.svg";
 function ProfilePage() {
   const [form] = Form.useForm();
-
-  const fetchProfileData = async () => {
-    try {
-      const data = await User.ProfileData();
-
-      console.log("new data", data);
-
-      form.setFieldsValue(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   useEffect(() => {
-    fetchProfileData();
+    const data = User.getUserObjectFromCookies();
+    form?.setFieldsValue(data.user);
   }, []);
 
   const onFinish = async (values) => {
+    // eslint-disable-next-line
+    const { email, status, ...rest } = values;
+    rest.id = User.getId();
     try {
-      console.log("values", values);
-      const body = {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        mobilePhone: values.mobilePhone,
-        address: values.address,
-        id: values.id,
-      };
-      await User.UpdateProfileData(body);
-      fetchProfileData();
+      await User.UpdateProfileData(rest);
     } catch (error) {
       setFieldErrorsFromServer(error, form, values);
     }
