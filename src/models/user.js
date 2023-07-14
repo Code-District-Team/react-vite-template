@@ -47,7 +47,7 @@ export default class User {
   static signUpCall(
     firstName,
     lastName,
-    phoneNumber,
+    mobilePhone,
     email,
     password,
     remember
@@ -55,7 +55,7 @@ export default class User {
     const body = {
       firstName,
       lastName,
-      phoneNumber,
+      mobilePhone,
       email,
       password,
     };

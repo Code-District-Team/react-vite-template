@@ -25,7 +25,7 @@ function Register() {
           values.firstName,
           values.lastName,
           // `+${values.phoneNumber}`,
-          values.phoneNumber,
+          values.mobilePhone,
           values.email,
           md5(values.password),
           values.remember
@@ -90,7 +90,7 @@ function Register() {
             />
           </Form.Item>
           <Form.Item
-            name="phoneNumber"
+            name="mobilePhone"
             rules={[
               {
                 required: true,
