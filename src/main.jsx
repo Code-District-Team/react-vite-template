@@ -11,5 +11,5 @@ ReactDOM.createRoot(document.getElementById("appMountPoint")).render(
     <Provider store={store}>
       <App />
     </Provider>
-  </StrictMode>
+  </StrictMode>,
 );
