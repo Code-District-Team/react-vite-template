@@ -43,6 +43,46 @@ export default class User {
     };
   }
 
+  static async signUpCall(
+    firstName,
+    lastName,
+    mobilePhone,
+    email,
+    password,
+    remember,
+  ) {
+    const body = {
+      firstName,
+      lastName,
+      mobilePhone,
+      email,
+      password,
+    };
+    // * Request Instance
+    const request = new Request(
+      K.Network.URL.Auth.SignUp,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    const user = await NetworkCall.fetch(request);
+    let encryptedUser = CryptoJS.AES.encrypt(
+      JSON.stringify(user),
+      K.Cookie.Key.EncryptionKey,
+    );
+    console.info(encryptedUser);
+    Cookies.set(K.Cookie.Key.User, encryptedUser, {
+      path: "/",
+      domain: K.Network.URL.Client.BaseHost,
+      expires: remember ? 365 : "",
+    });
+
+    return user;
+  }
+
   static logoutCall(error = "") {
     Cookies.remove(K.Cookie.Key.User, {
       path: "/",
