@@ -6,7 +6,7 @@ const logErrorToMyService = (error, errorInfo) => {
   console.error(
     "--------------------From Error Boundary--------------------",
     error,
-    errorInfo
+    errorInfo,
   );
 };
 

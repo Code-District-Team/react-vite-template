@@ -36,8 +36,8 @@ const router = createBrowserRouter(
           }
         />
       </Route>
-    ))
-  )
+    )),
+  ),
 );
 
 export default function RouterProvider() {
