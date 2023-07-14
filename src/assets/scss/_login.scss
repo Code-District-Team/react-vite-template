@@ -5,6 +5,12 @@
   padding: 3rem 0;
 }
 
+.profile-container {
+  @extend .w-100;
+  margin: auto;
+  padding: 3rem 1rem;
+}
+
 .lc-logo {
   @extend .text-center;
   margin-bottom: 3rem;
@@ -15,6 +21,7 @@
 }
 
 .login-card {
+
   /* @extend .bg-white;
     padding: 24px;
     border-radius: 2px; */

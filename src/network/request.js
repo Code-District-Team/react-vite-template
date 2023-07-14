@@ -9,7 +9,7 @@ export default class Request {
     defaultHeaderType = K.Network.Header.Type.Json,
     headers = {},
     isTenant = K.Network.URL.IsMultiTenant,
-    responseType = K.Network.ResponseType.Json
+    responseType = K.Network.ResponseType.Json,
   ) {
     const token = User.getToken();
     const domainPrefix = User.getTenant();

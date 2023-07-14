@@ -124,7 +124,7 @@ export const snakeToCamel = (str) => {
   return str
     .toLowerCase()
     .replace(/([-_][a-z])/g, (group) =>
-      group.toUpperCase().replace("-", "").replace("_", "")
+      group.toUpperCase().replace("-", "").replace("_", ""),
     );
 };
 
@@ -134,7 +134,7 @@ export const camelCaseKeys = (obj) =>
       ...ccObj,
       [snakeToCamel(field)]: obj[field],
     }),
-    {}
+    {},
   );
 
 export const camelCaseKeysRecursively = (obj) => {
@@ -146,7 +146,7 @@ export const camelCaseKeysRecursively = (obj) => {
         ...result,
         [snakeToCamel(key)]: camelCaseKeysRecursively(obj[key]),
       }),
-      {}
+      {},
     );
   }
   return obj;

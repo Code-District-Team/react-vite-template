@@ -20,14 +20,14 @@ export default class User {
       body,
       K.Network.Header.Type.Json,
       {},
-      false
+      false,
     );
 
     return async (dispatch) => {
       const user = await NetworkCall.fetch(request);
       let encryptedUser = CryptoJS.AES.encrypt(
         JSON.stringify(user),
-        K.Cookie.Key.EncryptionKey
+        K.Cookie.Key.EncryptionKey,
       );
       console.info(encryptedUser);
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
@@ -108,33 +108,31 @@ export default class User {
       body,
       K.Network.Header.Type.Json,
       {},
-      false
+      false,
     );
 
     const user = await NetworkCall.fetch(request);
     return user;
   }
 
-  //Reset password
   static resetPassword(password, token, remember) {
     const body = {
       password,
-      token,
     };
     const request = new Request(
-      K.Network.URL.Auth.ResetPassword,
+      K.Network.URL.Auth.ResetPassword + "/" + token,
       K.Network.Method.POST,
       body,
       K.Network.Header.Type.Json,
       {},
-      false
+      false,
     );
 
     return async () => {
       const user = await NetworkCall.fetch(request, true);
       let encryptedUser = CryptoJS.AES.encrypt(
         JSON.stringify(user),
-        K.Cookie.Key.EncryptionKey
+        K.Cookie.Key.EncryptionKey,
       );
       console.info(encryptedUser);
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
@@ -146,6 +144,47 @@ export default class User {
     };
   }
 
+  // //get Profile data
+  static async profileData() {
+    const request = new Request(
+      K.Network.URL.Users.LoggedInUserDetails,
+      K.Network.Method.GET,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    return await NetworkCall.fetch(request, true);
+  }
+  //Update Profile Data
+  static async updateProfileData(body, remember) {
+    const request = new Request(
+      K.Network.URL.Users.UpdateProfileData,
+      K.Network.Method.PUT,
+      body,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    const user = await NetworkCall.fetch(request, true);
+    const data = User.getUserObjectFromCookies();
+    const cookieData = {
+      apiToken: data?.apiToken,
+      user,
+    };
+    let encryptedUser = CryptoJS.AES.encrypt(
+      JSON.stringify(cookieData),
+      K.Cookie.Key.EncryptionKey,
+    );
+    Cookies.set(K.Cookie.Key.User, encryptedUser, {
+      path: "/",
+      domain: K.Network.URL.Client.BaseHost,
+      expires: remember ? 365 : "",
+    });
+
+    return user;
+  }
   // * Helpers
 
   static getUserObjectFromCookies() {
@@ -164,6 +203,10 @@ export default class User {
 
   static isTokenAvailable() {
     return this.getUserObjectFromCookies().apiToken ? true : false;
+  }
+
+  static getId() {
+    return this.getUserObjectFromCookies().user?.id ?? "";
   }
 
   static getToken() {
