@@ -98,8 +98,8 @@ export default class User {
     };
   }
 
-  //get Profile data
-  static async ProfileData() {
+  // //get Profile data
+  static async profileData() {
     const request = new Request(
       K.Network.URL.Users.LoggedInUserDetails,
       K.Network.Method.GET,
@@ -111,7 +111,7 @@ export default class User {
     return await NetworkCall.fetch(request, true);
   }
   //Update Profile Data
-  static async UpdateProfileData(body, remember) {
+  static async updateProfileData(body, remember) {
     const request = new Request(
       K.Network.URL.Users.UpdateProfileData,
       K.Network.Method.PUT,

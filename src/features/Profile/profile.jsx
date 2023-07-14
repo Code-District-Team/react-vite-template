@@ -1,20 +1,17 @@
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { Button, Card, Form, Input, Space } from "antd";
 import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
 import User from "~/models/user";
 import Logo from "~/assets/images/logo.svg";
 function ProfilePage() {
   const [form] = Form.useForm();
-  useEffect(() => {
-    const data = User.getUserObjectFromCookies();
-    form?.setFieldsValue(data.user);
-  }, []);
+  const data = User.getUserObjectFromCookies();
 
   const onFinish = async (values) => {
     const { email, status, ...rest } = values;
     rest.id = User.getId();
     try {
-      await User.UpdateProfileData(rest);
+      await User.updateProfileData(rest);
     } catch (error) {
       setFieldErrorsFromServer(error, form, values);
     }
@@ -32,10 +29,8 @@ function ProfilePage() {
           onFinish={onFinish}
           form={form}
           name="profile-form"
-          initialValues={{ remember: true }}
+          initialValues={data.user}
         >
-          <Form.Item name={"id"} label={"id"} style={{ display: "none" }} />
-
           <Form.Item name={"firstName"} label={"FirstName  "}>
             <Input />
           </Form.Item>
