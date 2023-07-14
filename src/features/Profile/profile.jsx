@@ -60,16 +60,16 @@ function ProfilePage() {
           <Form.Item label="Last Name:" name="lastName">
             <Input type="text" />
           </Form.Item>
-          <Form.Item label="Email:" name="email">
-            <Input type="text" disabled={true} />
-          </Form.Item>
+
           <Form.Item label="Mobile Phone:" name="mobilePhone">
             <Input type="text" />
           </Form.Item>
           <Form.Item label="Address:" name="address">
             <Input type="text" />
           </Form.Item>
-
+          <Form.Item label="Email:" name="email">
+            <Input type="text" disabled={true} />
+          </Form.Item>
           <Form.Item label="Status:" name="status" className="mb-0">
             <Input type="text" disabled={true} />
           </Form.Item>
@@ -77,7 +77,7 @@ function ProfilePage() {
             <div>
               <Button type="primary" htmlType="submit">
                 Save
-              </Button>{" "}
+              </Button>
             </div>
           </Space>
         </Form>

@@ -69,6 +69,35 @@ export default class User {
     return user;
   }
 
+  static resetPassword(password, token, remember) {
+    const body = {
+      password,
+    };
+    const request = new Request(
+      K.Network.URL.Auth.ResetPassword + "/" + token,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {},
+      false
+    );
+
+    return async () => {
+      const user = await NetworkCall.fetch(request, true);
+      let encryptedUser = CryptoJS.AES.encrypt(
+        JSON.stringify(user),
+        K.Cookie.Key.EncryptionKey
+      );
+      console.info(encryptedUser);
+      Cookies.set(K.Cookie.Key.User, encryptedUser, {
+        path: "/",
+        domain: K.Network.URL.Client.BaseHost,
+        expires: remember ? 365 : "",
+      });
+      return user;
+    };
+  }
+
   //get Profile data
   static async ProfileData() {
     const request = new Request(

@@ -15,6 +15,7 @@ module.exports = {
     "no-debugger": "warn",
     "no-dupe-keys": "error",
     "no-unused-vars": "error",
+    "no-console": "warn",
     "no-duplicate-imports": "error",
     "no-prototype-builtins": "warn",
     "array-callback-return": "error",
