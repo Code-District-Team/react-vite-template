@@ -5,6 +5,13 @@
   padding: 3rem 0;
 }
 
+.login-container-profile {
+  @extend .w-100;
+  max-width: 1000px;
+  margin: auto;
+  padding: 3rem 0;
+}
+
 .lc-logo {
   @extend .text-center;
   margin-bottom: 3rem;
