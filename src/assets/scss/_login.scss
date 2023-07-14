@@ -5,11 +5,10 @@
   padding: 3rem 0;
 }
 
-.login-container-profile {
+.profile-container {
   @extend .w-100;
-  max-width: 1000px;
   margin: auto;
-  padding: 3rem 0;
+  padding: 3rem 1rem;
 }
 
 .lc-logo {
@@ -22,6 +21,7 @@
 }
 
 .login-card {
+
   /* @extend .bg-white;
     padding: 24px;
     border-radius: 2px; */

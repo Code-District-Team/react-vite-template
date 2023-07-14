@@ -1,9 +1,8 @@
-// import { useEffect } from "react";
-import { Button, Card, Form, Input, Space } from "antd";
-import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
+import { Button, Card, Form, Input } from "antd";
 import User from "~/models/user";
-import Logo from "~/assets/images/logo.svg";
-function ProfilePage() {
+import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
+
+export default function ProfilePage() {
   const [form] = Form.useForm();
   const data = User.getUserObjectFromCookies();
 
@@ -18,49 +17,51 @@ function ProfilePage() {
   };
 
   return (
-    <div className="login-container-profile">
-      <div className="lc-logo">
-        <img src={Logo} alt="logo" />
-      </div>
-      <Card>
-        <h1>Profile Page</h1>
-
+    <div className="profile-container">
+      <Card title="User Profile">
         <Form
           onFinish={onFinish}
           form={form}
           name="profile-form"
           initialValues={data.user}
+          layout="horizontal"
+          labelCol={{
+            span: 4,
+          }}
+          wrapperCol={{
+            span: 16,
+          }}
         >
-          <Form.Item name={"firstName"} label={"FirstName  "}>
-            <Input />
+          <Form.Item name="firstName" label="FirstName">
+            <Input size="middle" />
           </Form.Item>
           <Form.Item label="Last Name:" name="lastName">
-            <Input type="text" />
+            <Input size="middle" />
           </Form.Item>
-
           <Form.Item label="Mobile Phone:" name="mobilePhone">
-            <Input type="text" />
+            <Input size="middle" />
           </Form.Item>
           <Form.Item label="Address:" name="address">
-            <Input type="text" />
+            <Input size="middle" />
           </Form.Item>
           <Form.Item label="Email:" name="email">
-            <Input type="text" disabled={true} />
+            <Input size="middle" disabled />
           </Form.Item>
-          <Form.Item label="Status:" name="status" className="mb-0">
-            <Input type="text" disabled={true} />
+          <Form.Item label="Status:" name="status">
+            <Input size="middle" disabled />
           </Form.Item>
-          <Space>
-            <div>
-              <Button type="primary" htmlType="submit">
-                Save
-              </Button>
-            </div>
-          </Space>
+          <Form.Item
+            wrapperCol={{
+              offset: 12,
+              span: 12,
+            }}
+          >
+            <Button type="primary" size="middle" htmlType="submit">
+              Update
+            </Button>
+          </Form.Item>
         </Form>
       </Card>
     </div>
   );
 }
-
-export default ProfilePage;
