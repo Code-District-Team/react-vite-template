@@ -1,35 +1,29 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, Typography } from "antd";
-import { Link } from "react-router-dom";
-// import React from "react";
-import { PatternFormat } from "react-number-format";
-import Logo from "~/assets/images/logo.svg";
-import { useDispatch } from "react-redux";
-import User from "~/models/user";
 import md5 from "md5";
+import { PatternFormat } from "react-number-format";
+import { Link } from "react-router-dom";
+import Logo from "~/assets/images/logo.svg";
+import User from "~/models/user";
 import {
   redirectToUrl,
   setFieldErrorsFromServer,
 } from "~/utilities/generalUtility";
+
 const { Title } = Typography;
 
-function Register() {
+export default function Register() {
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
 
   const onFinish = async (values) => {
-    console.log("form values", values);
     try {
-      await dispatch(
-        User.signUpCall(
-          values.firstName,
-          values.lastName,
-          // `+${values.phoneNumber}`,
-          values.mobilePhone,
-          values.email,
-          md5(values.password),
-          values.remember
-        )
+      await User.signUpCall(
+        values.firstName,
+        values.lastName,
+        values.mobilePhone,
+        values.email,
+        md5(values.password),
+        values.remember,
       );
 
       redirectToUrl("/"); // * Pass domainPrefix as 2nd argumnet in case of multi tenant
@@ -143,10 +137,6 @@ function Register() {
                 whitespace: true,
                 message: "All spaces are not allowed",
               },
-              // {
-              //   pattern: new RegExp(passwordRegex),
-              //   message: passwordMessage,
-              // },
             ]}
           >
             <Input.Password
@@ -178,7 +168,9 @@ function Register() {
                   }
 
                   return Promise.reject(
-                    new Error("The two passwords that you entered do not match")
+                    new Error(
+                      "The two passwords that you entered do not match",
+                    ),
                   );
                 },
               }),
@@ -188,21 +180,13 @@ function Register() {
               placeholder="Confirm Password"
               size="large"
               autoComplete="false"
+              prefix={
+                <LockOutlined className="site-form-item-icon text-primary" />
+              }
             />
           </Form.Item>
-
-          {/* <Form.Item>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-
-            <Link to="/forgot-password" className="float-right" href="">
-              Forgot password
-            </Link>
-          </Form.Item> */}
           <Title level={5} className="text-center">
             {"Have an Account?" + "  "}
-
             <Link to="/login">Login</Link>
           </Title>
           <Form.Item className="mb-0">
@@ -215,5 +199,3 @@ function Register() {
     </div>
   );
 }
-
-export default Register;
