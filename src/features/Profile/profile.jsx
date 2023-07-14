@@ -11,7 +11,6 @@ function ProfilePage() {
   }, []);
 
   const onFinish = async (values) => {
-    // eslint-disable-next-line
     const { email, status, ...rest } = values;
     rest.id = User.getId();
     try {
