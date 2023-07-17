@@ -15,7 +15,7 @@ export default function SetPassword() {
     const token = location.search.substring(7);
     try {
       dispatch(
-        User.resetPassword(md5(values.password), token, values.remember),
+        User.resetPassword(md5(values.password), token, values.remember)
       );
       message.success("Your password has been changed successfully.");
       navigate("/");
