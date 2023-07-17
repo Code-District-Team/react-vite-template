@@ -5,7 +5,6 @@ import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
 export default function ProfilePage() {
   const [form] = Form.useForm();
   const data = User.getUserObjectFromCookies();
-
   const onFinish = async (values) => {
     const { email, status, ...rest } = values;
     rest.id = User.getId();

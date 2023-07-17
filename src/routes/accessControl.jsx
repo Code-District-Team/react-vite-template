@@ -24,8 +24,9 @@ export default function AccessControl({
     )
       return <Navigate to="/" replace />;
     // Check permission
+    const userData = User.getUserObjectFromCookies().user;
     const hasPermission = isPermissionPresent(routePermission, [
-      K.Permissions.Admin,
+      userData?.role?.name,
     ]);
 
     if (hasPermission) {

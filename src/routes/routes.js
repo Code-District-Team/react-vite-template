@@ -67,6 +67,7 @@ const routes = [
     name: "ProfilePage",
     component: ProfilePage,
     layout: LoggedInPageLayout,
+    permission: [K.Permissions.User],
   },
   {
     path: "/projects",

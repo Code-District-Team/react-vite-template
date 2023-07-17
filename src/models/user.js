@@ -20,16 +20,17 @@ export default class User {
       body,
       K.Network.Header.Type.Json,
       {},
-      false,
+      false
     );
 
     return async (dispatch) => {
       const user = await NetworkCall.fetch(request);
+      console.log("User", user);
       let encryptedUser = CryptoJS.AES.encrypt(
         JSON.stringify(user),
-        K.Cookie.Key.EncryptionKey,
+        K.Cookie.Key.EncryptionKey
       );
-      console.info(encryptedUser);
+
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
         path: "/",
         domain: K.Network.URL.Client.BaseHost,
@@ -49,7 +50,7 @@ export default class User {
     mobilePhone,
     email,
     password,
-    remember,
+    remember
   ) {
     const body = {
       firstName,
@@ -65,13 +66,13 @@ export default class User {
       body,
       K.Network.Header.Type.Json,
       {},
-      false,
+      false
     );
 
     const user = await NetworkCall.fetch(request);
     let encryptedUser = CryptoJS.AES.encrypt(
       JSON.stringify(user),
-      K.Cookie.Key.EncryptionKey,
+      K.Cookie.Key.EncryptionKey
     );
     console.info(encryptedUser);
     Cookies.set(K.Cookie.Key.User, encryptedUser, {
@@ -102,7 +103,7 @@ export default class User {
       body,
       K.Network.Header.Type.Json,
       {},
-      false,
+      false
     );
 
     const user = await NetworkCall.fetch(request);
@@ -119,14 +120,14 @@ export default class User {
       body,
       K.Network.Header.Type.Json,
       {},
-      false,
+      false
     );
 
     return async () => {
       const user = await NetworkCall.fetch(request, true);
       let encryptedUser = CryptoJS.AES.encrypt(
         JSON.stringify(user),
-        K.Cookie.Key.EncryptionKey,
+        K.Cookie.Key.EncryptionKey
       );
       console.info(encryptedUser);
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
@@ -145,7 +146,7 @@ export default class User {
       K.Network.Method.GET,
       K.Network.Header.Type.Json,
       {},
-      false,
+      false
     );
 
     return await NetworkCall.fetch(request, true);
@@ -158,7 +159,7 @@ export default class User {
       body,
       K.Network.Header.Type.Json,
       {},
-      false,
+      false
     );
 
     const user = await NetworkCall.fetch(request, true);
@@ -169,7 +170,7 @@ export default class User {
     };
     let encryptedUser = CryptoJS.AES.encrypt(
       JSON.stringify(cookieData),
-      K.Cookie.Key.EncryptionKey,
+      K.Cookie.Key.EncryptionKey
     );
     Cookies.set(K.Cookie.Key.User, encryptedUser, {
       path: "/",

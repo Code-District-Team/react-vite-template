@@ -39,18 +39,16 @@ export const isDecimalRegex = () => {
 };
 
 export const isPermissionPresent = (permission, userRoles) => {
-  let hasPermission = true;
-  if (permission && permission.length > 0) {
-    let permissionFound = false;
-    for (const obj of userRoles?.permissions ?? []) {
-      if (obj.code === K.Permissions.Admin || permission === obj.code) {
-        permissionFound = true;
-        break;
-      }
-    }
-    hasPermission = permissionFound;
+  const permissionMap = {};
+  for (const obj of userRoles ?? []) {
+    permissionMap[obj] = true;
   }
-  return hasPermission;
+  if (permission && permission.length > 0) {
+    return (
+      permissionMap[K.Permissions.Admin] || permissionMap[permission] || false
+    );
+  }
+  return true;
 };
 
 export const redirectIfInvalidTenant = () => {
@@ -124,7 +122,7 @@ export const snakeToCamel = (str) => {
   return str
     .toLowerCase()
     .replace(/([-_][a-z])/g, (group) =>
-      group.toUpperCase().replace("-", "").replace("_", ""),
+      group.toUpperCase().replace("-", "").replace("_", "")
     );
 };
 
@@ -134,7 +132,7 @@ export const camelCaseKeys = (obj) =>
       ...ccObj,
       [snakeToCamel(field)]: obj[field],
     }),
-    {},
+    {}
   );
 
 export const camelCaseKeysRecursively = (obj) => {
@@ -146,7 +144,7 @@ export const camelCaseKeysRecursively = (obj) => {
         ...result,
         [snakeToCamel(key)]: camelCaseKeysRecursively(obj[key]),
       }),
-      {},
+      {}
     );
   }
   return obj;
