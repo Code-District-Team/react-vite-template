@@ -1,5 +1,6 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Card, Checkbox, Form, Input, message } from "antd";
+import { Button, Card, Checkbox, Form, Input, message, Typography } from "antd";
+
 import md5 from "md5";
 import qs from "qs";
 import { useEffect } from "react";
@@ -30,7 +31,7 @@ export default function Login() {
   const onFinish = async (values) => {
     try {
       await dispatch(
-        User.loginCall(values.email, md5(values.password), values.remember)
+        User.loginCall(values.email, md5(values.password), values.remember),
       );
 
       redirectToUrl("/"); // * Pass domainPrefix as 2nd argumnet in case of multi tenant
@@ -38,7 +39,7 @@ export default function Login() {
       setFieldErrorsFromServer(error, form, values);
     }
   };
-
+  const { Title } = Typography;
   return (
     <div className="login-container">
       <div className="lc-logo">
@@ -101,6 +102,10 @@ export default function Login() {
               Forgot password
             </Link>
           </Form.Item>
+          <Title level={5} className="text-center">
+            {"Don't Have an Account?" + "  "}
+            <Link to="/register">Sign Up</Link>
+          </Title>
           <Form.Item className="mb-0">
             <Button block size="large" type="primary" htmlType="submit">
               Log In

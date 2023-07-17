@@ -1,3 +1,4 @@
+import ProfilePage from "~/features/Profile/profile";
 import ChangePassword from "~/features/changepassword/changePassword";
 import { Counter } from "~/features/counter/Counter";
 import Dashboard from "~/features/dashboard/dashboard";
@@ -61,7 +62,12 @@ const routes = [
     component: SetPassword,
     layout: GuestPageLayout,
   },
-
+  {
+    path: "/profile",
+    name: "ProfilePage",
+    component: ProfilePage,
+    layout: LoggedInPageLayout,
+  },
   {
     path: "/projects",
     name: "Projects",
