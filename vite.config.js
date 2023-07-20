@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
   return {
     define: {
       __APP_ENV__: env.APP_ENV,
+      global: {},
     },
     plugins: [react(), eslint()],
     resolve: {
