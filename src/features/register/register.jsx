@@ -23,7 +23,7 @@ export default function Register() {
         values.mobilePhone,
         values.email,
         md5(values.password),
-        values.remember
+        values.remember,
       );
 
       redirectToUrl("/"); // * Pass domainPrefix as 2nd argumnet in case of multi tenant
@@ -168,7 +168,9 @@ export default function Register() {
                   }
 
                   return Promise.reject(
-                    new Error("The two passwords that you entered do not match")
+                    new Error(
+                      "The two passwords that you entered do not match",
+                    ),
                   );
                 },
               }),

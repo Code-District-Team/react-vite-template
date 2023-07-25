@@ -12,7 +12,7 @@ const ChangePassword = () => {
       await User.changePassword(
         md5(values.oldPassword),
         md5(values.password),
-        values.remember
+        values.remember,
       );
       message.success("Password changed successfully!");
     } catch (error) {
