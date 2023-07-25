@@ -51,7 +51,6 @@ const TableList = () => {
   const fetchUserDetails = async (values) => {
     try {
       const response = await User.userData(values);
-      console.log("response", response);
       setUserData(response.data);
     } catch (error) {
       setFieldErrorsFromServer(error, values);
@@ -71,8 +70,7 @@ const TableList = () => {
       const body = {
         id,
       };
-      const response = await User.deleteUser(body);
-      console.log("delete", response);
+      await User.deleteUser(body);
     } catch (error) {
       setFieldErrorsFromServer(error);
     }
