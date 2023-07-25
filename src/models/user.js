@@ -151,6 +151,32 @@ export default class User {
 
     return await NetworkCall.fetch(request, true);
   }
+
+  // //get User Details
+  static async userData() {
+    const request = new Request(
+      K.Network.URL.Users.GetUser,
+      K.Network.Method.GET,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    return NetworkCall.fetch(request, true);
+  }
+
+  static async deleteUser(body) {
+    const request = new Request(
+      K.Network.URL.Users.DeleteUser,
+      body,
+      K.Network.Method.DELETE,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    return NetworkCall.fetch(request, true);
+  }
   //Update Profile Data
   static async updateProfileData(body, remember) {
     const request = new Request(
@@ -219,5 +245,11 @@ export default class User {
 
   static getTenant() {
     return this.getUserObjectFromCookies().tenant?.domainPrefix ?? "";
+  }
+  static isAdmin() {
+    console.log("Cookie", this.getUserObjectFromCookies());
+    return this.getUserObjectFromCookies()?.user?.role?.name === "ADMIN"
+      ? true
+      : false;
   }
 }
