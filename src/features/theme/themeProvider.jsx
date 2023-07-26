@@ -6,7 +6,7 @@ export default function ThemeProvider({ children }) {
       theme={{
         token: {
           colorPrimary: "#883DCF",
-          fontFamily:"Public Sans, sans-serif"
+          fontFamily: "Public Sans, sans-serif",
           // borderRadius: "12px",
         },
         components: {

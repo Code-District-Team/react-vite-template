@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input,Divider  } from "antd";
+import { Button, Card, Form, Input, Divider } from "antd";
 import md5 from "md5";
 // import { PatternFormat } from "react-number-format";
 import { Link } from "react-router-dom";
@@ -14,7 +14,7 @@ import {
 
 export default function SetPassword() {
   const [form] = Form.useForm();
- 
+
   const onFinish = async (values) => {
     try {
       await User.signUpCall(
@@ -34,21 +34,20 @@ export default function SetPassword() {
   return (
     <div className="login-container">
       <Card bordered={false} className="login-card">
-      <div className="site-logo">
-        <img src={Logo} alt="logo" />
-      </div>
+        <div className="site-logo">
+          <img src={Logo} alt="logo" />
+        </div>
         <Form
           form={form}
           name="login-form"
           initialValues={{
-          remember: true,
+            remember: true,
           }}
           onFinish={onFinish}
           layout="vertical"
         >
-         
           <Form.Item
-          className="inputField"
+            className="inputField"
             name="password"
             hasFeedback
             rules={[
@@ -69,7 +68,7 @@ export default function SetPassword() {
             />
           </Form.Item>
           <Form.Item
-          className="inputField"
+            className="inputField"
             name="newpassword"
             hasFeedback
             rules={[
@@ -90,20 +89,23 @@ export default function SetPassword() {
             />
           </Form.Item>
           <Form.Item className="mb-0">
-            <Button  className="authBtn proceedBtn" block size="large" type="primary" htmlType="submit">
-            Proceed to sign in
+            <Button
+              className="authBtn proceedBtn"
+              block
+              size="large"
+              type="primary"
+              htmlType="submit"
+            >
+              Proceed to sign in
             </Button>
           </Form.Item>
-         
         </Form>
         <Divider />
         <div className="conditions">
           <Link>Terms & Conditions</Link>
           <Link>Privacy Policy</Link>
-           
         </div>
       </Card>
     </div>
   );
 }
- 
