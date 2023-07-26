@@ -1,9 +1,8 @@
-import { Button, Card, Form, Input,Divider,Image } from "antd";
+import { Button, Card, Form, Input,Divider} from "antd";
 import md5 from "md5";
 // import { PatternFormat } from "react-number-format";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/images/logo.svg";
-import googleImg from "../../assets/images/google-icon.svg"
 import User from "~/models/user";
 
 import {
@@ -13,9 +12,8 @@ import {
 
 // const { Title } = Typography;
 
-export default function Register() {
+export default function RequestCode() {
   const [form] = Form.useForm();
-
   const onFinish = async (values) => {
     try {
       await User.signUpCall(
@@ -47,12 +45,6 @@ export default function Register() {
           onFinish={onFinish}
           layout="vertical"
         >
-          <Form.Item>
-          <Button className="google-btn" block size="large">
-            <Image className="googleImg" src={googleImg}/>
-            Continue with Google</Button>
-          </Form.Item>
-          <span className="auth-text" > or sign up with email</span>
           <Form.Item
           className="inputField"
             name="email"
@@ -70,38 +62,15 @@ export default function Register() {
               size="large"
             ></Input>
           </Form.Item>
-
-          <Form.Item
-          className="inputField"
-            name="password"
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: "Please input your password!",
-              },
-              {
-                whitespace: true,
-                message: "All spaces are not allowed",
-              },
-            ]}
-          >
-            <Input.Password
-              placeholder="Password"
-              size="large"
-              autoComplete="false"
-            />
-          </Form.Item>
           <Form.Item className="mb-0">
             <Button  className="authBtn" block size="large" type="primary" htmlType="submit">
-              Sign Up
+              Request Code
             </Button>
           </Form.Item>
          
             <span className="text-center authentications mb-0">
-            Already have an account?
               <Link to="/login" className="auth-clr" >
-                Sign in
+             Back to sign in
               </Link>
             </span>
         </Form>
@@ -109,8 +78,10 @@ export default function Register() {
         <div className="conditions">
           <Link>Terms & Conditions</Link>
           <Link>Privacy Policy</Link>
+           
         </div>
       </Card>
     </div>
   );
 }
+ 

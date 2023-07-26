@@ -1,31 +1,30 @@
-body {
-  font-family: "sf_pro_displayregular";
-}
 
-img {
-  max-width: 100%;
-}
+// img {
+//   max-width: 100%;
+// }
 
 .text-primary {
   color: $text-primary;
 }
-
 .font-weight {
   &-normal {
-    font-family: "sf_pro_displayregular";
+    // font-family: 'Public Sans', sans-serif;
+    font-weight: 400;
   }
 
   &-medium {
-    font-family: "sf_pro_displaymedium";
+    // font-family: 'Public Sans', sans-serif;
+    font-weight: 500;
   }
 
   &-semibold {
-    font-family: "sf_pro_displaysemibold";
+    // font-family: 'Public Sans', sans-serif;
+    font-weight: 600;
   }
 
-  &-bold {
-    font-family: "sf_pro_displaybold";
-  }
+  // &-bold {
+  //   font-family: "sf_pro_displaybold";
+  // }
 }
 
 .ant-layout {

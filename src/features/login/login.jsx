@@ -1,37 +1,31 @@
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Card, Checkbox, Form, Input, message, Typography } from "antd";
-
+import { Button, Card, Form, Input,Divider ,Checkbox } from "antd";
 import md5 from "md5";
-import qs from "qs";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
-import Logo from "~/assets/images/logo.svg";
+// import { PatternFormat } from "react-number-format";
+import { Link } from "react-router-dom";
+import Logo from "../../assets/images/logo.svg";
 import User from "~/models/user";
+
 import {
-  deleteQueryParam,
   redirectToUrl,
   setFieldErrorsFromServer,
 } from "~/utilities/generalUtility";
 
-export default function Login() {
-  const dispatch = useDispatch();
-  const location = useLocation();
+// const { Title } = Typography;
+
+export default function Register() {
   const [form] = Form.useForm();
-  const paramJson = qs.parse(location.search, { ignoreQueryPrefix: true });
-
-  useEffect(() => {
-    console.log("paramJson: ", paramJson);
-    if (paramJson.err) {
-      message.error(paramJson.err);
-      deleteQueryParam("err");
-    }
-  }, []);
-
+  const onChange = (e) => {
+    console.log(`checked = ${e.target.checked}`);
+  };
   const onFinish = async (values) => {
     try {
-      await dispatch(
-        User.loginCall(values.email, md5(values.password), values.remember),
+      await User.signUpCall(
+        // values.firstName,
+        // values.lastName,
+        // values.mobilePhone,
+        values.email,
+        md5(values.password),
+        // values.remember,
       );
 
       redirectToUrl("/"); // * Pass domainPrefix as 2nd argumnet in case of multi tenant
@@ -39,80 +33,83 @@ export default function Login() {
       setFieldErrorsFromServer(error, form, values);
     }
   };
-  const { Title } = Typography;
   return (
     <div className="login-container">
-      <div className="lc-logo">
+      <Card bordered={false} className="login-card">
+      <div className="site-logo">
         <img src={Logo} alt="logo" />
       </div>
-      <Card bordered={false} className="login-card">
-        <h4>Login to your account</h4>
         <Form
           form={form}
           name="login-form"
           initialValues={{
-            remember: true,
+          remember: true,
           }}
           onFinish={onFinish}
           layout="vertical"
         >
           <Form.Item
+          className="inputField"
             name="email"
-            rules={[
+            hasFeedback
+            rules={[ 
               {
                 required: true,
-                message: "Please input your Email!",
+                message: "Please input your email",
               },
             ]}
           >
             <Input
               type="email"
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
               placeholder="Email"
               size="large"
-            />
+            ></Input>
           </Form.Item>
 
           <Form.Item
+          className="inputField"
             name="password"
+            hasFeedback
             rules={[
               {
                 required: true,
                 message: "Please input your password!",
               },
+              {
+                whitespace: true,
+                message: "All spaces are not allowed",
+              },
             ]}
           >
             <Input.Password
-              prefix={
-                <LockOutlined className="site-form-item-icon text-primary" />
-              }
               placeholder="Password"
               size="large"
               autoComplete="false"
             />
           </Form.Item>
-          <Form.Item>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-
-            <Link to="/forgot-password" className="float-right" href="">
-              Forgot password
-            </Link>
+          <Form.Item   className="inputField text-left">
+          <Checkbox onChange={onChange}>Remember me next time</Checkbox>
           </Form.Item>
-          <Title level={5} className="text-center">
-            {"Don't Have an Account?" + "  "}
-            <Link to="/register">Sign Up</Link>
-          </Title>
           <Form.Item className="mb-0">
-            <Button block size="large" type="primary" htmlType="submit">
-              Log In
+            <Button  className="authBtn" block size="large" type="primary" htmlType="submit">
+              Sign in
             </Button>
           </Form.Item>
+         
+            <span className="text-center authentications mb-0">
+              <Link to="/request-code " className="auth-clr" >
+             Forgot Password
+              </Link>
+            </span>
         </Form>
+        <Divider />
+        <div className="conditions">
+          <Link>Terms & Conditions</Link>
+          <Link>Privacy Policy</Link>
+           
+        </div>
       </Card>
     </div>
   );
 }
+ 
