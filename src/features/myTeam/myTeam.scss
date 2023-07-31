@@ -1,0 +1,71 @@
+.employees-card{
+    box-shadow: 0px 4px 30px 0px rgba(46, 45, 116, 0.05);
+    border: none;
+    height: 100%;
+    .ant-card-body{
+    padding:1.25rem ;
+    }
+    .employees-detail{
+        display: flex;
+        justify-content: space-between;
+        // align-items: center;
+        gap: 10px;
+        p{
+            // color: #777980;
+            font-size: 14px;
+            @extend .font-weight-medium ;
+        }
+    .icon-bg{
+        width: 100%;
+        max-width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+    .org-clr{
+        background-color: #FFF0EA;
+        i{
+            color: #F86624;
+        }
+    }
+    .green-clr{
+      background-color: #E9FAF7;
+      i{
+       color: #22CAAD;
+      }
+    }
+    .red-clr{
+      background-color: #FEECEE;
+        i{
+        color: #EB3D4D;
+        }
+    }
+    .gray-clr{
+        background-color: #F0F1F3;
+        i{
+            color: #667085;
+        }
+    }
+   
+    }
+    
+    .detail-numbers{
+        color: #1D1F2C;
+        font-size: 1.5rem;
+        @extend .font-weight-semibold ;
+    }
+    .time-percentage{
+        display: flex;
+        gap: 4px;
+        .up-outlined{
+            color: #1A9882;
+            @extend .font-weight-semibold;
+        }
+        p{
+            color: #858D9D;
+            @extend .font-weight-medium;
+        }
+    }
+}

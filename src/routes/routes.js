@@ -13,6 +13,7 @@ import Unauthorized from "~/features/unauthorized/unauthorized";
 import Users from "~/features/users/users";
 import GuestPageLayout from "~/layout/guestPageLayout";
 import LoggedInPageLayout from "~/layout/loggedInPageLayout";
+import MyTeam from "~/features/myTeam/myTeam";
 import K from "~/utilities/constants";
 
 /* 
@@ -97,6 +98,12 @@ const routes = [
     name: "Dashboard",
     component: Dashboard,
     // authenticated: true,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/my-team",
+    name: "MyTeam",
+    component: MyTeam,
     layout: LoggedInPageLayout,
   },
   {
