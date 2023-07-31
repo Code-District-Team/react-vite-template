@@ -1,45 +1,50 @@
-
-import { Col, Row, Typography, Card, Button,Avatar ,Divider,List} from "antd";
-import { PlusOutlined,CaretUpOutlined ,MoreOutlined } from "@ant-design/icons";
+import {
+  Col,
+  Row,
+  Typography,
+  Card,
+  Button,
+  Avatar,
+  Divider,
+  List,
+} from "antd";
+import { PlusOutlined, CaretUpOutlined, MoreOutlined } from "@ant-design/icons";
 import ProfileAvatar from "../../assets/images/profile.svg";
-const { Title ,Paragraph} = Typography;
+const { Title, Paragraph } = Typography;
 export default function MyTeam() {
-    const data = [
-        { 
-            title:"Staus",
-            detail:"Full time"
-
-        },
-        {
-            title:"Shift",
-            detail:"Morning",
-        },
-        {
-            title:"Email",
-            detail:"karim@codedistrict.com"
-        },
-        {
-            title:"Lead",
-            detail:"Haseeb",
-        }
-       
-      ];
+  const data = [
+    {
+      title: "Staus",
+      detail: "Full time",
+    },
+    {
+      title: "Shift",
+      detail: "Morning",
+    },
+    {
+      title: "Email",
+      detail: "karim@codedistrict.com",
+    },
+    {
+      title: "Lead",
+      detail: "Haseeb",
+    },
+  ];
   return (
     <div>
-       <div className="team-header mb-4">
+      <div className="team-header mb-4">
         <Title level={5} className="mb-0">
-        My Team
+          My Team
         </Title>
         <div className="header-text">
-          <p className="mb-0">
-           My Team
-          </p>
-          <Button type='primary'
+          <p className="mb-0">My Team</p>
+          <Button
+            type="primary"
             size="large"
             icon={<PlusOutlined />}
             className="select-date"
           >
-           Team Member
+            Team Member
           </Button>
         </div>
       </div>
@@ -56,8 +61,8 @@ export default function MyTeam() {
               1,920
             </Title>
             <div className="time-percentage">
-                <p className="up-outlined">10% {<CaretUpOutlined />}</p>
-                <p>+$150 today</p>
+              <p className="up-outlined">10% {<CaretUpOutlined />}</p>
+              <p>+$150 today</p>
             </div>
           </Card>
         </Col>
@@ -73,8 +78,8 @@ export default function MyTeam() {
               1,920
             </Title>
             <div className="time-percentage">
-                <p className="up-outlined">10% {<CaretUpOutlined />}</p>
-                <p>+$150 today</p>
+              <p className="up-outlined">10% {<CaretUpOutlined />}</p>
+              <p>+$150 today</p>
             </div>
           </Card>
         </Col>
@@ -90,8 +95,8 @@ export default function MyTeam() {
               1,920
             </Title>
             <div className="time-percentage">
-                <p className="up-outlined">10% {<CaretUpOutlined />}</p>
-                <p>+$150 today</p>
+              <p className="up-outlined">10% {<CaretUpOutlined />}</p>
+              <p>+$150 today</p>
             </div>
           </Card>
         </Col>
@@ -107,118 +112,118 @@ export default function MyTeam() {
               1,920
             </Title>
             <div className="time-percentage">
-                <p className="up-outlined">10% {<CaretUpOutlined />}</p>
-                <p>+$150 today</p>
+              <p className="up-outlined">10% {<CaretUpOutlined />}</p>
+              <p>+$150 today</p>
             </div>
           </Card>
         </Col>
       </Row>
-      <Row gutter={[24,24]}>
+      <Row gutter={[24, 24]}>
         <Col xs={24} sm={12} lg={6}>
-        <Card className="profile-card text-center">
-        <MoreOutlined />
-          <div className="position-relative profile-upload">
-            <Avatar
-              className="avatar-img text-center"
-              size={80}
-              src={ProfileAvatar}
-            />
-          </div>
-          <Title level={4} className="text-center">
-            Chris Daniel
-          </Title>
-          <Paragraph>Designer</Paragraph>
-        <Divider />
-        <List
-            dataSource={data}
-            renderItem={(item) => (
+          <Card className="profile-card text-center">
+            <MoreOutlined />
+            <div className="position-relative profile-upload">
+              <Avatar
+                className="avatar-img text-center"
+                size={80}
+                src={ProfileAvatar}
+              />
+            </div>
+            <Title level={4} className="text-center">
+              Chris Daniel
+            </Title>
+            <Paragraph>Designer</Paragraph>
+            <Divider />
+            <List
+              dataSource={data}
+              renderItem={(item) => (
                 <List.Item>
-                 <Title level={5}> {item.title}</Title>
-                 <Paragraph>{item.detail}</Paragraph>
+                  <Title level={5}> {item.title}</Title>
+                  <Paragraph>{item.detail}</Paragraph>
                 </List.Item>
-            )}
+              )}
             />
-        </Card>
+          </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-        <Card className="profile-card text-center">
-        <MoreOutlined />
-          <div className="position-relative profile-upload">
-            <Avatar
-              className="avatar-img text-center"
-              size={80}
-              src={ProfileAvatar}
-            />
-          </div>
-          <Title level={4} className="text-center">
-            Chris Daniel
-          </Title>
-          <Paragraph>Designer</Paragraph>
-        <Divider />
-        <List
-            dataSource={data}
-            renderItem={(item) => (
+          <Card className="profile-card text-center">
+            <MoreOutlined />
+            <div className="position-relative profile-upload">
+              <Avatar
+                className="avatar-img text-center"
+                size={80}
+                src={ProfileAvatar}
+              />
+            </div>
+            <Title level={4} className="text-center">
+              Chris Daniel
+            </Title>
+            <Paragraph>Designer</Paragraph>
+            <Divider />
+            <List
+              dataSource={data}
+              renderItem={(item) => (
                 <List.Item>
-                 <Title level={5}> {item.title}</Title>
-                 <Paragraph>{item.detail}</Paragraph>
+                  <Title level={5}> {item.title}</Title>
+                  <Paragraph>{item.detail}</Paragraph>
                 </List.Item>
-            )}
+              )}
             />
-        </Card>
+          </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-        <Card className="profile-card text-center">
-        <MoreOutlined />
-          <div className="position-relative profile-upload">
-            <Avatar
-              className="avatar-img text-center"
-              size={80}
-              src={ProfileAvatar}
-            />
-          </div>
-          <Title level={4} className="text-center">
-            Chris Daniel
-          </Title>
-          <Paragraph>Designer</Paragraph>
-        <Divider />
-        <List
-            dataSource={data}
-            renderItem={(item) => (
+          <Card className="profile-card text-center">
+            <MoreOutlined />
+            <div className="position-relative profile-upload">
+              <Avatar
+                className="avatar-img text-center"
+                size={80}
+                src={ProfileAvatar}
+              />
+            </div>
+            <Title level={4} className="text-center">
+              Chris Daniel
+            </Title>
+            <Paragraph>Designer</Paragraph>
+            <Divider />
+            <List
+              dataSource={data}
+              renderItem={(item) => (
                 <List.Item>
-                 <Title level={5}> {item.title}</Title>
-                 <Paragraph>{item.detail}</Paragraph>
+                  <Title level={5}> {item.title}</Title>
+                  <Paragraph>{item.detail}</Paragraph>
                 </List.Item>
-            )}
+              )}
             />
-        </Card>
+          </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-        <Card className="profile-card text-center">
-        <MoreOutlined />
-          <div className="position-relative profile-upload">
-            <Avatar
-              className="avatar-img text-center"
-              size={80}
-              src={ProfileAvatar}
-            />
-          </div>
-          <Title level={4} className="text-center">
-            Chris Daniel
-          </Title>
-          <Paragraph>Designer</Paragraph>
-        <Divider />
-        <List
-            dataSource={data}
-            renderItem={(item) => (
+          <Card className="profile-card text-center">
+            <MoreOutlined />
+            <div className="position-relative profile-upload">
+              <Avatar
+                className="avatar-img text-center"
+                size={80}
+                src={ProfileAvatar}
+              />
+            </div>
+            <Title level={4} className="text-center">
+              Chris Daniel
+            </Title>
+            <Paragraph>Designer</Paragraph>
+            <Divider />
+            <List
+              dataSource={data}
+              renderItem={(item) => (
                 <List.Item>
-                 <Title level={5}> {item.title}</Title>
-                 <Paragraph>{item.detail}</Paragraph>
+                  <Title level={5}> {item.title}</Title>
+                  <Paragraph>{item.detail}</Paragraph>
                 </List.Item>
-            )}
+              )}
             />
-        </Card>
+          </Card>
         </Col>
       </Row>
     </div>
-  )
+  );
 }
