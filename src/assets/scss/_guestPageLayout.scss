@@ -1,0 +1,89 @@
+.guest-layout {
+  .ant-layout-content{
+    margin: 20px;
+}
+}
+.login-container {
+    text-align: center;
+    width: 100%;
+   
+  .site-logo {
+    margin-bottom: 3rem;
+  }
+  .login-card {
+    max-width: 382px;
+    margin: auto;
+    border-radius: 8px;
+    .ant-card-body{
+      padding: 3rem 2.125rem  13px 2.125rem;
+    }
+    .ant-btn{
+      font-weight:500;
+    }
+    .proceedBtn{
+      margin-bottom: 2rem;
+    }
+    .authBtn{
+        background-color: #883DCF;
+    }
+  .ant-input{
+    font-size: 14px;
+  }
+  .google-btn{
+    display: flex;
+    justify-content: center;
+    border-color: #D6DDEB;
+   span{
+    color: #515B6F;
+   }
+    .ant-image{
+     padding-right: 10px;
+    }
+   
+    .googleImg{
+      width: 20px;
+    }
+  }
+  .inputField{
+    margin-bottom: 1rem;
+    .ant-checkbox-wrapper{
+      color: #515B6F;
+    }
+    .ant-checkbox-inner{
+      border-color:#D6DDEB ;
+    }
+  }
+  .ant-input-affix-wrapper{
+    border-color: #D6DDEB;
+  }
+  .auth-text{
+    margin-bottom: 24px;
+    display:block;
+    color: #515B6F;
+    text-decoration-line: underline
+  }
+  .authentications{
+    margin: 24px 0;
+    font-size: 12px;
+    display:block;
+    color:#515B6F;
+  }
+  .ant-divider{
+    margin: 3rem 0 1rem 0;
+  }
+  .auth-clr{
+    color: #883DCF;
+    padding-left: 5px;
+    text-decoration: underline;
+  }
+
+  .conditions{
+    display: flex;
+    justify-content: space-between;
+    a{
+      color:#515B6F;
+      font-size: 12px;
+    }
+  }
+}
+}

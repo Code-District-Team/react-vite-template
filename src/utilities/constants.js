@@ -31,6 +31,7 @@ const K = {
         GetUser: "/user/get-all",
         LoggedInUserDetails: "/user/me",
         UpdateProfileData: "/user/update-profile",
+        DeleteUser: "user/delete-user",
       },
     },
     Method: {

@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input, Divider, Checkbox } from "antd";
+import { Button, Card, Form, Input, Divider } from "antd";
 import md5 from "md5";
 // import { PatternFormat } from "react-number-format";
 import { Link } from "react-router-dom";
@@ -12,11 +12,8 @@ import {
 
 // const { Title } = Typography;
 
-export default function Register() {
+export default function RequestCode() {
   const [form] = Form.useForm();
-  const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`);
-  };
   const onFinish = async (values) => {
     try {
       await User.signUpCall(
@@ -61,31 +58,6 @@ export default function Register() {
           >
             <Input type="email" placeholder="Email" size="large"></Input>
           </Form.Item>
-
-          <Form.Item
-            className="inputField"
-            name="password"
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: "Please input your password!",
-              },
-              {
-                whitespace: true,
-                message: "All spaces are not allowed",
-              },
-            ]}
-          >
-            <Input.Password
-              placeholder="Password"
-              size="large"
-              autoComplete="false"
-            />
-          </Form.Item>
-          <Form.Item className="inputField text-left">
-            <Checkbox onChange={onChange}>Remember me next time</Checkbox>
-          </Form.Item>
           <Form.Item className="mb-0">
             <Button
               className="authBtn"
@@ -94,13 +66,13 @@ export default function Register() {
               type="primary"
               htmlType="submit"
             >
-              Sign in
+              Request Code
             </Button>
           </Form.Item>
 
           <span className="text-center authentications mb-0">
-            <Link to="/request-code " className="auth-clr">
-              Forgot Password
+            <Link to="/login" className="auth-clr">
+              Back to sign in
             </Link>
           </span>
         </Form>
