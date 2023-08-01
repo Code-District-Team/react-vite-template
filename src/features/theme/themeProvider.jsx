@@ -5,13 +5,12 @@ export default function ThemeProvider({ children }) {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#883DCF",
-          fontFamily: "Public Sans, sans-serif",
+          colorPrimary: "#00b96b",
           // borderRadius: "12px",
         },
         components: {
           Layout: {
-            colorBgBody: "#F9F9FC",
+            colorBgBody: "#E5E5E5",
             // colorBgHeader: "#7dbcea"
           },
         },

@@ -3,7 +3,6 @@ import ChangePassword from "~/features/changepassword/changePassword";
 import { Counter } from "~/features/counter/Counter";
 import Dashboard from "~/features/dashboard/dashboard";
 import ForgotPassword from "~/features/forgotPassword/forgotPassword";
-import RequestCode from "~/features/requestCode/requestCode";
 import Login from "~/features/login/login";
 import NotFound from "~/features/notFound/notFound";
 import Projects from "~/features/projects/projects";
@@ -13,7 +12,6 @@ import Unauthorized from "~/features/unauthorized/unauthorized";
 import Users from "~/features/users/users";
 import GuestPageLayout from "~/layout/guestPageLayout";
 import LoggedInPageLayout from "~/layout/loggedInPageLayout";
-import MyTeam from "~/features/myTeam/myTeam";
 import K from "~/utilities/constants";
 
 /* 
@@ -59,12 +57,6 @@ const routes = [
     layout: GuestPageLayout,
   },
   {
-    path: "/request-code",
-    name: "RequestCode",
-    component: RequestCode,
-    layout: GuestPageLayout,
-  },
-  {
     path: "/set-password",
     name: "SetPassword",
     component: SetPassword,
@@ -97,13 +89,7 @@ const routes = [
     path: "/",
     name: "Dashboard",
     component: Dashboard,
-    // authenticated: true,
-    layout: LoggedInPageLayout,
-  },
-  {
-    path: "/my-team",
-    name: "MyTeam",
-    component: MyTeam,
+    authenticated: true,
     layout: LoggedInPageLayout,
   },
   {

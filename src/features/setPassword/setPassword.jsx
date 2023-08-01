@@ -1,45 +1,38 @@
-import { Button, Card, Form, Input, Divider } from "antd";
+import { LockOutlined } from "@ant-design/icons";
+import { Button, Card, Checkbox, Form, Input, message } from "antd";
 import md5 from "md5";
-// import { PatternFormat } from "react-number-format";
-import { Link } from "react-router-dom";
-import Logo from "../../assets/images/logo.svg";
+import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import Logo from "~/assets/images/logo.svg";
 import User from "~/models/user";
 
-import {
-  redirectToUrl,
-  setFieldErrorsFromServer,
-} from "~/utilities/generalUtility";
-
-// const { Title } = Typography;
-
 export default function SetPassword() {
-  const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const onFinish = async (values) => {
+    const token = location.search.substring(7);
     try {
-      await User.signUpCall(
-        // values.firstName,
-        // values.lastName,
-        // values.mobilePhone,
-        values.email,
-        md5(values.password),
-        // values.remember,
+      dispatch(
+        User.resetPassword(md5(values.password), token, values.remember),
       );
-
-      redirectToUrl("/"); // * Pass domainPrefix as 2nd argumnet in case of multi tenant
+      message.success("Your password has been changed successfully.");
+      navigate("/");
     } catch (error) {
-      setFieldErrorsFromServer(error, form, values);
+      console.error(error);
     }
   };
+
   return (
     <div className="login-container">
+      <div className="lc-logo">
+        <img src={Logo} alt="logo" />
+      </div>
       <Card bordered={false} className="login-card">
-        <div className="site-logo">
-          <img src={Logo} alt="logo" />
-        </div>
+        <h4>Set Password</h4>
         <Form
-          form={form}
-          name="login-form"
+          name="set-password-form"
           initialValues={{
             remember: true,
           }}
@@ -47,64 +40,59 @@ export default function SetPassword() {
           layout="vertical"
         >
           <Form.Item
-            className="inputField"
             name="password"
-            hasFeedback
             rules={[
               {
                 required: true,
-                message: "Please input your new password!",
+                message: "Please input your password!",
               },
               {
-                whitespace: true,
-                message: "All spaces are not allowed",
+                min: 8,
+                message: "Password must be atleast 8 characters long!",
               },
             ]}
           >
             <Input.Password
-              placeholder="New Password"
+              prefix={
+                <LockOutlined className="site-form-item-icon text-primary" />
+              }
+              placeholder="Password"
               size="large"
-              autoComplete="false"
             />
           </Form.Item>
           <Form.Item
-            className="inputField"
-            name="newpassword"
-            hasFeedback
+            name="confirmPassword"
+            dependencies={["password"]}
             rules={[
-              {
-                required: true,
-                message: "Please ire enter your  password!",
-              },
-              {
-                whitespace: true,
-                message: "All spaces are not allowed",
-              },
+              { required: true, message: "Confirm Password is required" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject("The passwords does not match.");
+                },
+              }),
             ]}
           >
             <Input.Password
-              placeholder="Re-enter password"
+              prefix={
+                <LockOutlined className="site-form-item-icon text-primary" />
+              }
+              placeholder="Confirm Password"
               size="large"
-              autoComplete="false"
             />
           </Form.Item>
-          <Form.Item className="mb-0">
-            <Button
-              className="authBtn proceedBtn"
-              block
-              size="large"
-              type="primary"
-              htmlType="submit"
-            >
-              Proceed to sign in
+
+          <Form.Item name="remember" valuePropName="checked">
+            <Checkbox>Remember me</Checkbox>
+          </Form.Item>
+          <Form.Item noStyle>
+            <Button block size="large" type="primary" htmlType="submit">
+              Done
             </Button>
           </Form.Item>
         </Form>
-        <Divider />
-        <div className="conditions">
-          <Link>Terms & Conditions</Link>
-          <Link>Privacy Policy</Link>
-        </div>
       </Card>
     </div>
   );

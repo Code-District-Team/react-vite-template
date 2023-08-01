@@ -1,30 +1,31 @@
+body {
+  font-family: "sf_pro_displayregular";
+}
 
-// img {
-//   max-width: 100%;
-// }
+img {
+  max-width: 100%;
+}
 
 .text-primary {
   color: $text-primary;
 }
+
 .font-weight {
   &-normal {
-    // font-family: 'Public Sans', sans-serif;
-    font-weight: 400;
+    font-family: "sf_pro_displayregular";
   }
 
   &-medium {
-    // font-family: 'Public Sans', sans-serif;
-    font-weight: 500;
+    font-family: "sf_pro_displaymedium";
   }
 
   &-semibold {
-    // font-family: 'Public Sans', sans-serif;
-    font-weight: 600;
+    font-family: "sf_pro_displaysemibold";
   }
 
-  // &-bold {
-  //   font-family: "sf_pro_displaybold";
-  // }
+  &-bold {
+    font-family: "sf_pro_displaybold";
+  }
 }
 
 .ant-layout {
@@ -91,28 +92,5 @@
         }
       }
     }
-  }
-}
-.team-header{
-  h5{
-      font-size: 1.563rem;
-      color: #0F1016;
-      @extend .font-weight-semibold ;
-  }
-  .header-text{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      @media screen and (max-width:575px) {
-          flex-direction: column;
-          align-items: flex-start;
-      }
-      p{
-          color: #883DCF;
-          padding-right: 1.5rem;
-          @media screen and (max-width:575px) {
-             padding-bottom: 10px;
-          }
-      }
   }
 }

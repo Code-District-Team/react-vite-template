@@ -1,17 +1,16 @@
-import { Button, Card, Form, Input, Divider, Image } from "antd";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Card, Form, Input, Typography } from "antd";
 import md5 from "md5";
-// import { PatternFormat } from "react-number-format";
+import { PatternFormat } from "react-number-format";
 import { Link } from "react-router-dom";
-import Logo from "../../assets/images/logo.svg";
-import googleImg from "../../assets/images/google-icon.svg";
+import Logo from "~/assets/images/logo.svg";
 import User from "~/models/user";
-
 import {
   redirectToUrl,
   setFieldErrorsFromServer,
 } from "~/utilities/generalUtility";
 
-// const { Title } = Typography;
+const { Title } = Typography;
 
 export default function Register() {
   const [form] = Form.useForm();
@@ -19,12 +18,12 @@ export default function Register() {
   const onFinish = async (values) => {
     try {
       await User.signUpCall(
-        // values.firstName,
-        // values.lastName,
-        // values.mobilePhone,
+        values.firstName,
+        values.lastName,
+        values.mobilePhone,
         values.email,
         md5(values.password),
-        // values.remember,
+        values.remember,
       );
 
       redirectToUrl("/"); // * Pass domainPrefix as 2nd argumnet in case of multi tenant
@@ -34,10 +33,11 @@ export default function Register() {
   };
   return (
     <div className="login-container">
+      <div className="lc-logo">
+        <img src={Logo} alt="logo" />
+      </div>
       <Card bordered={false} className="login-card">
-        <div className="site-logo">
-          <img src={Logo} alt="logo" />
-        </div>
+        <h4>Sign Up your account</h4>
         <Form
           form={form}
           name="login-form"
@@ -47,15 +47,65 @@ export default function Register() {
           onFinish={onFinish}
           layout="vertical"
         >
-          <Form.Item>
-            <Button className="google-btn" block size="large">
-              <Image className="googleImg" src={googleImg} />
-              Continue with Google
-            </Button>
-          </Form.Item>
-          <span className="auth-text"> or sign up with email</span>
           <Form.Item
-            className="inputField"
+            name="firstName"
+            rules={[
+              {
+                required: true,
+                message: "Please input your First Name",
+              },
+            ]}
+          >
+            <Input
+              type="name"
+              prefix={
+                <UserOutlined className="site-form-item-icon text-primary" />
+              }
+              placeholder="First Name"
+              size="large"
+            />
+          </Form.Item>
+          <Form.Item
+            name="lastName"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Last Name",
+              },
+            ]}
+          >
+            <Input
+              type="name"
+              prefix={
+                <UserOutlined className="site-form-item-icon text-primary" />
+              }
+              placeholder="Last Name"
+              size="large"
+            />
+          </Form.Item>
+          <Form.Item
+            name="mobilePhone"
+            rules={[
+              {
+                required: true,
+                message: "Please Enter Valid Phone Number",
+              },
+              {
+                whitespace: true,
+                message: "Only Spaces are not allowed",
+              },
+            ]}
+          >
+            <PatternFormat
+              placeholder="Enter Mobile Number"
+              prefix={
+                <UserOutlined className="site-form-item-icon text-primary" />
+              }
+              customInput={Input}
+              format={"+###########"}
+            ></PatternFormat>
+          </Form.Item>
+          <Form.Item
             name="email"
             hasFeedback
             rules={[
@@ -65,11 +115,17 @@ export default function Register() {
               },
             ]}
           >
-            <Input type="email" placeholder="Email" size="large"></Input>
+            <Input
+              type="email"
+              prefix={
+                <UserOutlined className="site-form-item-icon text-primary" />
+              }
+              placeholder="Email"
+              size="large"
+            ></Input>
           </Form.Item>
 
           <Form.Item
-            className="inputField"
             name="password"
             hasFeedback
             rules={[
@@ -84,35 +140,61 @@ export default function Register() {
             ]}
           >
             <Input.Password
+              prefix={
+                <LockOutlined className="site-form-item-icon text-primary" />
+              }
               placeholder="Password"
               size="large"
               autoComplete="false"
             />
           </Form.Item>
-          <Form.Item className="mb-0">
-            <Button
-              className="authBtn"
-              block
+          <Form.Item
+            name="confirmPassword"
+            dependencies={["password"]}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: "Please input your confirm password!",
+              },
+              {
+                whitespace: true,
+                message: "All spaces are not allowed",
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+
+                  return Promise.reject(
+                    new Error(
+                      "The two passwords that you entered do not match",
+                    ),
+                  );
+                },
+              }),
+            ]}
+          >
+            <Input.Password
+              placeholder="Confirm Password"
               size="large"
-              type="primary"
-              htmlType="submit"
-            >
+              autoComplete="false"
+              prefix={
+                <LockOutlined className="site-form-item-icon text-primary" />
+              }
+            />
+          </Form.Item>
+          <Title level={5} className="text-center">
+            {"Have an Account?" + "  "}
+            <Link to="/login">Login</Link>
+          </Title>
+          <Form.Item className="mb-0">
+            <Button block size="large" type="primary" htmlType="submit">
               Sign Up
             </Button>
           </Form.Item>
-
-          <span className="text-center authentications mb-0">
-            Already have an account?
-            <Link to="/login" className="auth-clr">
-              Sign in
-            </Link>
-          </span>
         </Form>
-        <Divider />
-        <div className="conditions">
-          <Link>Terms & Conditions</Link>
-          <Link>Privacy Policy</Link>
-        </div>
       </Card>
     </div>
   );
