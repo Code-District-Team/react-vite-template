@@ -29,7 +29,7 @@ const AgList = () => {
       sortable: true,
       filter: true,
     }),
-    []
+    [],
   );
   //   useEffect(() => {
 
