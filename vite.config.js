@@ -9,7 +9,13 @@ export default defineConfig(({ mode }) => {
   return {
     define: {
       __APP_ENV__: env.APP_ENV,
-      global: {},
+      // global: {},
+      // * Uncomment this if you receive global not defined error
+      /**
+       * Uncomment this if you receive global not defined error
+       * OR
+       * Add `window.global ||= window;` in main.jsx
+       */
     },
     plugins: [react(), eslint()],
     resolve: {
