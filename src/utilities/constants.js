@@ -23,9 +23,15 @@ const K = {
       Auth: {
         Login: "/auth/signin",
         SignUp: "/auth/signup",
-        ResetPassword: "/auth/set-password",
+        ResetPassword: "/auth/reset-password",
         ForgotPassword: "/auth/forget-password",
         ChangePassword: "/auth/change-password",
+      },
+      Users: {
+        GetUser: "/user/get-all",
+        LoggedInUserDetails: "/user/me",
+        UpdateProfileData: "/user/update-profile",
+        DeleteUser: "user/delete-user",
       },
     },
     Method: {

@@ -1,3 +1,5 @@
+import ProfilePage from "~/features/Profile/profile";
+import ChangePassword from "~/features/changepassword/changePassword";
 import AgGridList from "~/features/AgGrid List/agGridList";
 import { Counter } from "~/features/counter/Counter";
 import Dashboard from "~/features/dashboard/dashboard";
@@ -62,6 +64,12 @@ const routes = [
     layout: GuestPageLayout,
   },
   {
+    path: "/profile",
+    name: "ProfilePage",
+    component: ProfilePage,
+    layout: LoggedInPageLayout,
+  },
+  {
     path: "/projects",
     name: "Projects",
     component: Projects,
@@ -89,6 +97,12 @@ const routes = [
     path: "/counter",
     name: "Counter",
     component: Counter,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/change-password",
+    name: "ChangePassword",
+    component: ChangePassword,
     layout: LoggedInPageLayout,
   },
   {
