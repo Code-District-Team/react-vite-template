@@ -22,7 +22,7 @@ export default class NetworkCall {
                   status === K.Network.StatusCode.NotModified
                 );
               },
-            }),
+            })
           )
         : await NetworkCall.axios({
             method: request.method,

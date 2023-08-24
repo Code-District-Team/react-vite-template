@@ -31,7 +31,7 @@ export default function Login() {
   const onFinish = async (values) => {
     try {
       await dispatch(
-        User.loginCall(values.email, md5(values.password), values.remember),
+        User.loginCall(values.email, md5(values.password), values.remember)
       );
 
       redirectToUrl("/"); // * Pass domainPrefix as 2nd argumnet in case of multi tenant
