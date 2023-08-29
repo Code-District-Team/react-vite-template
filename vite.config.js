@@ -10,7 +10,6 @@ export default defineConfig(({ mode }) => {
     define: {
       __APP_ENV__: env.APP_ENV,
       // global: {},
-      // * Uncomment this if you receive global not defined error
       /**
        * Uncomment this if you receive global not defined error
        * OR
