@@ -68,14 +68,14 @@ const routes = [
     name: "ProfilePage",
     component: ProfilePage,
     layout: LoggedInPageLayout,
-    permission: [K.Permissions.User],
+    permission: K.Permissions.User,
   },
   {
     path: "/projects",
     name: "Projects",
     component: Projects,
     authenticated: true,
-    permission: [K.Permissions.Admin],
+    permission: K.Permissions.Admin,
     // children: defaultCrudChildren, // TODO: need to implement children functionality in routes
     layout: LoggedInPageLayout,
   },
@@ -84,7 +84,7 @@ const routes = [
     name: "Users",
     component: Users,
     authenticated: true,
-    permission: [],
+    permission: null,
     layout: LoggedInPageLayout,
   },
   {
@@ -118,7 +118,7 @@ const routes = [
     name: "Ag-Grid",
     component: AGGridTable,
     authenticated: true,
-    permission: [],
+    permission: K.Permissions.Admin,
     layout: LoggedInPageLayout,
   },
   {

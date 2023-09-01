@@ -73,7 +73,7 @@ const K = {
     },
   },
   Permissions: {
-    Admin: "Admin",
+    Admin: "ADMIN",
     User: "USER",
   },
 };

@@ -2,7 +2,9 @@ import { Button, Input, Table } from "antd";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import User from "~/models/user";
+import K from "~/utilities/constants";
 import {
+  isPermissionPresent,
   numberSorting,
   setFieldErrorsFromServer,
   stringSorting,
@@ -46,7 +48,7 @@ import {
 const TableList = () => {
   const [searchedText, setSearchedText] = useState("");
   const [userData, setUserData] = useState([]);
-  const isAdmin = User.isAdmin();
+  const userRole = User.getRole();
 
   const fetchUserDetails = async (values) => {
     try {
@@ -128,7 +130,7 @@ const TableList = () => {
       {
         title: "Action",
         key: "action",
-        hidden: isAdmin ? false : true,
+        hidden: !isPermissionPresent(K.Permissions.Admin, userRole),
         render: (_, data) => (
           <span>
             <Button onClick={() => handleDelete(data.id)}>Delete</Button>

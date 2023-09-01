@@ -24,10 +24,8 @@ export default function AccessControl({
     )
       return <Navigate to="/" replace />;
     // Check permission
-    const userData = User.getUserObjectFromCookies().user;
-    const hasPermission = isPermissionPresent(routePermission, [
-      userData?.role?.name,
-    ]);
+    const userRoles = User.getRole();
+    const hasPermission = isPermissionPresent(routePermission, userRoles);
 
     if (hasPermission) {
       return <Outlet />;

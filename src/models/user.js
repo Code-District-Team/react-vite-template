@@ -263,10 +263,7 @@ export default class User {
   static getTenant() {
     return this.getUserObjectFromCookies().tenant?.domainPrefix ?? "";
   }
-  static isAdmin() {
-    console.log("Cookie", this.getUserObjectFromCookies());
-    return this.getUserObjectFromCookies()?.user?.role?.name === "ADMIN"
-      ? true
-      : false;
+  static getRole() {
+    return this.getUserObjectFromCookies()?.user?.role ?? null;
   }
 }
