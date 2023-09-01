@@ -139,7 +139,24 @@ export default class User {
     };
   }
 
-  // //get Profile data
+  static async changePassword(oldPassword, newPassword) {
+    const body = {
+      oldPassword,
+      newPassword,
+    };
+    const request = new Request(
+      K.Network.URL.Auth.ChangePassword,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+    const res = await NetworkCall.fetch(request, true);
+    return res;
+  }
+
+  // get Profile data
   static async profileData() {
     const request = new Request(
       K.Network.URL.Users.LoggedInUserDetails,
