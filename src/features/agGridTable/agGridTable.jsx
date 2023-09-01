@@ -2,10 +2,9 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useMemo } from "react";
-import { Data } from "~/redux/stubs/data";
+import { Data as rowData } from "~/redux/stubs/data";
 
-const rowData = Data;
-const AgList = () => {
+const AGGridTable = () => {
   const columnDefs = [
     {
       field: "make",
@@ -48,9 +47,9 @@ const AgList = () => {
         animateRows={true}
         pagination={true}
         paginationPageSize={10}
-      ></AgGridReact>
+      />
     </div>
   );
 };
 
-export default AgList;
+export default AGGridTable;

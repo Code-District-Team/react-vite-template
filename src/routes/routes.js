@@ -1,6 +1,6 @@
 import ProfilePage from "~/features/Profile/profile";
 import ChangePassword from "~/features/changepassword/changePassword";
-import AgGridList from "~/features/AgGrid List/agGridList";
+import AGGridTable from "~/features/agGridTable/agGridTable";
 import { Counter } from "~/features/counter/Counter";
 import Dashboard from "~/features/dashboard/dashboard";
 import ForgotPassword from "~/features/forgotPassword/forgotPassword";
@@ -113,18 +113,18 @@ const routes = [
     layout: GuestPageLayout,
   },
   {
+    path: "/projects/ag-grid",
+    name: "Ag-Grid",
+    component: AGGridTable,
+    authenticated: true,
+    permission: [],
+    layout: LoggedInPageLayout,
+  },
+  {
     path: "*",
     name: "Not Found",
     component: NotFound,
     layout: GuestPageLayout,
-  },
-  {
-    path: "/projects/AgGrid",
-    name: "Ag-Grid",
-    component: AgGridList,
-    authenticated: true,
-    permission: [],
-    layout: LoggedInPageLayout,
   },
 ];
 

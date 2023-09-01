@@ -24,7 +24,7 @@ const defaultChildren = (basePath) => [
 ];
 const projectChildren = (basePath) => [
   {
-    path: `${basePath}/AgGrid`,
+    path: `${basePath}/ag-grid`,
     name: "Ag-Grid",
     roles: [K.Permissions.Admin],
   },
