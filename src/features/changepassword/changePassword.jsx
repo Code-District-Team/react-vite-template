@@ -9,11 +9,7 @@ const ChangePassword = () => {
 
   const onFinish = async (values) => {
     try {
-      await User.changePassword(
-        md5(values.oldPassword),
-        md5(values.password),
-        values.remember,
-      );
+      await User.changePassword(md5(values.oldPassword), md5(values.password));
       message.success("Password changed successfully!");
     } catch (error) {
       setFieldErrorsFromServer(error, form, values);
