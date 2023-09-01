@@ -39,18 +39,16 @@ export const isDecimalRegex = () => {
 };
 
 export const isPermissionPresent = (permission, userRoles) => {
-  let hasPermission = true;
-  if (permission && permission.length > 0) {
-    let permissionFound = false;
-    for (const obj of userRoles?.permissions ?? []) {
-      if (obj.code === K.Permissions.Admin || permission === obj.code) {
-        permissionFound = true;
-        break;
-      }
-    }
-    hasPermission = permissionFound;
+  const hashMap = new Map([[userRoles.name, userRoles.name]]); // * User has role but no permission
+
+  /* const permissionMap = {};
+  for (const obj of [userRoles] ?? []) {
+    permissionMap[obj] = true;
+  } */
+  if (permission) {
+    return hashMap.has(K.Permissions.Admin) || hashMap.has(permission);
   }
-  return hasPermission;
+  return true;
 };
 
 export const redirectIfInvalidTenant = () => {

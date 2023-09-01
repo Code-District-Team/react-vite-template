@@ -73,8 +73,8 @@ const K = {
     },
   },
   Permissions: {
-    Admin: "Admin",
-    User: "User",
+    Admin: "ADMIN",
+    User: "USER",
   },
 };
 export default K;

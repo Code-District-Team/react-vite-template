@@ -25,11 +25,12 @@ export default class User {
 
     return async (dispatch) => {
       const user = await NetworkCall.fetch(request);
+      console.log("User", user);
       let encryptedUser = CryptoJS.AES.encrypt(
         JSON.stringify(user),
         K.Cookie.Key.EncryptionKey,
       );
-      console.info(encryptedUser);
+
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
         path: "/",
         domain: K.Network.URL.Client.BaseHost,
@@ -262,10 +263,7 @@ export default class User {
   static getTenant() {
     return this.getUserObjectFromCookies().tenant?.domainPrefix ?? "";
   }
-  static isAdmin() {
-    console.log("Cookie", this.getUserObjectFromCookies());
-    return this.getUserObjectFromCookies()?.user?.role?.name === "ADMIN"
-      ? true
-      : false;
+  static getRole() {
+    return this.getUserObjectFromCookies()?.user?.role ?? null;
   }
 }
