@@ -90,10 +90,10 @@ const TableList = () => {
         onFilter: (value, record) => {
           return (
             [record.id, record.age].includes(+value) ||
-            record.firstName.toLowerCase().includes(value.toLowerCase()) ||
-            record.lastName.toLowerCase().includes(value.toLowerCase()) ||
-            record.email.toLowerCase().includes(value.toLowerCase()) ||
-            record.address.toLowerCase().includes(value.toLowerCase())
+            record.firstName?.toLowerCase().includes(value.toLowerCase()) ||
+            record.lastName?.toLowerCase().includes(value.toLowerCase()) ||
+            record.email?.toLowerCase().includes(value.toLowerCase()) ||
+            record.address?.toLowerCase().includes(value.toLowerCase())
           );
         },
         key: "name",

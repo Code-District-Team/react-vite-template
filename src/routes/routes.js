@@ -1,5 +1,6 @@
 import ProfilePage from "~/features/Profile/profile";
 import ChangePassword from "~/features/changepassword/changePassword";
+import AGGridTable from "~/features/agGridTable/agGridTable";
 import { Counter } from "~/features/counter/Counter";
 import Dashboard from "~/features/dashboard/dashboard";
 import ForgotPassword from "~/features/forgotPassword/forgotPassword";
@@ -110,6 +111,14 @@ const routes = [
     component: Unauthorized,
     authenticated: true,
     layout: GuestPageLayout,
+  },
+  {
+    path: "/projects/ag-grid",
+    name: "Ag-Grid",
+    component: AGGridTable,
+    authenticated: true,
+    permission: [],
+    layout: LoggedInPageLayout,
   },
   {
     path: "*",
