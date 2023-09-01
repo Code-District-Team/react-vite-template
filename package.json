@@ -19,8 +19,8 @@
   "dependencies": {
     "@ant-design/icons": "^5.2.5",
     "@reduxjs/toolkit": "^1.9.5",
-    "ag-grid-community": "^29.3.5",
-    "ag-grid-react": "^29.3.5",
+    "ag-grid-community": "^30.1.0",
+    "ag-grid-react": "^30.1.0",
     "antd": "^5.8.5",
     "axios": "^1.5.0",
     "crypto-js": "^4.1.1",
