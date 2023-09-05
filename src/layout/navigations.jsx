@@ -29,6 +29,14 @@ const projectChildren = (basePath) => [
     roles: [K.Permissions.Admin],
   },
 ];
+const productChildren = (basePath) => [
+  { path: `${basePath}/product-ag-grid`, name: "Prod-AG-Grid" },
+  {
+    path: `${basePath}/product-antd`,
+    name: "Prod-Antd",
+    roles: [K.Permissions.Admin],
+  },
+];
 
 const navigations = [
   {
@@ -43,6 +51,14 @@ const navigations = [
     permission: [],
     children: projectChildren("/projects"),
   },
+  {
+    name: "Products",
+    // path: "/products",
+    icon: <ProjectOutlined />,
+    permission: [],
+    children: productChildren("/products"),
+  },
+
   {
     name: "Users",
     // path: "/users",

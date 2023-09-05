@@ -33,6 +33,12 @@ const K = {
         UpdateProfileData: "/user/update-profile",
         DeleteUser: "user/delete-user",
       },
+      Products: {
+        GetProducts: "/product",
+        CreateProducts: "/product",
+        UpdateProducts: "/product",
+        DeleteProducts: "/product",
+      },
     },
     Method: {
       GET: "GET",

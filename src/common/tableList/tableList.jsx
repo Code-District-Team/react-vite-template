@@ -53,6 +53,7 @@ const TableList = () => {
   const fetchUserDetails = async (values) => {
     try {
       const response = await User.userData(values);
+      console.log("values");
       setUserData(response.data);
     } catch (error) {
       setFieldErrorsFromServer(error, values);

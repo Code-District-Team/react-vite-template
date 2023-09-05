@@ -14,6 +14,8 @@ import Users from "~/features/users/users";
 import GuestPageLayout from "~/layout/guestPageLayout";
 import LoggedInPageLayout from "~/layout/loggedInPageLayout";
 import K from "~/utilities/constants";
+import ProductAGGrid from "~/features/products/productAGGrid";
+import ProductAntd from "~/features/products/productAntd";
 
 /* 
   * Template for a route
@@ -119,6 +121,22 @@ const routes = [
     component: AGGridTable,
     authenticated: true,
     permission: K.Permissions.Admin,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/products/product-ag-grid",
+    name: "Prod-AG-Grid",
+    component: ProductAGGrid,
+    authenticated: true,
+
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/products/product-antd",
+    name: "Prod-Antd",
+    component: ProductAntd,
+    authenticated: true,
+
     layout: LoggedInPageLayout,
   },
   {
