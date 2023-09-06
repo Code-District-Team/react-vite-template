@@ -35,6 +35,7 @@ const K = {
       },
       Products: {
         GetProducts: "/product",
+        GetProductsById: "/product",
         CreateProducts: "/product",
         UpdateProducts: "/product",
         DeleteProducts: "/product",
