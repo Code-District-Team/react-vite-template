@@ -70,10 +70,8 @@ const TableList = () => {
   };
   const handleDelete = async (id) => {
     try {
-      const body = {
-        id,
-      };
-      await User.deleteUser(body);
+      await User.deleteUser(id);
+      fetchUserDetails();
     } catch (error) {
       setFieldErrorsFromServer(error);
     }

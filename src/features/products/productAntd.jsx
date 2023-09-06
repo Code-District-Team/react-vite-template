@@ -43,6 +43,7 @@ const ProductAntd = () => {
       title: "Product Name",
       dataIndex: "name",
       sorter: true,
+      render: (text) => <a>{text}</a>,
     },
     {
       title: "Price",
