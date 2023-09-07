@@ -1,5 +1,4 @@
-import { UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Table, message } from "antd";
+import { Button, Form, Input, Table, message } from "antd";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -12,12 +11,10 @@ import {
   isPermissionPresent,
   setFieldErrorsFromServer,
 } from "~/utilities/generalUtility";
+import ProductModal from "./productModal";
 
 const ProductAntd = () => {
-  // const [searchedText, setSearchedText] = useState("");
-
   const [productData, setProductData] = useState({ products: [], total: 0 });
-  // const [productData, setProductData] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation(); // useLocation hook to get the current location object
   const searchParams = new URLSearchParams(location.search); // Create a URLSearchParams object with the current query string
@@ -29,9 +26,6 @@ const ProductAntd = () => {
   const [productId, setProductId] = useState(null);
   const userRole = User.getRole();
   const editId = useRef(null);
-  console.log(productId);
-  // const dispatch = useDispatch();
-
   const fetchProductDetails = async (queryParams) => {
     try {
       // const response = await Product.getProductData(limit, page);
@@ -103,16 +97,6 @@ const ProductAntd = () => {
     return !column.hidden;
   });
 
-  // const Data = [
-  //   {
-  //     id: 1,
-  //     name: "Usama",
-  //     price: "20",
-  //     quantity: 20,
-  //     createdAt: "2023-09-01T06:35:52.141Z",
-  //     updatedAt: "2023-09-01T06:35:52.141Z",
-  //   },
-  // ];
   const createQuery = (page, limit, sortBy, sortOrder) => {
     let queryParam = `page=${page}&limit=${limit}`;
     if (sortBy) {
@@ -141,13 +125,6 @@ const ProductAntd = () => {
         sortDict[sort.order],
       );
     }
-    // let queryParams = `limit=${pagination.pageSize}&page=${pagination.current}&query=${searchQuery}`;
-    // if (sortDict[sort.order]) {
-    //   queryParams += `&sortBy=${sort?.field}&sortOrder=${
-    //     sortDict[sort.order]
-    //   }&query=${searchQuery}`;
-    // }
-    // console.log("sort value", sort.order);
     fetchProductDetails(queryParam);
     setCurrentPage(current);
   };
@@ -176,7 +153,6 @@ const ProductAntd = () => {
     } catch (error) {
       setFieldErrorsFromServer(error);
     }
-    console.log(values);
   };
 
   const onFinish = async (values) => {
@@ -186,7 +162,6 @@ const ProductAntd = () => {
       handleButtonEdit(values);
     }
     form.resetFields();
-    // const response = await Product.getProductData(limit, page);
   };
 
   const showModal = () => {
@@ -195,15 +170,11 @@ const ProductAntd = () => {
     }
     setIsModalOpen(true);
   };
-  // const handleOk = () => {
-  //   setIsModalOpen(false);
-  // };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
   const handleButtonDelete = async (id) => {
-    console.log("id", id);
     try {
       await Product.deleteProductData(id);
       fetchProductDetails(createQuery(1, 10));
@@ -248,78 +219,13 @@ const ProductAntd = () => {
       >
         Create Product
       </Button>
-      <Modal
-        title="Enter Product Details "
-        okText={editId.current ? "Update" : "Save"}
-        open={isModalOpen}
-        onOk={() => form.submit()}
-        onCancel={handleCancel}
-      >
-        <Form
-          form={form}
-          name="login-form"
-          // initialValues={{
-          //   remember: true,
-          // }}
-          onFinish={onFinish}
-          layout="vertical"
-        >
-          <Form.Item
-            name="name"
-            rules={[
-              {
-                required: true,
-                message: "Please enter product name",
-              },
-            ]}
-          >
-            <Input
-              type="text"
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
-              placeholder="Name"
-              size="large"
-            />
-          </Form.Item>
-          <Form.Item
-            name="quantity"
-            rules={[
-              {
-                required: true,
-                message: "Please enter Quantity",
-              },
-            ]}
-          >
-            <Input
-              type="number"
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
-              placeholder="Quantity"
-              size="large"
-            />
-          </Form.Item>
-          <Form.Item
-            name="price"
-            rules={[
-              {
-                required: true,
-                message: "Please enter price",
-              },
-            ]}
-          >
-            <Input
-              type="number"
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
-              placeholder="Price"
-              size="large"
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+      <ProductModal
+        isModalOpen={isModalOpen}
+        handleCancel={handleCancel}
+        form={form}
+        onFinish={onFinish}
+        editId={editId}
+      />
       <Table
         rowKey="id"
         columns={Columns}
