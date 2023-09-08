@@ -56,18 +56,22 @@ const ProductAntd = () => {
     {
       title: "Price",
       dataIndex: "price",
+      sorter: true,
     },
     {
       title: "Quantity",
       dataIndex: "quantity",
+      sorter: true,
     },
     {
       title: "Created At",
       dataIndex: "createdAt",
+      sorter: true,
     },
     {
       title: "Updated At",
       dataIndex: "updatedAt",
+      sorter: true,
     },
     {
       title: "Action",
@@ -110,12 +114,12 @@ const ProductAntd = () => {
   const sortDict = {
     ascend: "ASC",
     descend: "DESC",
-    undefined: "ASC",
   };
   const onPageChange = (pagination, filter, sort) => {
     const { pageSize, current } = pagination;
     let queryParam = "";
-    if (!sort) {
+    console.log("sort", sort);
+    if (!sort.column) {
       queryParam = createQuery(current, pageSize);
     } else {
       queryParam = createQuery(
