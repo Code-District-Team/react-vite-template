@@ -14,6 +14,7 @@ import Users from "~/features/users/users";
 import GuestPageLayout from "~/layout/guestPageLayout";
 import LoggedInPageLayout from "~/layout/loggedInPageLayout";
 import K from "~/utilities/constants";
+import CreateUser from "~/features/users/createUser";
 import ProductAGGrid from "~/features/products/productAGGrid";
 import ProductAntd from "~/features/products/productAntd";
 
@@ -85,6 +86,14 @@ const routes = [
     path: "/users",
     name: "Users",
     component: Users,
+    authenticated: true,
+    permission: null,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/users/create",
+    name: "Create",
+    component: CreateUser,
     authenticated: true,
     permission: null,
     layout: LoggedInPageLayout,

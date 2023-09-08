@@ -17,7 +17,7 @@ import K from "~/utilities/constants";
 const defaultChildren = (basePath) => [
   { path: `${basePath}`, name: "List" },
   {
-    path: `${basePath}/store/create`,
+    path: `${basePath}/create`,
     name: "Create",
     roles: [K.Permissions.Admin],
   },
