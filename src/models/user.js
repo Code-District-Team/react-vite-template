@@ -223,6 +223,36 @@ export default class User {
 
     return user;
   }
+  // Invite User
+  static async InviteUser(email, roleId) {
+    const body = {
+      email,
+      roleId,
+    };
+    const request = new Request(
+      K.Network.URL.Users.InviteUser,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    return NetworkCall.fetch(request, true);
+  }
+  // //get all Roles
+  static async GetUserRoles() {
+    const request = new Request(
+      K.Network.URL.Roles.GetRoles,
+      K.Network.Method.GET,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    return NetworkCall.fetch(request, true);
+  }
+
   // * Helpers
 
   static getUserObjectFromCookies() {

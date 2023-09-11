@@ -32,6 +32,7 @@ const K = {
         LoggedInUserDetails: "/user/me",
         UpdateProfileData: "/user/update-profile",
         DeleteUser: "/user/delete-user",
+        InviteUser: "/user/invite-user",
       },
       Products: {
         GetProducts: "/product",
@@ -39,6 +40,9 @@ const K = {
         CreateProducts: "/product",
         UpdateProducts: "/product",
         DeleteProducts: "/product",
+      },
+      Roles: {
+        GetRoles: "/user/roles",
       },
     },
     Method: {

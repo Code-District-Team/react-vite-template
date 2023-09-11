@@ -127,6 +127,11 @@ const TableList = () => {
         sorter: (a, b) => stringSorting(a, b, "address"),
       },
       {
+        title: "Status",
+        key: "status",
+        dataIndex: "status",
+      },
+      {
         title: "Action",
         key: "action",
         hidden: !isPermissionPresent(K.Permissions.Admin, userRole),
