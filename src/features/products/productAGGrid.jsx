@@ -35,12 +35,8 @@ const ProductAGGrid = () => {
   const datasource = {
     async getRows(params) {
       console.log(params.request);
-      const { startRow, endRow, filterModel } = params.request;
+      const { startRow, endRow } = params.request;
 
-      const filterKeys = Object.keys(filterModel);
-      filterKeys.forEach((filter) => {
-        console.log(`${filter}=${filterModel[filter].filter}`);
-      });
       const limit = endRow - startRow;
       const value = startRow / limit + 1;
       const query = createQuery(
@@ -50,7 +46,7 @@ const ProductAGGrid = () => {
         params.request.sortModel.length > 0
           ? sortDict[params.request.sortModel[0]["sort"]]
           : null,
-        filterModel?.name?.filter,
+        // filterModel?.name?.filter,
       );
       const data = await fetchProductDetails(query);
       params.success({
@@ -63,15 +59,14 @@ const ProductAGGrid = () => {
     params.api.setServerSideDatasource(datasource);
   };
 
-  const createQuery = (page, limit, sortBy, sortOrder, query) => {
-    console.log("query", query);
+  const createQuery = (page, limit, sortBy, sortOrder) => {
     let queryParam = `page=${page}&limit=${limit}`;
     if (sortBy) {
       queryParam += `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
     }
-    if (query) {
-      queryParam += `&query=${query}`;
-    }
+    // if (query) {
+    //   queryParam += `&query=${query}`;
+    // }
     return queryParam;
   };
 
@@ -175,7 +170,7 @@ const ProductAGGrid = () => {
     },
     {
       field: "name",
-      filter: "agTextColumnFilter",
+      // filter: "agTextColumnFilter",
     },
     {
       field: "price",
