@@ -1,11 +1,14 @@
-import moment from "moment";
+import dayjs from "dayjs";
 
 // * Can not select days before today and today
 export const disabledPastDate = (current) =>
-  current && current < moment().startOf("day");
+  current && current < dayjs().startOf("day");
 
 export const disableFutureDate = (current) =>
-  current && current > moment().endOf("day");
+  current && current > dayjs().endOf("day");
 
-export const disabledDatesPriorMonth = (current) =>
-  current && current < moment().subtract(1, "month").startOf("month");
+export const disabledDatesBeforeLastMonth = (current) =>
+  current && current < dayjs().subtract(1, "month").startOf("month");
+
+export const disabledDatesLastMonth = (current) =>
+  current && current < dayjs().subtract(1, "month").endOf("month");
