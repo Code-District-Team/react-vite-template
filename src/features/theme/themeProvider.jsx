@@ -10,7 +10,7 @@ export default function ThemeProvider({ children }) {
         },
         components: {
           Layout: {
-            colorBgBody: "#E5E5E5",
+            bodyBg: "#E5E5E5",
             // colorBgHeader: "#7dbcea"
           },
         },
