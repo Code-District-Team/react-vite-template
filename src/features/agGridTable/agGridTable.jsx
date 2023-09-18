@@ -30,13 +30,6 @@ const AGGridTable = () => {
     }),
     [],
   );
-  //   useEffect(() => {
-
-  //     fetch("https://www.ag-grid.com/example-assets/olympic-win")
-  //       .then((result) => result.json())
-
-  //       .then((rowData) => setRowData(rowData));
-  //   }, []);
   return (
     <div className="ag-theme-alpine" style={{ height: 600, maxwidth: 100 }}>
       <AgGridReact

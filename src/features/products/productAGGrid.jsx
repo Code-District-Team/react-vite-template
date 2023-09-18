@@ -2,28 +2,24 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ProductModal from "./productModal";
-import { Button, Form, message } from "antd";
-// import { debounce } from "lodash";
+import { Button, Form, Input, message } from "antd";
 import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
 import Product from "~/models/product";
-// import { current } from "@reduxjs/toolkit";
+import { debounce } from "lodash";
 const ProductAGGrid = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const editId = useRef(null);
-  // const [productData, setProductData] = useState({ products: [], total: 0 });
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [gridApi, setGridApi] = useState(null);
   const [productId, setProductId] = useState(null);
 
   const fetchProductDetails = async (queryParams) => {
     try {
-      // const response = await Product.getProductData(limit, page);
       const response = await Product.getProductData(queryParams);
       return response.data;
-      // setProductData(response.data);
     } catch (error) {
       setFieldErrorsFromServer(error);
     }
@@ -46,7 +42,7 @@ const ProductAGGrid = () => {
         params.request.sortModel.length > 0
           ? sortDict[params.request.sortModel[0]["sort"]]
           : null,
-        // filterModel?.name?.filter,
+        searchQuery,
       );
       const data = await fetchProductDetails(query);
       params.success({
@@ -64,9 +60,9 @@ const ProductAGGrid = () => {
     if (sortBy) {
       queryParam += `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
     }
-    // if (query) {
-    //   queryParam += `&query=${query}`;
-    // }
+    if (searchQuery) {
+      queryParam += `&query=${searchQuery}`;
+    }
     return queryParam;
   };
 
@@ -102,21 +98,7 @@ const ProductAGGrid = () => {
     form.resetFields();
   };
 
-  // const handleSearch = async (e) => {
-  //   try {
-  //     const query = e.target.value;
-  //     setSearchQuery(query);
-  //     const queryParams = `limit=${10}&page=${1}&query=${query}`; //l or whatever your default values are
-  //     fetchProductDetails(queryParams);
-  //     // setCurrentPage(1);
-  //   } catch (error) {
-  //     setFieldErrorsFromServer(error);
-  //   }
-  // };
-
   const handleButtonDelete = async (id) => {
-    console.log("id here", id);
-    debugger;
     try {
       await Product.deleteProductData(id);
       fetchProductDetails(createQuery(1, 100));
@@ -164,22 +146,28 @@ const ProductAGGrid = () => {
       </>
     );
   };
+
+  const gridRef = useRef(null);
+
   const columnDefs = [
     {
       field: "id",
     },
     {
       field: "name",
-      // filter: "agTextColumnFilter",
+      filter: "agTextColumnFilter",
     },
     {
       field: "price",
+      filter: "agNumberColumnFilter",
     },
     {
       field: "quantity",
+      filter: "agNumberColumnFilter",
     },
     {
       field: "createdAt",
+      filter: "agDateColumnFilter",
     },
     {
       field: "updatedAt",
@@ -198,24 +186,25 @@ const ProductAGGrid = () => {
     }),
     [],
   );
-  //   useEffect(() => {
 
-  //     fetch("https://www.ag-grid.com/example-assets/olympic-win")
-  //       .then((result) => result.json())
+  useEffect(() => {
+    if (gridApi) {
+      gridApi.purgeServerSideCache; // This will refresh the data by calling getRows again
+    }
+  }, [searchQuery, gridApi]);
 
-  //       .then((rowData) => setRowData(rowData));
-  //   }, []);
   return (
     <div className="ag-theme-alpine" style={{ height: 600, maxwidth: 100 }}>
-      {/* <Input.Search
+      <Input
         allowClear
         className="mb-3"
         size="large"
         placeholder="Search"
-        onSearch={handleSearch}
-        // onSearch={onSearch}
-        onChange={debounce(handleSearch, 500)}
-      ></Input.Search>
+        onChange={debounce((value) => {
+          console.log("our value", value.target.defaultValue);
+          setSearchQuery(value.target.defaultValue);
+        }, 500)}
+      ></Input>
       <Button
         type="primary"
         onClick={() => {
@@ -224,7 +213,7 @@ const ProductAGGrid = () => {
         }}
       >
         Create Product
-      </Button> */}
+      </Button>
       <ProductModal
         isModalOpen={isModalOpen}
         handleCancel={handleCancel}
@@ -234,7 +223,7 @@ const ProductAGGrid = () => {
         editId={editId}
       />
       <AgGridReact
-        // rowData={productData.products}
+        ref={gridRef}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
         rowSelection="multiple"
@@ -242,9 +231,13 @@ const ProductAGGrid = () => {
         pagination={true}
         paginationPageSize={10}
         cacheBlockSize={10}
-        onGridReady={onGridReady}
+        onGridReady={(params) => {
+          setGridApi(params.api);
+          onGridReady;
+        }}
         rowModelType={"serverSide"}
         domLayout="autoHeight"
+        serverSideDatasource={datasource}
       />
     </div>
   );
