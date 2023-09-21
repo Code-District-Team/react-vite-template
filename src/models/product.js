@@ -4,11 +4,11 @@ import K from "~/utilities/constants";
 
 export default class Product {
   //get product
-  static async getProductData(queryParams) {
-    const params = `${K.Network.URL.Products.GetProducts}?${queryParams}`;
+  static async getProductData(body) {
     const request = new Request(
-      params,
-      K.Network.Method.GET,
+      K.Network.URL.Products.GetProducts,
+      K.Network.Method.POST,
+      body,
       K.Network.Header.Type.Json,
       {},
       false,

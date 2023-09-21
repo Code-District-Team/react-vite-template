@@ -17,6 +17,7 @@ import K from "~/utilities/constants";
 import CreateUser from "~/features/users/createUser";
 import ProductAGGrid from "~/features/products/productAGGrid";
 import ProductAntd from "~/features/products/productAntd";
+import RolesPermission from "~/features/rolesPermission/rolesPermission";
 
 /* 
   * Template for a route
@@ -146,6 +147,14 @@ const routes = [
     component: ProductAntd,
     authenticated: true,
 
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/config",
+    name: "Configurations",
+    component: RolesPermission,
+    authenticated: true,
+    // permission: [],
     layout: LoggedInPageLayout,
   },
   {

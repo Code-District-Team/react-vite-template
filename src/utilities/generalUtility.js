@@ -159,7 +159,7 @@ export const deleteQueryParam = (key) => {
 };
 
 export const stringSorting = (a, b, name) => {
-  return a[name].localeCompare(b[name]);
+  return a[name]?.localeCompare(b[name]);
 };
 
 export const numberSorting = (a, b, name) => {

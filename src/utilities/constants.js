@@ -35,7 +35,7 @@ const K = {
         InviteUser: "/user/invite-user",
       },
       Products: {
-        GetProducts: "/product",
+        GetProducts: "/product/get",
         GetProductsById: "/product",
         CreateProducts: "/product",
         UpdateProducts: "/product",

@@ -1,4 +1,4 @@
-import { Button, Form, Input, Table, message } from "antd";
+import { Button, Card, Form, Input, Table, message } from "antd";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -91,7 +91,7 @@ const ProductAntd = () => {
               Edit
             </Button>
           </span>
-          <span>
+          <span className="ml-3">
             <Button onClick={() => handleButtonDelete(data.id)}>Delete</Button>
           </span>
         </>
@@ -205,24 +205,50 @@ const ProductAntd = () => {
 
   return (
     <>
-      <Input.Search
-        allowClear
-        className="mb-3"
-        size="large"
-        placeholder="Search"
-        onSearch={handleSearch}
-        // onSearch={onSearch}
-        onChange={debounce(handleSearch, 500)}
-      ></Input.Search>
-      <Button
-        type="primary"
-        onClick={() => {
-          editId.current = false;
-          showModal();
-        }}
+      <Card
+        className="card-wrapper"
+        title={
+          <>
+            <Input
+              allowClear
+              size="large"
+              placeholder="Search"
+              onSearch={handleSearch}
+              // onSearch={onSearch}
+              onChange={debounce(handleSearch, 500)}
+            ></Input>
+          </>
+        }
+        extra={
+          <>
+            <Button
+              type="primary"
+              size="large"
+              onClick={() => {
+                editId.current = false;
+                showModal();
+              }}
+            >
+              Create Product
+            </Button>
+          </>
+        }
       >
-        Create Product
-      </Button>
+        <Table
+          rowKey="id"
+          columns={Columns}
+          onChange={onPageChange}
+          dataSource={productData.products}
+          pagination={{
+            current: currentPage,
+            total: productData.total,
+            defaultPageSize: 8,
+            pageSize: 8,
+          }}
+          x-scroll={991}
+        ></Table>
+      </Card>
+
       <ProductModal
         isModalOpen={isModalOpen}
         handleCancel={handleCancel}
@@ -230,18 +256,6 @@ const ProductAntd = () => {
         onFinish={onFinish}
         editId={editId}
       />
-      <Table
-        rowKey="id"
-        columns={Columns}
-        onChange={onPageChange}
-        dataSource={productData.products}
-        pagination={{
-          current: currentPage,
-          total: productData.total,
-          defaultPageSize: 10,
-          pageSize: 10,
-        }}
-      ></Table>
     </>
   );
 };

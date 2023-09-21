@@ -2,9 +2,9 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ProductModal from "./productModal";
-import { Button, Form, Input, message } from "antd";
+import { Button, Card, Form, Input, message } from "antd";
 import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
 import Product from "~/models/product";
 import { debounce } from "lodash";
@@ -28,29 +28,59 @@ const ProductAGGrid = () => {
     asc: "ASC",
     desc: "DESC",
   };
-  const datasource = {
-    async getRows(params) {
-      console.log(params.request);
-      const { startRow, endRow } = params.request;
+  const datasource = useCallback(
+    {
+      async getRows(params) {
+        console.log(params.request);
+        const { startRow, endRow } = params.request;
+        const payload = Object.keys(params.request.filterModel).map((key) => {
+          // ['name',price].map((key)=>{}) filter['name']
+          let result = {
+            field: key,
+          };
+          if (params.request.filterModel[key].condition1) {
+            result = {
+              ...result,
+              ...params.request.filterModel[key],
+            };
+          } else {
+            result["condition1"] = params.request.filterModel[key];
+          }
+          return result;
+        });
+        console.log("Payload", payload);
+        const limit = endRow - startRow;
+        const page = startRow / limit + 1;
+        // const query = createQuery(
+        //   value,
+        //   limit,
+        //   params.request.sortModel[0]?.colId,
+        //   params.request.sortModel.length > 0
+        //     ? sortDict[params.request.sortModel[0]["sort"]]
+        //     : null,
+        //   searchQuery,
+        // );
 
-      const limit = endRow - startRow;
-      const value = startRow / limit + 1;
-      const query = createQuery(
-        value,
-        limit,
-        params.request.sortModel[0]?.colId,
-        params.request.sortModel.length > 0
-          ? sortDict[params.request.sortModel[0]["sort"]]
-          : null,
-        searchQuery,
-      );
-      const data = await fetchProductDetails(query);
-      params.success({
-        rowData: data.products,
-        rowCount: data.total,
-      });
+        const body = {
+          page,
+          limit,
+          query: searchQuery,
+          sortBy: params.request.sortModel[0]?.colId,
+          sortOrder:
+            params.request.sortModel.length > 0
+              ? sortDict[params.request.sortModel[0]["sort"]]
+              : null,
+          agGrid: payload.length == 0 ? null : payload,
+        };
+        const data = await fetchProductDetails(body);
+        params.success({
+          rowData: data.products,
+          rowCount: data.total,
+        });
+      },
     },
-  };
+    [searchQuery],
+  );
   const onGridReady = (params) => {
     params.api.setServerSideDatasource(datasource);
   };
@@ -60,9 +90,9 @@ const ProductAGGrid = () => {
     if (sortBy) {
       queryParam += `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
     }
-    if (searchQuery) {
-      queryParam += `&query=${searchQuery}`;
-    }
+    // if (searchQuery) {
+    //   queryParam += `&query=${searchQuery}`;
+    // }
     return queryParam;
   };
 
@@ -140,7 +170,7 @@ const ProductAGGrid = () => {
             Edit
           </Button>
         </span>
-        <span>
+        <span className="ml-3">
           <Button onClick={() => handleButtonDelete(productId)}>Delete</Button>
         </span>
       </>
@@ -152,6 +182,7 @@ const ProductAGGrid = () => {
   const columnDefs = [
     {
       field: "id",
+      flex: 1,
     },
     {
       field: "name",
@@ -168,9 +199,11 @@ const ProductAGGrid = () => {
     {
       field: "createdAt",
       filter: "agDateColumnFilter",
+      flex: 1,
     },
     {
       field: "updatedAt",
+      flex: 1,
     },
     {
       field: "actions",
@@ -194,52 +227,64 @@ const ProductAGGrid = () => {
   }, [searchQuery, gridApi]);
 
   return (
-    <div className="ag-theme-alpine" style={{ height: 600, maxwidth: 100 }}>
-      <Input
-        allowClear
-        className="mb-3"
-        size="large"
-        placeholder="Search"
-        onChange={debounce((value) => {
-          console.log("our value", value.target.defaultValue);
-          setSearchQuery(value.target.defaultValue);
-        }, 500)}
-      ></Input>
-      <Button
-        type="primary"
-        onClick={() => {
-          editId.current = false;
-          showModal();
-        }}
+    <>
+      <Card
+        className="card-wrapper"
+        title={
+          <>
+            <Input
+              size="large"
+              placeholder="Search"
+              onChange={debounce((value) => {
+                console.log("our value", value.target.defaultValue);
+                setSearchQuery(value.target.defaultValue);
+              }, 500)}
+            ></Input>
+          </>
+        }
+        extra={
+          <>
+            <Button
+              type="primary"
+              size="large"
+              onClick={() => {
+                editId.current = false;
+                showModal();
+              }}
+            >
+              Create Product
+            </Button>
+          </>
+        }
       >
-        Create Product
-      </Button>
-      <ProductModal
-        isModalOpen={isModalOpen}
-        handleCancel={handleCancel}
-        form={form}
-        rowModelType="serverSide"
-        onFinish={onFinish}
-        editId={editId}
-      />
-      <AgGridReact
-        ref={gridRef}
-        columnDefs={columnDefs}
-        defaultColDef={defaultColDef}
-        rowSelection="multiple"
-        animateRows={true}
-        pagination={true}
-        paginationPageSize={10}
-        cacheBlockSize={10}
-        onGridReady={(params) => {
-          setGridApi(params.api);
-          onGridReady;
-        }}
-        rowModelType={"serverSide"}
-        domLayout="autoHeight"
-        serverSideDatasource={datasource}
-      />
-    </div>
+        <div className="ag-theme-alpine" style={{ height: 600, maxwidth: 100 }}>
+          <ProductModal
+            isModalOpen={isModalOpen}
+            handleCancel={handleCancel}
+            form={form}
+            onFinish={onFinish}
+            editId={editId}
+          />
+          <AgGridReact
+            ref={gridRef}
+            columnDefs={columnDefs}
+            defaultColDef={defaultColDef}
+            rowSelection="multiple"
+            animateRows={true}
+            pagination={true}
+            paginationPageSize={10}
+            cacheBlockSize={10}
+            onGridReady={(params) => {
+              setGridApi(params.api);
+              onGridReady;
+            }}
+            rowModelType={"serverSide"}
+            domLayout="autoHeight"
+            serverSideDatasource={datasource}
+          />
+        </div>
+      </Card>
+    </>
   );
 };
 

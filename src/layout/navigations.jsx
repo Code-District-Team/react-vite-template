@@ -37,6 +37,13 @@ const productChildren = (basePath) => [
     roles: [K.Permissions.Admin],
   },
 ];
+const rolePermissionChildren = (basePath) => [
+  {
+    path: `${basePath}`,
+    name: "Roles & Permissions",
+    roles: [K.Permissions.Admin],
+  },
+];
 
 const navigations = [
   {
@@ -64,6 +71,12 @@ const navigations = [
     // path: "/users",
     icon: <UserOutlined />,
     children: defaultChildren("/users"),
+  },
+  {
+    name: "Configurations",
+    // path: "/users",
+    icon: <UserOutlined />,
+    children: rolePermissionChildren("/config"),
   },
 ];
 
