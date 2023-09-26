@@ -45,6 +45,7 @@ const ProductAntd = () => {
       page: values.page || 1,
       limit: values.limit || 100,
       query: values.searchQuery || "",
+      ...(values?.agGrid?.length && { agGrid: values.agGrid }),
     };
     // Conditionally adding sortBy and sortOrder to the body
     if (values.sortBy) {
@@ -55,18 +56,28 @@ const ProductAntd = () => {
     }
     try {
       const response = await Product.getProductData(body);
-      console.log(response.data);
+      console.log(response);
       setProductData(response.data);
     } catch (error) {
       setFieldErrorsFromServer(error);
     }
   };
 
-  const handleQuickSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
+  const handleQuickSearch = async (selectedKeys, confirm, dataIndex) => {
+    try {
+      confirm();
+      setSearchText(selectedKeys[0]);
+      setSearchedColumn(dataIndex);
+      // fetchProductDetails({
+      //   page: 1,
+      //   limit: 100,
+      //   searchQuery: selectedKeys[0],
+      // });
+    } catch (error) {
+      setFieldErrorsFromServer(error);
+    }
   };
+
   const handleReset = (clearFilters) => {
     clearFilters();
     setSearchText("");
@@ -104,7 +115,10 @@ const ProductAntd = () => {
         <Space>
           <Button
             type="primary"
-            onClick={() => handleQuickSearch(selectedKeys, confirm, dataIndex)}
+            onClick={() => {
+              confirm();
+              // handleQuickSearch(selectedKeys, confirm, dataIndex);
+            }}
             icon={<SearchOutlined />}
             size="small"
             style={{
@@ -122,7 +136,7 @@ const ProductAntd = () => {
           >
             Reset
           </Button>
-          <Button
+          {/* <Button
             type="link"
             size="small"
             onClick={() => {
@@ -134,7 +148,7 @@ const ProductAntd = () => {
             }}
           >
             Filter
-          </Button>
+          </Button> */}
           <Button
             type="link"
             size="small"
@@ -154,13 +168,14 @@ const ProductAntd = () => {
         }}
       />
     ),
-    onFilter: (value, record) =>
-      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
-      }
-    },
+    // onFilter: (value, record) => {
+    //   record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+    // },
+    // onFilterDropdownOpenChange: (visible) => {
+    //   if (visible) {
+    //     setTimeout(() => searchInput.current?.select(), 100);
+    //   }
+    // },
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
@@ -255,9 +270,29 @@ const ProductAntd = () => {
   //   ascend: "ASC",
   //   descend: "DESC",
   // };
+  const filterMapping = (filters) => {
+    console.log("hsbfilters", filters);
+    return {
+      agGrid: Object.keys(filters)
+        .filter((keys) => filters[keys])
+        .map((filterKey, i) => {
+          return {
+            field: filterKey,
+            [`condition${i + 1}`]: {
+              filterType: "number",
+              type: "contains",
+              filter: filters[filterKey][0],
+            },
+          };
+        }),
+    };
+  };
   const onPageChange = (pagination, filters, sorter) => {
+    console.log({ filters });
+    filters = filterMapping(filters);
+    console.log("hsb2filters", filters);
     const { pageSize, current } = pagination;
-    const params = { page: current, limit: pageSize };
+    const params = { page: current, limit: pageSize, ...filters };
     if (sorter.field) {
       params.sortBy = sorter.field;
     }
@@ -371,16 +406,17 @@ const ProductAntd = () => {
           </>
         }
       >
+        {console.log("productData", productData.products)}
         <Table
           rowKey="id"
           columns={Columns}
           onChange={onPageChange}
-          dataSource={productData.products}
+          dataSource={productData?.products}
           pagination={{
             current: currentPage,
             total: productData.total,
-            defaultPageSize: 8,
-            pageSize: 8,
+            defaultPageSize: 10,
+            pageSize: 10,
           }}
           x-scroll={991}
         ></Table>

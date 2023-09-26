@@ -1,17 +1,23 @@
 import { AgGridReact } from "ag-grid-react";
-import "ag-grid-enterprise";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
+
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ProductModal from "./productModal";
 import { Button, Card, Form, Input, message } from "antd";
 import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
 import Product from "~/models/product";
 import { debounce } from "lodash";
+
+const sortDict = {
+  asc: "ASC",
+  desc: "DESC",
+};
+
 const ProductAGGrid = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refreshTable, setRefreshTable] = useState(false);
   const [form] = Form.useForm();
   const editId = useRef(null);
+  const gridRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [gridApi, setGridApi] = useState(null);
   const [productId, setProductId] = useState(null);
@@ -24,10 +30,7 @@ const ProductAGGrid = () => {
       setFieldErrorsFromServer(error);
     }
   };
-  const sortDict = {
-    asc: "ASC",
-    desc: "DESC",
-  };
+
   const datasource = useCallback(
     {
       async getRows(params) {
@@ -79,32 +82,32 @@ const ProductAGGrid = () => {
         });
       },
     },
-    [searchQuery],
+    [searchQuery, refreshTable],
   );
   const onGridReady = (params) => {
     params.api.setServerSideDatasource(datasource);
   };
 
-  const createQuery = (page, limit, sortBy, sortOrder) => {
-    let queryParam = `page=${page}&limit=${limit}`;
-    if (sortBy) {
-      queryParam += `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-    }
-    // if (searchQuery) {
-    //   queryParam += `&query=${searchQuery}`;
-    // }
-    return queryParam;
-  };
+  // const createQuery = (page, limit, sortBy, sortOrder) => {
+  //   let queryParam = `page=${page}&limit=${limit}`;
+  //   if (sortBy) {
+  //     queryParam += `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+  //   }
+  //   // if (searchQuery) {
+  //   //   queryParam += `&query=${searchQuery}`;
+  //   // }
+  //   return queryParam;
+  // };
 
   const createProducts = async (values) => {
     try {
       await Product.createProductData(
         values.name,
-        parseInt(values.quantity),
-        parseFloat(values.price),
+        values.quantity,
+        values.price,
       );
-      fetchProductDetails(createQuery(1, 100));
       setIsModalOpen(false);
+      setRefreshTable(!refreshTable);
       message.success("Product created Successfully");
     } catch (error) {
       setFieldErrorsFromServer(error);
@@ -131,7 +134,7 @@ const ProductAGGrid = () => {
   const handleButtonDelete = async (id) => {
     try {
       await Product.deleteProductData(id);
-      fetchProductDetails(createQuery(1, 100));
+      setRefreshTable(!refreshTable);
     } catch (error) {
       setFieldErrorsFromServer(error);
     }
@@ -145,8 +148,8 @@ const ProductAGGrid = () => {
         productId,
       );
       message.success("Product updated successfully");
-      fetchProductDetails(createQuery(1, 100));
       setIsModalOpen(false);
+      setRefreshTable(!refreshTable);
     } catch (error) {
       setFieldErrorsFromServer(error);
     }
@@ -176,8 +179,6 @@ const ProductAGGrid = () => {
       </>
     );
   };
-
-  const gridRef = useRef(null);
 
   const columnDefs = [
     {
@@ -239,7 +240,7 @@ const ProductAGGrid = () => {
                 console.log("our value", value.target.defaultValue);
                 setSearchQuery(value.target.defaultValue);
               }, 500)}
-            ></Input>
+            />
           </>
         }
         extra={

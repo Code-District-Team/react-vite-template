@@ -36,7 +36,7 @@ const CreateUser = () => {
     getUserRolesData();
   }, []);
   if (roles.length == 0) {
-    return <Spinner></Spinner>;
+    return <Spinner />;
   }
   return (
     <div className="login-container">

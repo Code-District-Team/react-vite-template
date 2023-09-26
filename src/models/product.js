@@ -52,7 +52,7 @@ export default class Product {
       price,
     };
     const request = new Request(
-      K.Network.URL.Products.UpdateProducts + "/" + id,
+      K.Network.URL.Products.UpdateProducts + `/${id}`,
       K.Network.Method.PATCH,
       body,
       K.Network.Header.Type.Json,

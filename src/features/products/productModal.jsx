@@ -1,5 +1,5 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Form, Input, Modal } from "antd";
+import { Form, Input, InputNumber, Modal } from "antd";
 
 const ProductModal = ({
   editId,
@@ -14,15 +14,12 @@ const ProductModal = ({
         title="Enter Product Details "
         okText={editId.current ? "Update" : "Save"}
         open={isModalOpen}
-        onOk={() => form.submit()}
+        onOk={form.submit}
         onCancel={handleCancel}
       >
         <Form
           form={form}
           name="login-form"
-          // initialValues={{
-          //   remember: true,
-          // }}
           onFinish={onFinish}
           layout="vertical"
         >
@@ -53,8 +50,7 @@ const ProductModal = ({
               },
             ]}
           >
-            <Input
-              type="number"
+            <InputNumber
               prefix={
                 <UserOutlined className="site-form-item-icon text-primary" />
               }
@@ -71,8 +67,7 @@ const ProductModal = ({
               },
             ]}
           >
-            <Input
-              type="number"
+            <InputNumber
               prefix={
                 <UserOutlined className="site-form-item-icon text-primary" />
               }
