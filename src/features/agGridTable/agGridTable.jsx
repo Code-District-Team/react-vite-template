@@ -1,9 +1,7 @@
 import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useMemo } from "react";
-import { Data as rowData } from "~/redux/stubs/data";
 import { Card } from "antd";
+import { tableData } from "./sampleData";
 
 const AGGridTable = () => {
   const columnDefs = [
@@ -35,11 +33,9 @@ const AGGridTable = () => {
     <Card className="card-wrapper">
       <div className="ag-theme-alpine" style={{ height: 600, maxwidth: 100 }}>
         <AgGridReact
-          rowData={rowData}
+          rowData={tableData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
-          // rowSelection="multiple"
-          // animateRows={true}
           pagination={true}
           paginationPageSize={10}
         />
