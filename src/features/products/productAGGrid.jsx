@@ -22,22 +22,23 @@ const ProductAGGrid = () => {
   const [gridApi, setGridApi] = useState(null);
   const [productId, setProductId] = useState(null);
 
-  const fetchProductDetails = async (queryParams) => {
+  const fetchProductDetails = async (queryParams, gridParams) => {
     try {
-      const response = await Product.getProductData(queryParams);
-      return response.data;
+      const { data } = await Product.getProductData(queryParams);
+      gridParams.success({
+        rowData: data.products,
+        rowCount: data.total,
+      });
     } catch (error) {
-      setFieldErrorsFromServer(error);
+      gridParams.fail();
     }
   };
 
   const datasource = useCallback(
     {
       async getRows(params) {
-        console.log(params.request);
         const { startRow, endRow } = params.request;
         const payload = Object.keys(params.request.filterModel).map((key) => {
-          // ['name',price].map((key)=>{}) filter['name']
           let result = {
             field: key,
           };
@@ -51,18 +52,8 @@ const ProductAGGrid = () => {
           }
           return result;
         });
-        console.log("Payload", payload);
         const limit = endRow - startRow;
         const page = startRow / limit + 1;
-        // const query = createQuery(
-        //   value,
-        //   limit,
-        //   params.request.sortModel[0]?.colId,
-        //   params.request.sortModel.length > 0
-        //     ? sortDict[params.request.sortModel[0]["sort"]]
-        //     : null,
-        //   searchQuery,
-        // );
 
         const body = {
           page,
@@ -73,31 +64,17 @@ const ProductAGGrid = () => {
             params.request.sortModel.length > 0
               ? sortDict[params.request.sortModel[0]["sort"]]
               : null,
-          agGrid: payload.length == 0 ? null : payload,
+          agGrid: payload.length === 0 ? null : payload,
         };
-        const data = await fetchProductDetails(body);
-        params.success({
-          rowData: data.products,
-          rowCount: data.total,
-        });
+        fetchProductDetails(body, params);
       },
     },
     [searchQuery, refreshTable],
   );
   const onGridReady = (params) => {
+    setGridApi(params.api);
     params.api.setServerSideDatasource(datasource);
   };
-
-  // const createQuery = (page, limit, sortBy, sortOrder) => {
-  //   let queryParam = `page=${page}&limit=${limit}`;
-  //   if (sortBy) {
-  //     queryParam += `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-  //   }
-  //   // if (searchQuery) {
-  //   //   queryParam += `&query=${searchQuery}`;
-  //   // }
-  //   return queryParam;
-  // };
 
   const createProducts = async (values) => {
     try {
@@ -136,7 +113,7 @@ const ProductAGGrid = () => {
       await Product.deleteProductData(id);
       setRefreshTable(!refreshTable);
     } catch (error) {
-      setFieldErrorsFromServer(error);
+      console.error(error);
     }
   };
   const handleButtonEdit = async (values) => {
@@ -151,7 +128,7 @@ const ProductAGGrid = () => {
       setIsModalOpen(false);
       setRefreshTable(!refreshTable);
     } catch (error) {
-      setFieldErrorsFromServer(error);
+      console.error(error);
     }
   };
 
@@ -160,22 +137,19 @@ const ProductAGGrid = () => {
     const productId = data.id; // Extract the id from the row data object
     return (
       <>
-        <span>
-          <Button
-            onClick={() => {
-              console.log("data", productId);
-              editId.current = true;
-              showModal();
-              setProductId(productId);
-              form.setFieldsValue(data);
-            }}
-          >
-            Edit
-          </Button>
-        </span>
-        <span className="ml-3">
-          <Button onClick={() => handleButtonDelete(productId)}>Delete</Button>
-        </span>
+        <Button
+          onClick={() => {
+            editId.current = true;
+            showModal();
+            setProductId(productId);
+            form.setFieldsValue(data);
+          }}
+        >
+          Edit
+        </Button>
+        <Button className="ml-2" onClick={() => handleButtonDelete(productId)}>
+          Delete
+        </Button>
       </>
     );
   };
@@ -237,7 +211,6 @@ const ProductAGGrid = () => {
               size="large"
               placeholder="Search"
               onChange={debounce((value) => {
-                console.log("our value", value.target.defaultValue);
                 setSearchQuery(value.target.defaultValue);
               }, 500)}
             />
@@ -270,16 +243,11 @@ const ProductAGGrid = () => {
             ref={gridRef}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
-            rowSelection="multiple"
-            animateRows={true}
             pagination={true}
             paginationPageSize={10}
             cacheBlockSize={10}
-            onGridReady={(params) => {
-              setGridApi(params.api);
-              onGridReady;
-            }}
-            rowModelType={"serverSide"}
+            onGridReady={onGridReady}
+            rowModelType="serverSide"
             domLayout="autoHeight"
             serverSideDatasource={datasource}
           />
