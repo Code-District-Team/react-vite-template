@@ -61,6 +61,7 @@ const TableList = () => {
     try {
       await User.InviteUser(values.email, values.roleId);
       message.success(`An email has been sent to ${values.email}`);
+      setIsModalOpen(false);
     } catch (error) {
       setFieldErrorsFromServer(error);
     }

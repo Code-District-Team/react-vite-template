@@ -162,6 +162,7 @@ export default class User {
     const request = new Request(
       K.Network.URL.Users.LoggedInUserDetails,
       K.Network.Method.GET,
+      null,
       K.Network.Header.Type.Json,
       {},
       false,

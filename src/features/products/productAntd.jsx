@@ -111,7 +111,7 @@ const ProductAntd = () => {
           style={{ marginRight: 8 }}
         />
         <button
-          onClick={() => handleReset(clearFilters)}
+          onClick={() => clearFilters && handleReset(clearFilters)}
           style={{ marginRight: 8 }}
         >
           Reset
@@ -230,13 +230,16 @@ const ProductAntd = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered) => (
-      <SearchOutlined
-        style={{
-          color: filtered ? "#1677ff" : undefined,
-        }}
-      />
-    ),
+    filterIcon: (filtered) => {
+      console.log("filtered", filtered);
+      return (
+        <SearchOutlined
+          style={{
+            color: filtered ? "#1677ff" : undefined,
+          }}
+        />
+      );
+    },
     // onFilter: (value, record) => {
     //   record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
     // },
@@ -503,8 +506,8 @@ const ProductAntd = () => {
           pagination={{
             current: currentPage,
             total: productData.total,
-            defaultPageSize: 10,
-            pageSize: 10,
+            defaultPageSize: 8,
+            pageSize: 8,
           }}
           x-scroll={991}
         ></Table>

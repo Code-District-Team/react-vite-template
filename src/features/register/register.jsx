@@ -2,7 +2,7 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, Typography } from "antd";
 import md5 from "md5";
 import { PatternFormat } from "react-number-format";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "~/assets/images/logo.svg";
 import User from "~/models/user";
 import {
@@ -14,6 +14,11 @@ const { Title } = Typography;
 
 export default function Register() {
   const [form] = Form.useForm();
+  const location = useLocation(); // useLocation hook to get the current location object
+  const searchParams = new URLSearchParams(location.search); // Create a URLSearchParams object with the current query string
+  const email = searchParams.get("email")?.replace(/ /g, "+");
+  console.log("email", email);
+  email && form.setFieldsValue({ email });
 
   const onFinish = async (values) => {
     try {
@@ -31,6 +36,7 @@ export default function Register() {
       setFieldErrorsFromServer(error, form, values);
     }
   };
+
   return (
     <div className="login-container">
       <div className="lc-logo">
