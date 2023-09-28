@@ -16,11 +16,11 @@ import K from "~/utilities/constants";
 
 const defaultChildren = (basePath) => [
   { path: `${basePath}`, name: "List" },
-  {
-    path: `${basePath}/create`,
-    name: "Create",
-    roles: [K.Permissions.Admin],
-  },
+  // {
+  //   path: `${basePath}/create`,
+  //   name: "Create",
+  //   roles: [K.Permissions.Admin],
+  // },
 ];
 const projectChildren = (basePath) => [
   {
