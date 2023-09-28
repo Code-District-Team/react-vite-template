@@ -1,4 +1,13 @@
-import { Button, Card, Form, Input, Space, Table, message } from "antd";
+import {
+  Button,
+  Card,
+  DatePicker,
+  Form,
+  Input,
+  Space,
+  Table,
+  message,
+} from "antd";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -14,6 +23,7 @@ import {
 } from "~/utilities/generalUtility";
 import ProductModal from "./productModal";
 import { SearchOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 const ProductAntd = () => {
   const [productData, setProductData] = useState({ products: [], total: 0 });
@@ -82,6 +92,65 @@ const ProductAntd = () => {
     clearFilters();
     setSearchText("");
   };
+
+  const getColumnSearchDateProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <DatePicker
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0] ? moment(selectedKeys[0], "YYYY-MM-DD") : null}
+          onChange={(date) =>
+            setSelectedKeys(date ? [date.format("YYYY-MM-DD"), "date"] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{ marginRight: 8 }}
+        />
+        <button
+          onClick={() => handleReset(clearFilters)}
+          style={{ marginRight: 8 }}
+        >
+          Reset
+        </button>
+        <button onClick={() => confirm()} type="primary">
+          Search
+        </button>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    ),
+    // onFilter: (value, record) => {
+    //   record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+    // },
+    // onFilterDropdownOpenChange: (visible) => {
+    //   if (visible) {
+    //     setTimeout(() => searchInput.current?.select(), 100);
+    //   }
+    // },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -220,18 +289,18 @@ const ProductAntd = () => {
       title: "Created At",
       dataIndex: "createdAt",
       sorter: true,
-      ...getColumnSearchProps("createdAt"),
+      ...getColumnSearchDateProps("createdAt"),
     },
     {
       title: "Updated At",
       dataIndex: "updatedAt",
       sorter: true,
-      ...getColumnSearchProps("updatedAt"),
+      ...getColumnSearchDateProps("updatedAt"),
     },
     {
       title: "Action",
       key: "action",
-      hidden: !isPermissionPresent(K.Permissions.Admin, userRole),
+      hidden: !isPermissionPresent([K.Permissions.Admin], userRole),
       render: (_, data) => (
         <>
           <span>
@@ -270,18 +339,37 @@ const ProductAntd = () => {
   //   ascend: "ASC",
   //   descend: "DESC",
   // };
+  // const Operators = {
+  //   text: "contains",
+  //   number: "equals",
+  // };
   const filterMapping = (filters) => {
     console.log("hsbfilters", filters);
     return {
       agGrid: Object.keys(filters)
         .filter((keys) => filters[keys])
-        .map((filterKey, i) => {
+        .map((filterKey) => {
+          console.log(
+            "type of column",
+            typeof productData.products[0][filterKey],
+          );
+          let flag = !!filters[filterKey]?.[1];
           return {
             field: filterKey,
-            [`condition${i + 1}`]: {
-              filterType: "number",
-              type: "contains",
-              filter: filters[filterKey][0],
+            [`condition${1}`]: {
+              filterType: flag
+                ? "date"
+                : typeof productData.products[0][filterKey] != "number"
+                ? "text"
+                : "number",
+              type:
+                typeof productData.products[0][filterKey] == "number" || flag
+                  ? "equals"
+                  : "contains",
+              [flag ? "dateFrom" : "filter"]:
+                typeof productData.products[0][filterKey] == "number"
+                  ? +filters[filterKey][0]
+                  : filters[filterKey][0],
             },
           };
         }),

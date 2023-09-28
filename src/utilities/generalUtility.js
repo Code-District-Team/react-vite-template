@@ -39,14 +39,23 @@ export const isDecimalRegex = () => {
 };
 
 export const isPermissionPresent = (permission, userRoles) => {
-  const hashMap = new Map([[userRoles?.name ?? "", userRoles?.name ?? ""]]); // * User has role but no permission
+  console.log("Roles", userRoles);
+  // const hashMap = new Map([[userRoles?.name ?? "", userRoles?.name ?? ""]]); // * User has role but no permission
+  const hashMap2 = new Map(); // * User has role but no permission
 
-  /* const permissionMap = {};
-  for (const obj of [userRoles] ?? []) {
-    permissionMap[obj] = true;
-  } */
+  for (const obj of userRoles ?? []) {
+    hashMap2[obj.name] = true;
+  }
   if (permission) {
-    return hashMap.has(K.Permissions.Admin) || hashMap.has(permission);
+    if (hashMap2[K.Permissions.Admin]) {
+      return true;
+    }
+    for (let singlePermission of permission) {
+      if (hashMap2[singlePermission]) {
+        return true;
+      }
+    }
+    return false;
   }
   return true;
 };

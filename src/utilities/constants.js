@@ -42,7 +42,7 @@ const K = {
         DeleteProducts: "/product",
       },
       Roles: {
-        GetRoles: "/user/roles",
+        GetRoles: "/roles",
       },
     },
     Method: {

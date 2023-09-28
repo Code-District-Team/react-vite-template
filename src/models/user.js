@@ -26,6 +26,7 @@ export default class User {
     return async (dispatch) => {
       const user = await NetworkCall.fetch(request);
       console.log("User", user);
+      debugger;
       let encryptedUser = CryptoJS.AES.encrypt(
         JSON.stringify(user),
         K.Cookie.Key.EncryptionKey,
@@ -294,6 +295,6 @@ export default class User {
     return this.getUserObjectFromCookies().tenant?.domainPrefix ?? "";
   }
   static getRole() {
-    return this.getUserObjectFromCookies()?.user?.role ?? null;
+    return this.getUserObjectFromCookies()?.user?.roles ?? null;
   }
 }

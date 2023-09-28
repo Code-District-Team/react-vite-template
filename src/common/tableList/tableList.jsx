@@ -1,6 +1,7 @@
-import { Button, Input, Table } from "antd";
+import { Button, Card, Form, Input, Table, message } from "antd";
 import { debounce } from "lodash";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import UserModal from "~/features/users/userModal";
 import User from "~/models/user";
 import K from "~/utilities/constants";
 import {
@@ -9,6 +10,7 @@ import {
   setFieldErrorsFromServer,
   stringSorting,
 } from "~/utilities/generalUtility";
+import Spinner from "../spinner/spinner";
 
 // const tableData = [
 //   {
@@ -49,7 +51,18 @@ const TableList = () => {
   const [searchedText, setSearchedText] = useState("");
   const [userData, setUserData] = useState([]);
   const userRole = User.getRole();
-
+  const editId = useRef(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [form] = Form.useForm();
+  const [roles, setRoles] = useState([]);
+  const getUserRolesData = async (values) => {
+    try {
+      const response = await User.GetUserRoles(values);
+      setRoles(response);
+    } catch (error) {
+      setFieldErrorsFromServer(error);
+    }
+  };
   const fetchUserDetails = async (values) => {
     try {
       const response = await User.userData(values);
@@ -59,14 +72,30 @@ const TableList = () => {
       setFieldErrorsFromServer(error, values);
     }
   };
-  useEffect(() => {
-    fetchUserDetails();
-  }, []);
+
   const onSearch = (param) => {
     let value = undefined;
     if (param.target) value = param.target.value;
     else value = param;
     setSearchedText(value ? value : "");
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const showModal = () => {
+    if (!editId.current) {
+      form.resetFields();
+    }
+    setIsModalOpen(true);
+  };
+  const onFinish = async (values) => {
+    try {
+      const response = await User.InviteUser(values.email, values.roleId);
+      console.log(response);
+      message.success("User Invite has been sent");
+    } catch (error) {
+      setFieldErrorsFromServer(error);
+    }
   };
   const handleDelete = async (id) => {
     try {
@@ -134,7 +163,7 @@ const TableList = () => {
       {
         title: "Action",
         key: "action",
-        hidden: !isPermissionPresent(K.Permissions.Admin, userRole),
+        hidden: !isPermissionPresent([K.Permissions.Admin], userRole),
         render: (_, data) => (
           <span>
             <Button onClick={() => handleDelete(data.id)}>Delete</Button>
@@ -144,21 +173,57 @@ const TableList = () => {
     ].filter((column) => {
       return !column.hidden;
     });
-
+  useEffect(() => {
+    fetchUserDetails();
+    getUserRolesData();
+  }, []);
+  if (roles.length == 0) {
+    return <Spinner />;
+  }
   return (
     <>
-      <Input.Search
-        allowClear
-        className="mb-3"
-        size="large"
-        placeholder="Search"
-        onSearch={onSearch}
-        onChange={debounce(onSearch, 500)}
-      />
-      <Table
-        rowKey="id"
-        columns={columns(searchedText)}
-        dataSource={userData}
+      <Card
+        className="card-wrapper"
+        title={
+          <>
+            <Input
+              allowClear
+              className="mb-3"
+              size="large"
+              placeholder="Search"
+              onSearch={onSearch}
+              onChange={debounce(onSearch, 500)}
+            />
+          </>
+        }
+        extra={
+          <>
+            <Button
+              type="primary"
+              size="large"
+              onClick={() => {
+                editId.current = false;
+                showModal();
+              }}
+            >
+              Create User
+            </Button>
+          </>
+        }
+      >
+        <Table
+          rowKey="id"
+          columns={columns(searchedText)}
+          dataSource={userData}
+        />
+      </Card>
+      <UserModal
+        isModalOpen={isModalOpen}
+        handleCancel={handleCancel}
+        form={form}
+        onFinish={onFinish}
+        editId={editId}
+        roles={roles}
       />
     </>
   );
