@@ -1,4 +1,4 @@
-export const Data = [
+export const tableData = [
   {
     id: "1",
     make: "Ford",

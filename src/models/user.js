@@ -175,8 +175,9 @@ export default class User {
     const request = new Request(
       K.Network.URL.Users.GetUser,
       K.Network.Method.GET,
+      null,
       K.Network.Header.Type.Json,
-      {},
+      { "ngrok-skip-browser-warning": true },
       false,
     );
 
@@ -241,13 +242,14 @@ export default class User {
 
     return NetworkCall.fetch(request, true);
   }
-  // //get all Roles
+  // get all Roles
   static async GetUserRoles() {
     const request = new Request(
       K.Network.URL.Roles.GetRoles,
       K.Network.Method.GET,
+      null,
       K.Network.Header.Type.Json,
-      {},
+      { "ngrok-skip-browser-warning": true },
       false,
     );
 
