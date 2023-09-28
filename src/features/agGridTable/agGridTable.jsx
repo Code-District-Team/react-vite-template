@@ -1,6 +1,4 @@
 import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useMemo } from "react";
 import { Data as rowData } from "~/redux/stubs/data";
 import { Card } from "antd";
