@@ -1,11 +1,9 @@
 import { AgGridReact } from "ag-grid-react";
-
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import ProductModal from "./productModal";
 import { Button, Card, Form, Input, message } from "antd";
-import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
-import Product from "~/models/product";
 import { debounce } from "lodash";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Product from "~/models/product";
+import ProductModal from "./productModal";
 
 const sortDict = {
   asc: "ASC",
@@ -21,18 +19,6 @@ const ProductAGGrid = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [gridApi, setGridApi] = useState(null);
   const [productId, setProductId] = useState(null);
-
-  const fetchProductDetails = async (queryParams, gridParams) => {
-    try {
-      const { data } = await Product.getProductData(queryParams);
-      gridParams.success({
-        rowData: data.products,
-        rowCount: data.total,
-      });
-    } catch (error) {
-      gridParams.fail();
-    }
-  };
 
   const datasource = useCallback(
     {
@@ -66,7 +52,15 @@ const ProductAGGrid = () => {
               : null,
           agGrid: payload.length === 0 ? null : payload,
         };
-        fetchProductDetails(body, params);
+        try {
+          const { data } = await Product.getProductData(body);
+          params.success({
+            rowData: data.products,
+            rowCount: data.total,
+          });
+        } catch (err) {
+          params.fail();
+        }
       },
     },
     [searchQuery, refreshTable],
@@ -86,8 +80,8 @@ const ProductAGGrid = () => {
       setIsModalOpen(false);
       setRefreshTable(!refreshTable);
       message.success("Product created Successfully");
-    } catch (error) {
-      setFieldErrorsFromServer(error);
+    } catch (err) {
+      console.error(err);
     }
   };
   const showModal = () => {
@@ -206,39 +200,28 @@ const ProductAGGrid = () => {
       <Card
         className="card-wrapper"
         title={
-          <>
-            <Input
-              size="large"
-              placeholder="Search"
-              onChange={debounce((value) => {
-                setSearchQuery(value.target.defaultValue);
-              }, 500)}
-            />
-          </>
+          <Input
+            size="large"
+            placeholder="Search"
+            onChange={debounce((value) => {
+              setSearchQuery(value.target.defaultValue);
+            }, 500)}
+          />
         }
         extra={
-          <>
-            <Button
-              type="primary"
-              size="large"
-              onClick={() => {
-                editId.current = false;
-                showModal();
-              }}
-            >
-              Create Product
-            </Button>
-          </>
+          <Button
+            type="primary"
+            size="large"
+            onClick={() => {
+              editId.current = false;
+              showModal();
+            }}
+          >
+            Create Product
+          </Button>
         }
       >
         <div className="ag-theme-alpine" style={{ height: 600, maxwidth: 100 }}>
-          <ProductModal
-            isModalOpen={isModalOpen}
-            handleCancel={handleCancel}
-            form={form}
-            onFinish={onFinish}
-            editId={editId}
-          />
           <AgGridReact
             ref={gridRef}
             columnDefs={columnDefs}
@@ -253,6 +236,13 @@ const ProductAGGrid = () => {
           />
         </div>
       </Card>
+      <ProductModal
+        isModalOpen={isModalOpen}
+        handleCancel={handleCancel}
+        form={form}
+        onFinish={onFinish}
+        editId={editId}
+      />
     </>
   );
 };

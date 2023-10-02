@@ -12,8 +12,6 @@ import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Highlighter from "react-highlight-words";
-// import { useDispatch } from "react-redux";
-// import { createLogger } from "vite";
 import Product from "~/models/product";
 import User from "~/models/user";
 import K from "~/utilities/constants";
@@ -27,7 +25,6 @@ import moment from "moment";
 
 const ProductAntd = () => {
   const [productData, setProductData] = useState({ products: [], total: 0 });
-  // const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation(); // useLocation hook to get the current location object
   const searchParams = new URLSearchParams(location.search); // Create a URLSearchParams object with the current query string
   const [form] = Form.useForm();
@@ -50,7 +47,6 @@ const ProductAntd = () => {
   }, [limit, page]);
 
   const fetchProductDetails = async (values = {}) => {
-    console.log("values", values);
     const body = {
       page: values.page || 1,
       limit: values.limit || 100,
@@ -66,7 +62,6 @@ const ProductAntd = () => {
     }
     try {
       const response = await Product.getProductData(body);
-      console.log(response);
       setProductData(response.data);
     } catch (error) {
       setFieldErrorsFromServer(error);
@@ -78,11 +73,6 @@ const ProductAntd = () => {
       confirm();
       setSearchText(selectedKeys[0]);
       setSearchedColumn(dataIndex);
-      // fetchProductDetails({
-      //   page: 1,
-      //   limit: 100,
-      //   searchQuery: selectedKeys[0],
-      // });
     } catch (error) {
       setFieldErrorsFromServer(error);
     }
@@ -128,14 +118,6 @@ const ProductAntd = () => {
         }}
       />
     ),
-    // onFilter: (value, record) => {
-    //   record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
-    // },
-    // onFilterDropdownOpenChange: (visible) => {
-    //   if (visible) {
-    //     setTimeout(() => searchInput.current?.select(), 100);
-    //   }
-    // },
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
@@ -205,19 +187,6 @@ const ProductAntd = () => {
           >
             Reset
           </Button>
-          {/* <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button> */}
           <Button
             type="link"
             size="small"
@@ -231,7 +200,6 @@ const ProductAntd = () => {
       </div>
     ),
     filterIcon: (filtered) => {
-      console.log("filtered", filtered);
       return (
         <SearchOutlined
           style={{
@@ -240,14 +208,6 @@ const ProductAntd = () => {
         />
       );
     },
-    // onFilter: (value, record) => {
-    //   record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
-    // },
-    // onFilterDropdownOpenChange: (visible) => {
-    //   if (visible) {
-    //     setTimeout(() => searchInput.current?.select(), 100);
-    //   }
-    // },
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
@@ -333,29 +293,13 @@ const ProductAntd = () => {
     if (sortBy) {
       queryParam += `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
     }
-    // if (searchQuery) {
-    //   queryParam += `&query=${searchQuery}`;
-    // }
     return queryParam;
   };
-  // const sortDict = {
-  //   ascend: "ASC",
-  //   descend: "DESC",
-  // };
-  // const Operators = {
-  //   text: "contains",
-  //   number: "equals",
-  // };
   const filterMapping = (filters) => {
-    console.log("hsbfilters", filters);
     return {
       agGrid: Object.keys(filters)
         .filter((keys) => filters[keys])
         .map((filterKey) => {
-          console.log(
-            "type of column",
-            typeof productData.products[0][filterKey],
-          );
           let flag = !!filters[filterKey]?.[1];
           return {
             field: filterKey,
@@ -379,9 +323,7 @@ const ProductAntd = () => {
     };
   };
   const onPageChange = (pagination, filters, sorter) => {
-    console.log({ filters });
     filters = filterMapping(filters);
-    console.log("hsb2filters", filters);
     const { pageSize, current } = pagination;
     const params = { page: current, limit: pageSize, ...filters };
     if (sorter.field) {
@@ -397,7 +339,6 @@ const ProductAntd = () => {
   const handleSearch = async (e) => {
     try {
       const query = e.target.value;
-      console.log("query", query);
       fetchProductDetails({
         page: 1,
         limit: 100,
@@ -497,7 +438,6 @@ const ProductAntd = () => {
           </>
         }
       >
-        {console.log("productData", productData.products)}
         <Table
           rowKey="id"
           columns={Columns}
