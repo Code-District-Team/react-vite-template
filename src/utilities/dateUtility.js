@@ -1,5 +1,10 @@
 import dayjs from "dayjs";
 
+/**
+ * Day.js Documentation
+ * https://day.js.org/
+ */
+
 // * Can not select days before today and today
 export const disabledPastDate = (current) =>
   current && current < dayjs().startOf("day");
