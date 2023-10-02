@@ -25,18 +25,17 @@ const ProductAGGrid = () => {
       async getRows(params) {
         const { startRow, endRow } = params.request;
         const payload = Object.keys(params.request.filterModel).map((key) => {
-          let result = {
-            field: key,
-          };
-          if (params.request.filterModel[key].condition1) {
-            result = {
-              ...result,
+          if ("condition1" in params.request.filterModel[key]) {
+            return {
+              field: key,
               ...params.request.filterModel[key],
             };
           } else {
-            result["condition1"] = params.request.filterModel[key];
+            return {
+              field: key,
+              condition1: params.request.filterModel[key],
+            };
           }
-          return result;
         });
         const limit = endRow - startRow;
         const page = startRow / limit + 1;

@@ -4,7 +4,6 @@ import history from "./history";
 import User from "~/models/user";
 
 export const handleError = (error) => {
-  console.error(error);
   message.error(error.message);
   return null;
 };

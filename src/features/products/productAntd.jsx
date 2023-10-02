@@ -168,7 +168,6 @@ const ProductAntd = () => {
             type="primary"
             onClick={() => {
               confirm();
-              // handleQuickSearch(selectedKeys, confirm, dataIndex);
             }}
             icon={<SearchOutlined />}
             size="small"
@@ -412,16 +411,12 @@ const ProductAntd = () => {
       <Card
         className="card-wrapper"
         title={
-          <>
-            <Input
-              allowClear
-              size="large"
-              placeholder="Search"
-              onSearch={handleSearch}
-              // onSearch={onSearch}
-              onChange={debounce(handleSearch, 500)}
-            ></Input>
-          </>
+          <Input
+            allowClear
+            size="large"
+            placeholder="Search"
+            onChange={debounce(handleSearch, 500)}
+          />
         }
         extra={
           <>
@@ -450,7 +445,7 @@ const ProductAntd = () => {
             pageSize: 8,
           }}
           x-scroll={991}
-        ></Table>
+        />
       </Card>
 
       <ProductModal
