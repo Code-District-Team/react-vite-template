@@ -25,8 +25,6 @@ export default class User {
 
     return async (dispatch) => {
       const user = await NetworkCall.fetch(request);
-      console.log("User", user);
-      debugger;
       let encryptedUser = CryptoJS.AES.encrypt(
         JSON.stringify(user),
         K.Cookie.Key.EncryptionKey,
@@ -75,7 +73,6 @@ export default class User {
       JSON.stringify(user),
       K.Cookie.Key.EncryptionKey,
     );
-    console.info(encryptedUser);
     Cookies.set(K.Cookie.Key.User, encryptedUser, {
       path: "/",
       domain: K.Network.URL.Client.BaseHost,
@@ -130,7 +127,6 @@ export default class User {
         JSON.stringify(user),
         K.Cookie.Key.EncryptionKey,
       );
-      console.info(encryptedUser);
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
         path: "/",
         domain: K.Network.URL.Client.BaseHost,
