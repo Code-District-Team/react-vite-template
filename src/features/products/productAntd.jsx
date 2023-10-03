@@ -300,18 +300,16 @@ const ProductAntd = () => {
           />
         }
         extra={
-          <>
-            <Button
-              type="primary"
-              size="large"
-              onClick={() => {
-                editId.current = null;
-                showModal();
-              }}
-            >
-              Create Product
-            </Button>
-          </>
+          <Button
+            type="primary"
+            size="large"
+            onClick={() => {
+              editId.current = null;
+              showModal();
+            }}
+          >
+            Create Product
+          </Button>
         }
       >
         <Table

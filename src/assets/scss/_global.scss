@@ -96,14 +96,20 @@ img {
 }
 
 
-.card-wrapper{
+.card-wrapper {
   margin: 24px;
-  .ant-card-head{
-    padding: 24px;  }
-  .ant-card-head-wrapper{
+
+  .ant-card-head {
+    padding: 24px;
+  }
+
+  .ant-card-head-wrapper {
     gap: 10px;
-    .ant-input-affix-wrapper{
-      max-width: 500px;
+
+    .ant-card-head-title {
+      input {
+        max-width: 500px !important;
+      }
     }
   }
 }
