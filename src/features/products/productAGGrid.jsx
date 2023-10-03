@@ -140,9 +140,7 @@ const ProductAGGrid = () => {
         >
           Edit
         </Button>
-        <Button className="ml-2" onClick={() => handleButtonDelete(productId)}>
-          Delete
-        </Button>
+        <Button onClick={() => handleButtonDelete(productId)}>Delete</Button>
       </Space>
     );
   };

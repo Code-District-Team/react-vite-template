@@ -1,3 +1,4 @@
+import { SearchOutlined } from "@ant-design/icons";
 import {
   Button,
   Card,
@@ -9,8 +10,8 @@ import {
   message,
 } from "antd";
 import { debounce } from "lodash";
+import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
 import Highlighter from "react-highlight-words";
 import Product from "~/models/product";
 import User from "~/models/user";
@@ -20,17 +21,17 @@ import {
   setFieldErrorsFromServer,
 } from "~/utilities/generalUtility";
 import ProductModal from "./productModal";
-import { SearchOutlined } from "@ant-design/icons";
-import moment from "moment";
 
 const ProductAntd = () => {
-  const [productData, setProductData] = useState({ products: [], total: 0 });
-  const location = useLocation(); // useLocation hook to get the current location object
-  const searchParams = new URLSearchParams(location.search); // Create a URLSearchParams object with the current query string
+  const [filters, setFilters] = useState({
+    page: 1,
+    limit: 10,
+    query: "",
+    sortBy: undefined,
+    sortOrder: undefined,
+  });
   const [form] = Form.useForm();
-  const limit = searchParams.get("limit"); // Get 'limit' parameter
-  const page = searchParams.get("page"); // Get 'page' parameter
-  const [currentPage, setCurrentPage] = useState(1);
+  const [productData, setProductData] = useState({ products: [], total: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productId, setProductId] = useState(null);
   const userRole = User.getRole();
@@ -40,31 +41,15 @@ const ProductAntd = () => {
   const searchInput = useRef(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchProductDetails();
-    };
-    fetchData();
-  }, [limit, page]);
+    fetchProductDetails();
+  }, [filters]);
 
-  const fetchProductDetails = async (values = {}) => {
-    const body = {
-      page: values.page || 1,
-      limit: values.limit || 100,
-      query: values.searchQuery || "",
-      ...(values?.agGrid?.length && { agGrid: values.agGrid }),
-    };
-    // Conditionally adding sortBy and sortOrder to the body
-    if (values.sortBy) {
-      body.sortBy = values.sortBy;
-    }
-    if (values.sortOrder) {
-      body.sortOrder = values.sortOrder;
-    }
+  const fetchProductDetails = async () => {
     try {
-      const response = await Product.getProductData(body);
+      const response = await Product.getProductData(filters);
       setProductData(response.data);
     } catch (error) {
-      setFieldErrorsFromServer(error);
+      console.error(error);
     }
   };
 
@@ -285,66 +270,19 @@ const ProductAntd = () => {
     return !column.hidden;
   });
 
-  const createQuery = (page, limit, sortBy, sortOrder) => {
-    let queryParam = `page=${page}&limit=${limit}`;
-    if (sortBy) {
-      queryParam += `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-    }
-    return queryParam;
-  };
-  const filterMapping = (filters) => {
-    return {
-      agGrid: Object.keys(filters)
-        .filter((keys) => filters[keys])
-        .map((filterKey) => {
-          let flag = !!filters[filterKey]?.[1];
-          return {
-            field: filterKey,
-            [`condition${1}`]: {
-              filterType: flag
-                ? "date"
-                : typeof productData.products[0][filterKey] != "number"
-                ? "text"
-                : "number",
-              type:
-                typeof productData.products[0][filterKey] == "number" || flag
-                  ? "equals"
-                  : "contains",
-              [flag ? "dateFrom" : "filter"]:
-                typeof productData.products[0][filterKey] == "number"
-                  ? +filters[filterKey][0]
-                  : filters[filterKey][0],
-            },
-          };
-        }),
-    };
-  };
   const onPageChange = (pagination, filters, sorter) => {
-    filters = filterMapping(filters);
-    const { pageSize, current } = pagination;
-    const params = { page: current, limit: pageSize, ...filters };
-    if (sorter.field) {
+    const params = { page: pagination.current, limit: pagination.pageSize };
+    if (sorter.field && sorter.order) {
       params.sortBy = sorter.field;
-    }
-    if (sorter.order) {
       params.sortOrder = sorter.order === "ascend" ? "ASC" : "DESC";
     }
-    fetchProductDetails(params);
-    setCurrentPage(current);
+    setFilters((prev) => ({ ...prev, ...params }));
   };
 
-  const handleSearch = async (e) => {
-    try {
-      const query = e.target.value;
-      fetchProductDetails({
-        page: 1,
-        limit: 100,
-        searchQuery: query,
-      });
-    } catch (error) {
-      setFieldErrorsFromServer(error);
-    }
+  const handleSearch = async ({ target: { value } }) => {
+    setFilters((prev) => ({ ...prev, query: value }));
   };
+
   const createProducts = async (values) => {
     try {
       await Product.createProductData(
@@ -352,7 +290,7 @@ const ProductAntd = () => {
         parseInt(values.quantity),
         parseFloat(values.price),
       );
-      fetchProductDetails(createQuery(1, 10));
+      fetchProductDetails();
       setIsModalOpen(false);
       message.success("Product created Successfully");
     } catch (error) {
@@ -382,7 +320,7 @@ const ProductAntd = () => {
   const handleButtonDelete = async (id) => {
     try {
       await Product.deleteProductData(id);
-      fetchProductDetails(createQuery(1, 10));
+      fetchProductDetails();
     } catch (error) {
       setFieldErrorsFromServer(error);
     }
@@ -397,7 +335,7 @@ const ProductAntd = () => {
         productId,
       );
       message.success("Product updated successfully");
-      fetchProductDetails(createQuery(1, 10));
+      fetchProductDetails();
       setIsModalOpen(false);
     } catch (error) {
       setFieldErrorsFromServer(error);
@@ -435,13 +373,9 @@ const ProductAntd = () => {
           rowKey="id"
           columns={Columns}
           onChange={onPageChange}
-          // dataSource={[
-          //   { id: 1, name: "Blue Jeans", price: 100, quantity: 5 },
-          //   { id: 2, name: "Black Shirt", price: 99, quantity: 6 },
-          // ]}
           dataSource={productData?.products}
           pagination={{
-            current: currentPage,
+            current: filters.page,
             total: productData.total,
             defaultPageSize: 8,
             pageSize: 8,
