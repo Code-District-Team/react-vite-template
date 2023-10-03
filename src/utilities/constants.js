@@ -43,6 +43,7 @@ const K = {
       },
       Roles: {
         GetAllRoles: "/roles",
+        GetRoleById: "/roles",
         CreateRole: "/roles",
         UpdateRole: "/roles",
         DeleteRole: "/roles",

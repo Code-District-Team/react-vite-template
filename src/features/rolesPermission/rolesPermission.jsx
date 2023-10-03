@@ -20,6 +20,7 @@ import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import RoleAndPermission from "~/models/roleAndPermission";
 import User from "~/models/user";
+import { stringSorting } from "~/utilities/generalUtility";
 
 const { Title, Paragraph } = Typography;
 const { Search } = Input;
@@ -35,10 +36,11 @@ export default function RolesPermission() {
     roles: [],
     permissions: [],
   });
+  // const [sourceKeys, setSourceKeys] = useState([]);
   const [searchedText, setSearchedText] = useState("");
   // const [tableData, setTableData] = useState([]);
   // const [tempListing, setTempListing] = useState([]);
-
+  // console.log("sourceKeys", sourceKeys);
   const actionColumnRenderer = (params, record) => {
     console.log("params", params, record);
     return (
@@ -75,10 +77,14 @@ export default function RolesPermission() {
     {
       title: "Role Name",
       dataIndex: "name",
-      sortable: true,
+      sorter: (a, b) => stringSorting(a, b, "name"),
+      // sortable: true,
       filteredValue: [searchedText],
       onFilter: (value, record) => {
-        return record.name.toLowerCase().includes(value.toLowerCase());
+        if (typeof record.name === "string") {
+          return record.name.toLowerCase().includes(value.toLowerCase());
+        }
+        return false; // If record.name isn't a string, we don't want it to match
       },
     },
     {
@@ -116,7 +122,13 @@ export default function RolesPermission() {
   const getAllPermissions = async () => {
     const permissions = await RoleAndPermission.getAllPermissions();
     setListing((prev) => {
-      return { ...prev, permissions };
+      return {
+        ...prev,
+        permissions: permissions.map((perm) => ({
+          ...perm,
+          displayName: perm.name,
+        })),
+      };
     });
   };
 
@@ -168,14 +180,27 @@ export default function RolesPermission() {
     option.displayName.toLowerCase().indexOf(inputValue) > -1;
 
   const handleEdit = async (roleId) => {
-    setEditId(roleId);
-    const res = await RoleAndPermission.getRoleById(roleId, User.getId());
-    console.log("Response", res);
-    const permissions = res?.permission?.map((pr) => pr.id);
-    console.log("Permission IDs", permissions);
-    setTargetKeys([...permissions]);
-    showModal();
-    form.setFieldsValue({ name: res.name });
+    try {
+      const res = await RoleAndPermission.getRoleById(roleId, User.getId());
+      console.log("Fetched Role Response:", res);
+
+      if (!res || !res.permissions) {
+        throw new Error("Unexpected data structure from getRoleById.");
+      }
+
+      // Extracting the permission IDs from the response
+      const permissions = res.permissions.map((pr) => pr.id);
+      console.log("Extracted Permission IDs:", permissions);
+
+      setEditId(roleId);
+      setTargetKeys([...permissions]);
+      form.setFieldsValue({ name: res.name });
+
+      showModal();
+    } catch (error) {
+      console.error("Detailed Error:", error);
+      message.error("Failed to prepare role for editing.");
+    }
   };
 
   const handleDelete = async (roleId) => {
@@ -198,9 +223,23 @@ export default function RolesPermission() {
 
   const updateRole = async (data) => {
     try {
-      const res = await RoleAndPermission.updateRole(User.getId(), data);
-      console.log("updaterespponse", res);
+      // Extract the necessary data from the provided data object
+      const { id, name, permissionIds } = data;
+
+      // Construct the request body
+      const body = {
+        name: name,
+        permissionIds: permissionIds,
+      };
+
+      // Call the updateRole method in the RoleAndPermission module
+      const res = await RoleAndPermission.updateRole(id, body);
+      console.log("update response", res);
+
       message.success("Role updated successfully");
+      // Re-fetch roles or permissions
+      getAllRoles(); // This is the function that fetches the list initially.
+
       setListing((prev) => {
         return {
           ...prev,
@@ -210,11 +249,13 @@ export default function RolesPermission() {
           }),
         };
       });
+
       setInitialValues();
     } catch (error) {
       message.error(error.message);
     }
   };
+
   const onSearch = (param) => {
     let value = undefined;
     if (param.target) value = param.target.value;

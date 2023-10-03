@@ -57,14 +57,14 @@ export default class RoleAndPermission {
     return res;
   }
 
-  static async getRoleById(id, idToken) {
+  static async getRoleById(id) {
     const request = new Request(
-      `${K.Network.URL.Roles.GetRole}?id=${id}`,
+      `${K.Network.URL.Roles.GetRoleById}/${id}`,
       K.Network.Method.GET,
       null,
       K.Network.Header.Type.Json,
       {
-        Authorization: `Bearer ${idToken}`,
+        // Authorization: `Bearer ${idToken}`,
       },
       false,
       K.Network.ResponseType.Json,
@@ -92,14 +92,14 @@ export default class RoleAndPermission {
     return res;
   }
 
-  static async updateRole(idToken, data) {
+  static async updateRole(id, body) {
     const request = new Request(
-      K.Network.URL.Roles.UpdateRole,
-      K.Network.Method.PUT,
-      data,
+      `${K.Network.URL.Roles.UpdateRole}/${id}`,
+      K.Network.Method.PATCH,
+      body,
       K.Network.Header.Type.Json,
       {
-        Authorization: `Bearer ${idToken}`,
+        // Authorization: `Bearer ${idToken}`,
       },
       false,
       K.Network.ResponseType.Json,
