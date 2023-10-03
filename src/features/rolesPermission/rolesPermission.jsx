@@ -1,17 +1,242 @@
-import { Button, Form, Input, Modal, Table, Transfer } from "antd";
-import Card from "antd/es/card/Card";
-import Search from "antd/es/input/Search";
-import Paragraph from "antd/es/skeleton/Paragraph";
-import Title from "antd/es/skeleton/Title";
+// import { useState, useEffect } from "react";
+
+import {
+  Input,
+  Button,
+  Typography,
+  Form,
+  Modal,
+  Transfer,
+  Card,
+  // message,
+  Table,
+  message,
+} from "antd";
+// import LayoutCss from "layout/layout.module.scss";
+
+// import RoleAndPermission from "~/models/role/rolesAndPermission";
+// import User from "~/models/user";
+import { debounce } from "lodash";
+import { useEffect, useState } from "react";
+import RoleAndPermission from "~/models/roleAndPermission";
+import User from "~/models/user";
+
+const { Title, Paragraph } = Typography;
+const { Search } = Input;
 
 export default function RolesPermission() {
+  const [form] = Form.useForm();
+  const [targetKeys, setTargetKeys] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [listing, setListing] = useState({
+    roles: [],
+    permissions: [],
+  });
+  const [searchedText, setSearchedText] = useState("");
+  // const [tableData, setTableData] = useState([]);
+  // const [tempListing, setTempListing] = useState([]);
+
+  const actionColumnRenderer = (params, record) => {
+    console.log("params", params, record);
+    return (
+      <>
+        <Button
+          type="link"
+          // className={LayoutCss.appListingCardActions}
+          onClick={() => handleEdit(record.id)}
+        >
+          Edit
+        </Button>
+        <Button
+          type="link"
+          style={{ color: "red" }}
+          // className={LayoutCss.appListingCardActions}
+          onClick={() => handleDelete(record.id)}
+        >
+          Delete
+        </Button>
+
+        {/* <Button type="link" className={LayoutCss.appListingCardActions}>
+      Delete
+    </Button> */}
+      </>
+    );
+  };
+
+  const columnDefs = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      sortable: true,
+    },
+    {
+      title: "Role Name",
+      dataIndex: "name",
+      sortable: true,
+      filteredValue: [searchedText],
+      onFilter: (value, record) => {
+        return record.name.toLowerCase().includes(value.toLowerCase());
+      },
+    },
+    {
+      title: "Actions",
+      dataIndex: "actions",
+      sortable: true,
+      resizable: false,
+      headerClass: "text-center",
+      cellStyle: { textAlign: "center" },
+      render: (id, record) => actionColumnRenderer(id, record),
+    },
+  ];
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setEditId(null);
+    setIsModalVisible(false);
+    form.resetdataIndexs();
+    setTargetKeys([]);
+  };
+  const onSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
+    setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
+  };
+  const getAllRoles = async () => {
+    const roles = await RoleAndPermission.getAllRoles();
+
+    setListing((prev) => {
+      return { ...prev, roles };
+    });
+  };
+
+  const getAllPermissions = async () => {
+    const permissions = await RoleAndPermission.getAllPermissions();
+    setListing((prev) => {
+      return { ...prev, permissions };
+    });
+  };
+
+  const setInitialValues = () => {
+    setIsModalVisible(false);
+    setTargetKeys([]);
+    setEditId(null);
+    // form.resetdataIndexs();
+  };
+  const createRole = async (data) => {
+    try {
+      console.log("hsbdata", data);
+      const res = await RoleAndPermission.createRole(User.getId(), data);
+      message.success("Role created successfully");
+      setListing((prev) => {
+        return {
+          ...prev,
+          roles: [...prev.roles, res],
+        };
+      });
+      setInitialValues();
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
+  const onFinish = async (values) => {
+    setIsLoading(true);
+    console.log("hsbtargetkeys", targetKeys);
+    const data = { ...values, permissionIds: targetKeys, id: editId };
+    console.log("hsbdata2", data);
+    if (editId) await updateRole(data);
+    else await createRole(data);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    (async () => {
+      await Promise.all([getAllRoles(), getAllPermissions()]);
+      console.log("permissionshsb", getAllPermissions);
+    })();
+  }, []);
+
+  const onChange = (newTargetKeys) => {
+    setTargetKeys(newTargetKeys);
+  };
+
+  const filterOption = (inputValue, option) =>
+    option.displayName.toLowerCase().indexOf(inputValue) > -1;
+
+  const handleEdit = async (roleId) => {
+    setEditId(roleId);
+    const res = await RoleAndPermission.getRoleById(roleId, User.getId());
+    console.log("Response", res);
+    const permissions = res?.permission?.map((pr) => pr.id);
+    console.log("Permission IDs", permissions);
+    setTargetKeys([...permissions]);
+    showModal();
+    form.setFieldsValue({ name: res.name });
+  };
+
+  const handleDelete = async (roleId) => {
+    setEditId(roleId);
+    try {
+      // Find the role from the listing.roles state using the roleId
+      const roleToDelete = listing.roles.find((role) => role.id === roleId);
+      const roleName = roleToDelete ? roleToDelete.name : "";
+
+      // Include only the roleName in the data sent to deleteRole
+      const data = { name: roleName };
+
+      const res = await RoleAndPermission.deleteRole(roleId, data);
+      console.log("Response", res);
+      getAllRoles();
+    } catch (error) {
+      message.error(error);
+    }
+  };
+
+  const updateRole = async (data) => {
+    try {
+      const res = await RoleAndPermission.updateRole(User.getId(), data);
+      console.log("updaterespponse", res);
+      message.success("Role updated successfully");
+      setListing((prev) => {
+        return {
+          ...prev,
+          roles: prev.roles.map((item) => {
+            if (item.id === res.id) return res;
+            return item;
+          }),
+        };
+      });
+      setInitialValues();
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+  const onSearch = (param) => {
+    let value = undefined;
+    if (param.target) value = param.target.value;
+    else value = param;
+    setSearchedText(value ? value : "");
+  };
+
   return (
     <>
       <Card
         className="roles-permission-card"
+        // className={[LayoutCss.appCard, LayoutCss.rolesPermissionCard]}
         title={
           <>
-            <Search />
+            <Search
+              allowClear={(e) => console.log({ e })}
+              placeholder="Search"
+              onSearch={onSearch}
+              onChange={debounce(onSearch, 500)}
+
+              // className={LayoutCss.appListingCardRolesTableSearch}
+            />
           </>
         }
         extra={
@@ -20,8 +245,13 @@ export default function RolesPermission() {
             // className={LayoutCss.appListingCardRolesTable}
             >
               <Button
-
-              //   className={LayoutCss.appListingCardRolesTableButton}
+                type="primary"
+                onClick={() => {
+                  setTargetKeys([]);
+                  form.setFieldsValue({ name: "" });
+                  showModal();
+                }}
+                //   className={LayoutCss.appListingCardRolesTableButton}
               >
                 <i className={"icon-plus "}></i>
                 <span>Add New</span>
@@ -36,19 +266,39 @@ export default function RolesPermission() {
             height: 735,
           }}
         >
-          <Table />
+          <Table
+            dataSource={listing.roles}
+            columns={columnDefs}
+            scroll={{ x: 600 }}
+          />
         </div>
       </Card>
+
       <Modal
+        open={isModalVisible}
+        okText={editId ? "Update" : "Save"}
+        wrapClassName="vertical-center-modal"
+        onCancel={handleCancel}
+        centered
+        destroyOnClose
+        closeIcon={<i className="icon-closeable"></i>}
+        width={1050}
+        onOk={form.submit}
+        okButtonProps={{
+          loading: isLoading,
+          disabled: targetKeys.length === 0,
+        }}
+        className="s2-theme-style roles-permissions-modal"
         title={
           <Title className="ant-modal-title">
+            {!editId ? "Create New" : "Update"} Roles & Permissions
             <Paragraph className="rolesTableModal">
               Please fill in all the details
             </Paragraph>
           </Title>
         }
       >
-        <Form layout="vertical">
+        <Form layout="vertical" form={form} onFinish={onFinish}>
           <Form.Item
             label="Role Name"
             name="name"
@@ -67,7 +317,21 @@ export default function RolesPermission() {
         <Title level={5} className="rolesTableTypography">
           Select Permissions
         </Title>
-        <Transfer />
+        <Transfer
+          oneWay
+          showSearch
+          className="rolesPermissionTransfer"
+          pagination={{ pageSize: 6 }}
+          titles={["Source", "Target"]}
+          dataSource={listing.permissions}
+          targetKeys={targetKeys}
+          selectedKeys={selectedKeys}
+          rowKey={(record) => record.id}
+          onChange={onChange}
+          filterOption={filterOption}
+          onSelectChange={onSelectChange}
+          render={(item) => item.displayName}
+        />
       </Modal>
     </>
   );
