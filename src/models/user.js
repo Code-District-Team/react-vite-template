@@ -242,7 +242,7 @@ export default class User {
   // get all Roles
   static async GetUserRoles() {
     const request = new Request(
-      K.Network.URL.Roles.GetRoles,
+      K.Network.URL.Roles.GetAllRoles,
       K.Network.Method.GET,
       null,
       K.Network.Header.Type.Json,
