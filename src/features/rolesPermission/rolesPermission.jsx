@@ -31,7 +31,7 @@ export default function RolesPermission() {
     permissions: [],
   });
   const [searchedText, setSearchedText] = useState("");
-  const actionColumnRenderer = (params, record) => {
+  const actionColumnRenderer = (_, record) => {
     return (
       <>
         <Button type="link" onClick={() => handleEdit(record.id)}>
@@ -81,7 +81,7 @@ export default function RolesPermission() {
   const handleCancel = () => {
     setEditId(null);
     setIsModalVisible(false);
-    form.resetdataIndexs();
+    form.resetFields();
     setTargetKeys([]);
   };
 
@@ -110,7 +110,6 @@ export default function RolesPermission() {
     setIsModalVisible(false);
     setTargetKeys([]);
     setEditId(null);
-    // form.resetdataIndexs();
   };
   const createRole = async (data) => {
     try {
@@ -261,6 +260,7 @@ export default function RolesPermission() {
           }}
         >
           <Table
+            rowKey="id"
             dataSource={listing.roles}
             columns={columnDefs}
             scroll={{ x: 600 }}

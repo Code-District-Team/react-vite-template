@@ -43,9 +43,7 @@ export default class RoleAndPermission {
       K.Network.Method.POST,
       data,
       K.Network.Header.Type.Json,
-      {
-        Authorization: `Bearer ${idToken}`,
-      },
+      {},
       false,
       K.Network.ResponseType.Json,
       true,
