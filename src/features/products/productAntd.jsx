@@ -18,10 +18,11 @@ const ProductAntd = () => {
   const searchInput = useRef(null);
   const userRole = User.getRole();
 
-  const [filters, setFilters] = useState({
+  const [payload, setPayload] = useState({
     page: 1,
     limit: 10,
     query: "",
+    filterType: "antd",
     sortBy: undefined,
     sortOrder: undefined,
   });
@@ -32,11 +33,11 @@ const ProductAntd = () => {
 
   useEffect(() => {
     fetchProductDetails();
-  }, [filters]);
+  }, [payload]);
 
   const fetchProductDetails = async () => {
     try {
-      const response = await Product.getProductData(filters);
+      const response = await Product.getProductData(payload);
       setProductData(response.data);
     } catch (error) {
       console.error(error);
@@ -209,7 +210,6 @@ const ProductAntd = () => {
   });
 
   const onPageChange = (pagination, filters, sorter) => {
-    // TODO: Need to pass filters in payload (API pending)
     const params = { page: pagination.current, limit: pagination.pageSize };
     if (sorter.field && sorter.order) {
       params.sortBy = sorter.field;
@@ -218,11 +218,11 @@ const ProductAntd = () => {
       params.sortBy = undefined;
       params.sortOrder = undefined;
     }
-    setFilters((prev) => ({ ...prev, ...params }));
+    setPayload((prev) => ({ ...prev, ...params, filters }));
   };
 
   const handleSearch = async ({ target: { value } }) => {
-    setFilters((prev) => ({ ...prev, query: value }));
+    setPayload((prev) => ({ ...prev, query: value }));
   };
 
   const createProducts = async (values) => {
@@ -318,9 +318,9 @@ const ProductAntd = () => {
           onChange={onPageChange}
           dataSource={productData?.products}
           pagination={{
-            current: filters.page,
+            current: payload.page,
             total: productData.total,
-            pageSize: filters.limit,
+            pageSize: payload.limit,
           }}
           scroll={{ x: 950 }}
         />

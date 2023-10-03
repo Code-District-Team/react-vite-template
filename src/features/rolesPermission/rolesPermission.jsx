@@ -1,5 +1,3 @@
-// import { useState, useEffect } from "react";
-
 import {
   Input,
   Button,
@@ -8,14 +6,10 @@ import {
   Modal,
   Transfer,
   Card,
-  // message,
   Table,
   message,
 } from "antd";
-// import LayoutCss from "layout/layout.module.scss";
 
-// import RoleAndPermission from "~/models/role/rolesAndPermission";
-// import User from "~/models/user";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import RoleAndPermission from "~/models/roleAndPermission";
@@ -28,7 +22,7 @@ const { Search } = Input;
 export default function RolesPermission() {
   const [form] = Form.useForm();
   const [targetKeys, setTargetKeys] = useState([]);
-  const [selectedKeys, setSelectedKeys] = useState([]);
+  // const [selectedKeys, setSelectedKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [editId, setEditId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -36,34 +30,16 @@ export default function RolesPermission() {
     roles: [],
     permissions: [],
   });
-  // const [sourceKeys, setSourceKeys] = useState([]);
   const [searchedText, setSearchedText] = useState("");
-  // const [tableData, setTableData] = useState([]);
-  // const [tempListing, setTempListing] = useState([]);
-  // console.log("sourceKeys", sourceKeys);
   const actionColumnRenderer = (params, record) => {
-    console.log("params", params, record);
     return (
       <>
-        <Button
-          type="link"
-          // className={LayoutCss.appListingCardActions}
-          onClick={() => handleEdit(record.id)}
-        >
+        <Button type="link" onClick={() => handleEdit(record.id)}>
           Edit
         </Button>
-        <Button
-          type="link"
-          style={{ color: "red" }}
-          // className={LayoutCss.appListingCardActions}
-          onClick={() => handleDelete(record.id)}
-        >
+        <Button type="link" danger onClick={() => handleDelete(record.id)}>
           Delete
         </Button>
-
-        {/* <Button type="link" className={LayoutCss.appListingCardActions}>
-      Delete
-    </Button> */}
       </>
     );
   };
@@ -108,9 +84,7 @@ export default function RolesPermission() {
     form.resetdataIndexs();
     setTargetKeys([]);
   };
-  const onSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
-    setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
-  };
+
   const getAllRoles = async () => {
     const roles = await RoleAndPermission.getAllRoles();
 
@@ -140,7 +114,6 @@ export default function RolesPermission() {
   };
   const createRole = async (data) => {
     try {
-      console.log("hsbdata", data);
       const res = await RoleAndPermission.createRole(User.getId(), data);
       message.success("Role created successfully");
       setListing((prev) => {
@@ -157,18 +130,14 @@ export default function RolesPermission() {
 
   const onFinish = async (values) => {
     setIsLoading(true);
-    console.log("hsbtargetkeys", targetKeys);
-    const data = { ...values, permissionIds: targetKeys, id: editId };
-    console.log("hsbdata2", data);
-    if (editId) await updateRole(data);
-    else await createRole(data);
+    if (editId) await updateRole({ ...values, id: editId });
+    else await createRole(values);
     setIsLoading(false);
   };
 
   useEffect(() => {
     (async () => {
       await Promise.all([getAllRoles(), getAllPermissions()]);
-      console.log("permissionshsb", getAllPermissions);
     })();
   }, []);
 
@@ -182,7 +151,6 @@ export default function RolesPermission() {
   const handleEdit = async (roleId) => {
     try {
       const res = await RoleAndPermission.getRoleById(roleId, User.getId());
-      console.log("Fetched Role Response:", res);
 
       if (!res || !res.permissions) {
         throw new Error("Unexpected data structure from getRoleById.");
@@ -190,15 +158,13 @@ export default function RolesPermission() {
 
       // Extracting the permission IDs from the response
       const permissions = res.permissions.map((pr) => pr.id);
-      console.log("Extracted Permission IDs:", permissions);
 
       setEditId(roleId);
-      setTargetKeys([...permissions]);
-      form.setFieldsValue({ name: res.name });
+      setTargetKeys(permissions);
+      form.setFieldsValue({ name: res.name, permissionIds: permissions });
 
       showModal();
     } catch (error) {
-      console.error("Detailed Error:", error);
       message.error("Failed to prepare role for editing.");
     }
   };
@@ -234,7 +200,6 @@ export default function RolesPermission() {
 
       // Call the updateRole method in the RoleAndPermission module
       const res = await RoleAndPermission.updateRole(id, body);
-      console.log("update response", res);
 
       message.success("Role updated successfully");
       // Re-fetch roles or permissions
@@ -266,39 +231,27 @@ export default function RolesPermission() {
   return (
     <>
       <Card
-        className="roles-permission-card"
-        // className={[LayoutCss.appCard, LayoutCss.rolesPermissionCard]}
+        className="card-wrapper"
         title={
-          <>
-            <Search
-              allowClear={(e) => console.log({ e })}
-              placeholder="Search"
-              onSearch={onSearch}
-              onChange={debounce(onSearch, 500)}
-
-              // className={LayoutCss.appListingCardRolesTableSearch}
-            />
-          </>
+          <Search
+            allowClear
+            placeholder="Search"
+            onSearch={onSearch}
+            onChange={debounce(onSearch, 500)}
+          />
         }
         extra={
-          <>
-            <div
-            // className={LayoutCss.appListingCardRolesTable}
-            >
-              <Button
-                type="primary"
-                onClick={() => {
-                  setTargetKeys([]);
-                  form.setFieldsValue({ name: "" });
-                  showModal();
-                }}
-                //   className={LayoutCss.appListingCardRolesTableButton}
-              >
-                <i className={"icon-plus "}></i>
-                <span>Add New</span>
-              </Button>
-            </div>
-          </>
+          <Button
+            type="primary"
+            onClick={() => {
+              setTargetKeys([]);
+              form.setFieldsValue({ name: "" });
+              showModal();
+            }}
+          >
+            <i className={"icon-plus "}></i>
+            <span>Add New</span>
+          </Button>
         }
       >
         <div
@@ -323,7 +276,6 @@ export default function RolesPermission() {
         centered
         destroyOnClose
         closeIcon={<i className="icon-closeable"></i>}
-        width={1050}
         onOk={form.submit}
         okButtonProps={{
           loading: isLoading,
@@ -354,25 +306,25 @@ export default function RolesPermission() {
           >
             <Input placeholder="Enter" className="rolesTableInput" />
           </Form.Item>
+
+          <Title level={5} className="rolesTableTypography">
+            Select Permissions
+          </Title>
+          <Form.Item name="permissionIds">
+            <Transfer
+              oneWay
+              showSearch
+              pagination={{ pageSize: 6 }}
+              titles={["Source", "Target"]}
+              dataSource={listing.permissions}
+              targetKeys={targetKeys}
+              rowKey={(record) => record.id}
+              onChange={onChange}
+              filterOption={filterOption}
+              render={(item) => item.displayName}
+            />
+          </Form.Item>
         </Form>
-        <Title level={5} className="rolesTableTypography">
-          Select Permissions
-        </Title>
-        <Transfer
-          oneWay
-          showSearch
-          className="rolesPermissionTransfer"
-          pagination={{ pageSize: 6 }}
-          titles={["Source", "Target"]}
-          dataSource={listing.permissions}
-          targetKeys={targetKeys}
-          selectedKeys={selectedKeys}
-          rowKey={(record) => record.id}
-          onChange={onChange}
-          filterOption={filterOption}
-          onSelectChange={onSelectChange}
-          render={(item) => item.displayName}
-        />
       </Modal>
     </>
   );

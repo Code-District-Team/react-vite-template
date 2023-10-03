@@ -41,19 +41,9 @@ const K = {
         UpdateProducts: "/product",
         DeleteProducts: "/product",
       },
-      Roles: {
-        GetAllRoles: "/roles",
-        GetRoleById: "/roles",
-        CreateRole: "/roles",
-        UpdateRole: "/roles",
-        DeleteRole: "/roles",
-      },
-      Permission: {
-        GetAllPermissions: "/permissions",
-        CreatePermissions: "/permissions",
-        DeletePermissions: "/permissions",
-        UpdatePermissions: "/permissions",
-      },
+
+      Roles: "/roles",
+      Permission: "/permissions",
     },
     Method: {
       GET: "GET",
