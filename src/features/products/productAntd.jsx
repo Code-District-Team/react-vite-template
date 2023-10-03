@@ -1,16 +1,6 @@
 import { SearchOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  DatePicker,
-  Form,
-  Input,
-  Space,
-  Table,
-  message,
-} from "antd";
+import { Button, Card, Form, Input, Space, Table, message } from "antd";
 import { debounce } from "lodash";
-import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import Product from "~/models/product";
@@ -23,6 +13,11 @@ import {
 import ProductModal from "./productModal";
 
 const ProductAntd = () => {
+  const [form] = Form.useForm();
+  const editId = useRef(null);
+  const searchInput = useRef(null);
+  const userRole = User.getRole();
+
   const [filters, setFilters] = useState({
     page: 1,
     limit: 10,
@@ -30,15 +25,10 @@ const ProductAntd = () => {
     sortBy: undefined,
     sortOrder: undefined,
   });
-  const [form] = Form.useForm();
   const [productData, setProductData] = useState({ products: [], total: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [productId, setProductId] = useState(null);
-  const userRole = User.getRole();
-  const editId = useRef(null);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
-  const searchInput = useRef(null);
 
   useEffect(() => {
     fetchProductDetails();
@@ -67,57 +57,6 @@ const ProductAntd = () => {
     clearFilters();
     setSearchText("");
   };
-
-  const getColumnSearchDateProps = (dataIndex) => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
-      <div style={{ padding: 8 }}>
-        <DatePicker
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0] ? moment(selectedKeys[0], "YYYY-MM-DD") : null}
-          onChange={(date) =>
-            setSelectedKeys(date ? [date.format("YYYY-MM-DD"), "date"] : [])
-          }
-          onPressEnter={() => handleSearch(selectedKeys, confirm)}
-          style={{ marginRight: 8 }}
-        />
-        <button
-          onClick={() => clearFilters && handleReset(clearFilters)}
-          style={{ marginRight: 8 }}
-        >
-          Reset
-        </button>
-        <button onClick={() => confirm()} type="primary">
-          Search
-        </button>
-      </div>
-    ),
-    filterIcon: (filtered) => (
-      <SearchOutlined
-        style={{
-          color: filtered ? "#1677ff" : undefined,
-        }}
-      />
-    ),
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{
-            backgroundColor: "#ffc069",
-            padding: 0,
-          }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
-      ),
-  });
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -207,7 +146,7 @@ const ProductAntd = () => {
         text
       ),
   });
-  const Columns = [
+  const columns = [
     {
       title: "ID",
       dataIndex: "id",
@@ -236,13 +175,13 @@ const ProductAntd = () => {
       title: "Created At",
       dataIndex: "createdAt",
       sorter: true,
-      ...getColumnSearchDateProps("createdAt"),
+      // ...getColumnSearchDateProps("createdAt"),
     },
     {
       title: "Updated At",
       dataIndex: "updatedAt",
       sorter: true,
-      ...getColumnSearchDateProps("updatedAt"),
+      // ...getColumnSearchDateProps("updatedAt"),
     },
     {
       title: "Action",
@@ -252,9 +191,8 @@ const ProductAntd = () => {
         <Space>
           <Button
             onClick={() => {
-              editId.current = true;
+              editId.current = data.id;
               showModal();
-              setProductId(data.id);
               form.setFieldsValue(data);
             }}
           >
@@ -271,10 +209,14 @@ const ProductAntd = () => {
   });
 
   const onPageChange = (pagination, filters, sorter) => {
+    // TODO: Need to pass filters in payload (API pending)
     const params = { page: pagination.current, limit: pagination.pageSize };
     if (sorter.field && sorter.order) {
       params.sortBy = sorter.field;
       params.sortOrder = sorter.order === "ascend" ? "ASC" : "DESC";
+    } else {
+      params.sortBy = undefined;
+      params.sortOrder = undefined;
     }
     setFilters((prev) => ({ ...prev, ...params }));
   };
@@ -285,12 +227,15 @@ const ProductAntd = () => {
 
   const createProducts = async (values) => {
     try {
-      await Product.createProductData(
+      const res = await Product.createProductData(
         values.name,
-        parseInt(values.quantity),
-        parseFloat(values.price),
+        values.quantity,
+        values.price,
       );
-      fetchProductDetails();
+      setProductData((prev) => ({
+        total: prev.total + 1,
+        products: [...prev.products, res],
+      }));
       setIsModalOpen(false);
       message.success("Product created Successfully");
     } catch (error) {
@@ -332,7 +277,7 @@ const ProductAntd = () => {
         values.name,
         parseInt(values.quantity),
         parseFloat(values.price),
-        productId,
+        editId.current,
       );
       message.success("Product updated successfully");
       fetchProductDetails();
@@ -360,7 +305,7 @@ const ProductAntd = () => {
               type="primary"
               size="large"
               onClick={() => {
-                editId.current = false;
+                editId.current = null;
                 showModal();
               }}
             >
@@ -371,14 +316,13 @@ const ProductAntd = () => {
       >
         <Table
           rowKey="id"
-          columns={Columns}
+          columns={columns}
           onChange={onPageChange}
           dataSource={productData?.products}
           pagination={{
             current: filters.page,
             total: productData.total,
-            defaultPageSize: 8,
-            pageSize: 8,
+            pageSize: filters.limit,
           }}
           scroll={{ x: 950 }}
         />
