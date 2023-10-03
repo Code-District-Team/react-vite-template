@@ -1,5 +1,5 @@
 import { AgGridReact } from "ag-grid-react";
-import { Button, Card, Form, Input, message } from "antd";
+import { Button, Card, Form, Input, Space, message } from "antd";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Product from "~/models/product";
@@ -125,11 +125,11 @@ const ProductAGGrid = () => {
     }
   };
 
-  const buttonComponent = (params) => {
+  const actionRenderer = (params) => {
     const data = params.data; // Get the row data object
     const productId = data.id; // Extract the id from the row data object
     return (
-      <>
+      <Space>
         <Button
           onClick={() => {
             editId.current = true;
@@ -143,7 +143,7 @@ const ProductAGGrid = () => {
         <Button className="ml-2" onClick={() => handleButtonDelete(productId)}>
           Delete
         </Button>
-      </>
+      </Space>
     );
   };
 
@@ -175,7 +175,7 @@ const ProductAGGrid = () => {
     },
     {
       field: "actions",
-      cellRenderer: buttonComponent,
+      cellRenderer: actionRenderer,
     },
   ];
 

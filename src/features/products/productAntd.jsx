@@ -264,23 +264,21 @@ const ProductAntd = () => {
       key: "action",
       hidden: !isPermissionPresent([K.Permissions.Admin], userRole),
       render: (_, data) => (
-        <>
-          <span>
-            <Button
-              onClick={() => {
-                editId.current = true;
-                showModal();
-                setProductId(data.id);
-                form.setFieldsValue(data);
-              }}
-            >
-              Edit
-            </Button>
-          </span>
-          <span className="ml-3">
-            <Button onClick={() => handleButtonDelete(data.id)}>Delete</Button>
-          </span>
-        </>
+        <Space>
+          <Button
+            onClick={() => {
+              editId.current = true;
+              showModal();
+              setProductId(data.id);
+              form.setFieldsValue(data);
+            }}
+          >
+            Edit
+          </Button>
+          <Button danger onClick={() => handleButtonDelete(data.id)}>
+            Delete
+          </Button>
+        </Space>
       ),
     },
   ].filter((column) => {
@@ -437,6 +435,10 @@ const ProductAntd = () => {
           rowKey="id"
           columns={Columns}
           onChange={onPageChange}
+          // dataSource={[
+          //   { id: 1, name: "Blue Jeans", price: 100, quantity: 5 },
+          //   { id: 2, name: "Black Shirt", price: 99, quantity: 6 },
+          // ]}
           dataSource={productData?.products}
           pagination={{
             current: currentPage,
@@ -444,7 +446,7 @@ const ProductAntd = () => {
             defaultPageSize: 8,
             pageSize: 8,
           }}
-          x-scroll={991}
+          scroll={{ x: 950 }}
         />
       </Card>
 

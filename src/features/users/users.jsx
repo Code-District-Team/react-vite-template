@@ -2,6 +2,8 @@ import { Button, Card, Form, Input, Table, message } from "antd";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import Spinner from "~/common/spinner/spinner";
+import User from "~/models/user";
+import K from "~/utilities/constants";
 import {
   isPermissionPresent,
   numberSorting,
@@ -9,9 +11,8 @@ import {
   stringSorting,
 } from "~/utilities/generalUtility";
 import UserModal from "./userModal";
-import K from "~/utilities/constants";
 
-export default function User() {
+export default function Users() {
   const [searchedText, setSearchedText] = useState("");
   const [userData, setUserData] = useState([]);
   const userRole = User.getRole();
@@ -146,6 +147,7 @@ export default function User() {
     fetchUserDetails();
     getUserRolesData();
   }, []);
+
   if (roles.length == 0) {
     return <Spinner />;
   }
