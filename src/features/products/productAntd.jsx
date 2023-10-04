@@ -15,10 +15,7 @@ import Highlighter from "react-highlight-words";
 import Product from "~/models/product";
 import User from "~/models/user";
 import K from "~/utilities/constants";
-import {
-  isPermissionPresent,
-  setFieldErrorsFromServer,
-} from "~/utilities/generalUtility";
+import { isPermissionPresent } from "~/utilities/generalUtility";
 import ProductModal from "./productModal";
 import dayjs from "dayjs";
 
@@ -56,7 +53,7 @@ const ProductAntd = () => {
       setSearchText(selectedKeys[0]);
       setSearchedColumn(dataIndex);
     } catch (error) {
-      setFieldErrorsFromServer(error);
+      message.error("Failed to Search");
     }
   };
 
@@ -331,7 +328,7 @@ const ProductAntd = () => {
       setIsModalOpen(false);
       message.success("Product created Successfully");
     } catch (error) {
-      setFieldErrorsFromServer(error);
+      message.error("Failed to Create Product");
     }
   };
 
@@ -359,7 +356,7 @@ const ProductAntd = () => {
       await Product.deleteProductData(id);
       fetchProductDetails();
     } catch (error) {
-      setFieldErrorsFromServer(error);
+      message.error("Failed to Delete Product");
     }
   };
 
@@ -375,7 +372,7 @@ const ProductAntd = () => {
       fetchProductDetails();
       setIsModalOpen(false);
     } catch (error) {
-      setFieldErrorsFromServer(error);
+      message.error("Failed to Edit the Product");
     }
   };
 

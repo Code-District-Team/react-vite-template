@@ -253,6 +253,20 @@ export default class User {
     return NetworkCall.fetch(request, true);
   }
 
+  // Upload Profile Picture
+  static async UploadProfilePicture(body) {
+    const request = new Request(
+      K.Network.URL.Users.UploadProfilePicture,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    return NetworkCall.fetch(request, true);
+  }
+
   // * Helpers
 
   static getUserObjectFromCookies() {

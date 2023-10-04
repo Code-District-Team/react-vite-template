@@ -1,6 +1,6 @@
 import { Button, Card, Form, Input, Table, message } from "antd";
 import { debounce } from "lodash";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import RoleAndPermission from "~/models/roleAndPermission";
 import User from "~/models/user";
 import { stringSorting } from "~/utilities/generalUtility";
@@ -12,7 +12,7 @@ export default function RolesPermission() {
   const [form] = Form.useForm();
   const [targetKeys, setTargetKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [editId, setEditId] = useState(null);
+  const editId = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchedText, setSearchedText] = useState("");
   const [listing, setListing] = useState({
@@ -67,7 +67,7 @@ export default function RolesPermission() {
   };
 
   const handleCancel = () => {
-    setEditId(null);
+    editId.current = null;
     setIsModalVisible(false);
     form.resetdataIndexs();
     setTargetKeys([]);
@@ -96,7 +96,7 @@ export default function RolesPermission() {
   const setInitialValues = () => {
     setIsModalVisible(false);
     setTargetKeys([]);
-    setEditId(null);
+    editId.current = null;
   };
   const createRole = async (data) => {
     try {
@@ -114,8 +114,8 @@ export default function RolesPermission() {
 
   const onFinish = async (values) => {
     setIsLoading(true);
-    const data = { ...values, permissionIds: targetKeys, id: editId };
-    if (editId) await updateRole(data);
+    const data = { ...values, permissionIds: targetKeys, id: editId.current };
+    if (editId.current) await updateRole(data);
     else await createRole(data);
     setIsLoading(false);
   };
@@ -143,7 +143,7 @@ export default function RolesPermission() {
 
       const permissions = res.permissions.map((pr) => pr.id);
 
-      setEditId(roleId);
+      editId.current = roleId;
       setTargetKeys([...permissions]);
       form.setFieldsValue({ name: res.name });
 
@@ -232,7 +232,7 @@ export default function RolesPermission() {
       </Card>
       <RolesModal
         isModalVisible={isModalVisible}
-        editId={editId}
+        editId={editId.current}
         handleCancel={handleCancel}
         form={form}
         isLoading={isLoading}
