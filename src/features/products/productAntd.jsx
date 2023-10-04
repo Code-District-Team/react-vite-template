@@ -21,6 +21,7 @@ import {
 } from "~/utilities/generalUtility";
 import ProductModal from "./productModal";
 import dayjs from "dayjs";
+import FilterActions from "~/common/filterActions/filterActions";
 
 const ProductAntd = () => {
   const [form] = Form.useForm();
@@ -94,39 +95,12 @@ const ProductAntd = () => {
             display: "block",
           }}
         />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => {
-              confirm();
-            }}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
-          </Button>
-        </Space>
+        <FilterActions
+          close={close}
+          confirm={confirm}
+          clearFilters={clearFilters}
+          handleReset={handleReset}
+        />
       </div>
     ),
     filterIcon: (filtered) => {
@@ -178,39 +152,12 @@ const ProductAntd = () => {
             setSelectedKeys(date ? [date.format("YYYY-MM-DD 00:00:00")] : []);
           }}
         />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => {
-              confirm();
-            }}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
-          </Button>
-        </Space>
+        <FilterActions
+          close={close}
+          confirm={confirm}
+          clearFilters={clearFilters}
+          handleReset={handleReset}
+        />
       </div>
     ),
     filterIcon: (filtered) => {
