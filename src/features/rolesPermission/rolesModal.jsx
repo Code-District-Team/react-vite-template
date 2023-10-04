@@ -1,37 +1,18 @@
-// import { useState, useEffect } from "react";
+import { Input, Form, Modal, Transfer, Typography } from "antd";
 
-import {
-  Input,
-  Form,
-  Modal,
-  Transfer,
-  // message,
-} from "antd";
-// import LayoutCss from "layout/layout.module.scss";
-
-// import RoleAndPermission from "~/models/role/rolesAndPermission";
-// import User from "~/models/user";
-//   import { debounce } from "lodash";
-//   import { useEffect, useState } from "react";
-//   import RoleAndPermission from "~/models/roleAndPermission";
-//   import User from "~/models/user";
-//   import { stringSorting } from "~/utilities/generalUtility";
+const { Title, Paragraph } = Typography;
 
 const RolesModal = ({
   isModalVisible,
   editId,
-  Title,
-  Paragraph,
   handleCancel,
   form,
   isLoading,
   targetKeys,
   onFinish,
   listing,
-  selectedKeys,
   onChange,
   filterOption,
-  onSelectChange,
 }) => {
   return (
     <Modal
@@ -41,7 +22,6 @@ const RolesModal = ({
       onCancel={handleCancel}
       centered
       destroyOnClose
-      closeIcon={<i className="icon-closeable"></i>}
       onOk={form.submit}
       okButtonProps={{
         loading: isLoading,
@@ -84,11 +64,9 @@ const RolesModal = ({
         titles={["Source", "Target"]}
         dataSource={listing.permissions}
         targetKeys={targetKeys}
-        selectedKeys={selectedKeys}
         rowKey={(record) => record.id}
         onChange={onChange}
         filterOption={filterOption}
-        onSelectChange={onSelectChange}
         render={(item) => item.displayName}
       />
     </Modal>

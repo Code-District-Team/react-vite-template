@@ -37,7 +37,7 @@ export default class RoleAndPermission {
     return res;
   }
 
-  static async createRole(idToken, data) {
+  static async createRole(data) {
     const request = new Request(
       K.Network.URL.Roles,
       K.Network.Method.POST,
@@ -67,11 +67,11 @@ export default class RoleAndPermission {
     const res = await NetworkCall.fetch(request);
     return res;
   }
-  static async deleteRole(id, data) {
+  static async deleteRole(id, body) {
     const request = new Request(
       `${K.Network.URL.Roles}/${id}`,
       K.Network.Method.DELETE,
-      data,
+      body,
       K.Network.Header.Type.Json,
       {},
       false,

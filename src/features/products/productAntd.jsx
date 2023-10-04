@@ -275,30 +275,31 @@ const ProductAntd = () => {
       sorter: true,
       ...getColumnSearchDateProps("updatedAt"),
     },
-    {
-      title: "Action",
-      key: "action",
-      hidden: !isPermissionPresent([K.Permissions.Admin], userRole),
-      render: (_, data) => (
-        <Space>
-          <Button
-            onClick={() => {
-              editId.current = data.id;
-              showModal();
-              form.setFieldsValue(data);
-            }}
-          >
-            Edit
-          </Button>
-          <Button danger onClick={() => handleButtonDelete(data.id)}>
-            Delete
-          </Button>
-        </Space>
-      ),
-    },
-  ].filter((column) => {
-    return !column.hidden;
-  });
+    ...(isPermissionPresent([K.Permissions.Admin], userRole)
+      ? [
+          {
+            title: "Action",
+            key: "action",
+            render: (_, data) => (
+              <Space>
+                <Button
+                  onClick={() => {
+                    editId.current = data.id;
+                    showModal();
+                    form.setFieldsValue(data);
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button danger onClick={() => handleButtonDelete(data.id)}>
+                  Delete
+                </Button>
+              </Space>
+            ),
+          },
+        ]
+      : []),
+  ];
 
   const handleTableChange = (pagination, filters, sorter) => {
     const params = { page: pagination.current, limit: pagination.pageSize };
@@ -313,7 +314,7 @@ const ProductAntd = () => {
   };
 
   const handleSearch = async ({ target: { value } }) => {
-    setPayload((prev) => ({ ...prev, query: value }));
+    setPayload((prev) => ({ ...prev, query: value, page: 1 }));
   };
 
   const createProducts = async (values) => {

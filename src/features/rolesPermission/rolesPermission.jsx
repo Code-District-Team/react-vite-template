@@ -1,4 +1,4 @@
-import { Input, Button, Typography, Form, Card, Table, message } from "antd";
+import { Button, Card, Form, Input, Table, message } from "antd";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import RoleAndPermission from "~/models/roleAndPermission";
@@ -6,22 +6,20 @@ import User from "~/models/user";
 import { stringSorting } from "~/utilities/generalUtility";
 import RolesModal from "./rolesModal";
 
-const { Title, Paragraph } = Typography;
 const { Search } = Input;
 
 export default function RolesPermission() {
   const [form] = Form.useForm();
   const [targetKeys, setTargetKeys] = useState([]);
-  const [selectedKeys, setSelectedKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [editId, setEditId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchedText, setSearchedText] = useState("");
   const [listing, setListing] = useState({
     roles: [],
     permissions: [],
   });
-  const [searchedText, setSearchedText] = useState("");
-  const actionColumnRenderer = (params, record) => {
+  const actionColumnRenderer = (_, record) => {
     return (
       <>
         <Button type="link" onClick={() => handleEdit(record.id)}>
@@ -29,8 +27,10 @@ export default function RolesPermission() {
         </Button>
         <Button
           type="link"
-          style={{ color: "red" }}
-          onClick={() => handleDelete(record.id)}
+          danger
+          onClick={() => {
+            handleDelete(record);
+          }}
         >
           Delete
         </Button>
@@ -42,13 +42,12 @@ export default function RolesPermission() {
     {
       title: "ID",
       dataIndex: "id",
-      sortable: true,
     },
     {
       title: "Role Name",
       dataIndex: "name",
-      sorter: (a, b) => stringSorting(a, b, "name"),
       filteredValue: [searchedText],
+      sorter: (a, b) => stringSorting(a, b, "name"),
       onFilter: (value, record) => {
         if (typeof record.name === "string") {
           return record.name.toLowerCase().includes(value.toLowerCase());
@@ -59,11 +58,7 @@ export default function RolesPermission() {
     {
       title: "Actions",
       dataIndex: "actions",
-      sortable: true,
-      resizable: false,
-      headerClass: "text-center",
-      cellStyle: { textAlign: "center" },
-      render: (id, record) => actionColumnRenderer(id, record),
+      render: actionColumnRenderer,
     },
   ];
 
@@ -77,12 +72,9 @@ export default function RolesPermission() {
     form.resetdataIndexs();
     setTargetKeys([]);
   };
-  const onSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
-    setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
-  };
+
   const getAllRoles = async () => {
     const roles = await RoleAndPermission.getAllRoles();
-
     setListing((prev) => {
       return { ...prev, roles };
     });
@@ -108,14 +100,12 @@ export default function RolesPermission() {
   };
   const createRole = async (data) => {
     try {
-      const res = await RoleAndPermission.createRole(User.getId(), data);
+      const res = await RoleAndPermission.createRole(data);
       message.success("Role created successfully");
-      setListing((prev) => {
-        return {
-          ...prev,
-          roles: [...prev.roles, res],
-        };
-      });
+      setListing((prev) => ({
+        ...prev,
+        roles: [...prev.roles, res],
+      }));
       setInitialValues();
     } catch (error) {
       message.error(error.message);
@@ -146,7 +136,6 @@ export default function RolesPermission() {
   const handleEdit = async (roleId) => {
     try {
       const res = await RoleAndPermission.getRoleById(roleId, User.getId());
-      console.log("Fetched Role Response:", res);
 
       if (!res || !res.permissions) {
         throw new Error("Unexpected data structure from getRoleById.");
@@ -164,16 +153,13 @@ export default function RolesPermission() {
     }
   };
 
-  const handleDelete = async (roleId) => {
-    setEditId(roleId);
+  const handleDelete = async (record) => {
     try {
-      const roleToDelete = listing.roles.find((role) => role.id === roleId);
-      const roleName = roleToDelete ? roleToDelete.name : "";
-      const data = { name: roleName };
-
-      const res = await RoleAndPermission.deleteRole(roleId, data);
-      console.log("Response", res);
-      getAllRoles();
+      await RoleAndPermission.deleteRole(record.id, { name: record.name });
+      setListing((prev) => ({
+        ...prev,
+        roles: prev.roles.filter(({ id }) => id !== record.id),
+      }));
     } catch (error) {
       message.error(error);
     }
@@ -181,16 +167,14 @@ export default function RolesPermission() {
 
   const updateRole = async (data) => {
     try {
-      const { id, name, permissionIds } = data;
+      const { id, ...restValues } = data;
 
-      const body = {
-        name: name,
-        permissionIds: permissionIds,
-      };
-      const res = await RoleAndPermission.updateRole(id, body);
+      // const res =
+      await RoleAndPermission.updateRole(id, restValues);
       message.success("Role updated successfully");
       getAllRoles();
-      setListing((prev) => {
+      // TODO: Need to update state on update remove above API Call
+      /* setListing((prev) => {
         return {
           ...prev,
           roles: prev.roles.map((item) => {
@@ -198,7 +182,7 @@ export default function RolesPermission() {
             return item;
           }),
         };
-      });
+      }); */
 
       setInitialValues();
     } catch (error) {
@@ -216,64 +200,48 @@ export default function RolesPermission() {
   return (
     <>
       <Card
-        className="roles-permission-card"
+        className="card-wrapper"
         title={
-          <>
-            <Search
-              allowClear={(e) => console.log({ e })}
-              placeholder="Search"
-              onSearch={onSearch}
-              onChange={debounce(onSearch, 500)}
-            />
-          </>
+          <Search
+            allowClear
+            size="large"
+            placeholder="Search"
+            onSearch={onSearch}
+            onChange={debounce(onSearch, 500)}
+          />
         }
         extra={
-          <>
-            <div>
-              <Button
-                type="primary"
-                onClick={() => {
-                  setTargetKeys([]);
-                  form.setFieldsValue({ name: "" });
-                  showModal();
-                }}
-              >
-                <i className={"icon-plus "}></i>
-                <span>Add New</span>
-              </Button>
-            </div>
-          </>
+          <Button
+            type="primary"
+            size="large"
+            onClick={() => {
+              setTargetKeys([]);
+              form.setFieldsValue({ name: "" });
+              showModal();
+            }}
+          >
+            Add New
+          </Button>
         }
       >
-        <div
-          className="ag-theme-alpine s2-theme-style"
-          style={{
-            height: 735,
-          }}
-        >
-          <Table
-            dataSource={listing.roles}
-            columns={columnDefs}
-            scroll={{ x: 600 }}
-          />
-          <RolesModal
-            isModalVisible={isModalVisible}
-            editId={editId}
-            Title={Title}
-            Paragraph={Paragraph}
-            handleCancel={handleCancel}
-            form={form}
-            isLoading={isLoading}
-            targetKeys={targetKeys}
-            onFinish={onFinish}
-            listing={listing}
-            selectedKeys={selectedKeys}
-            onChange={onChange}
-            filterOption={filterOption}
-            onSelectChange={onSelectChange}
-          />
-        </div>
+        <Table
+          dataSource={listing.roles}
+          columns={columnDefs}
+          scroll={{ x: 600 }}
+        />
       </Card>
+      <RolesModal
+        isModalVisible={isModalVisible}
+        editId={editId}
+        handleCancel={handleCancel}
+        form={form}
+        isLoading={isLoading}
+        targetKeys={targetKeys}
+        onFinish={onFinish}
+        listing={listing}
+        onChange={onChange}
+        filterOption={filterOption}
+      />
     </>
   );
 }
