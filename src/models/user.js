@@ -206,6 +206,7 @@ export default class User {
 
     const user = await NetworkCall.fetch(request, true);
     const data = User.getUserObjectFromCookies();
+    user.roles = data.user.roles;
     const cookieData = {
       apiToken: data?.apiToken,
       user,
@@ -242,7 +243,7 @@ export default class User {
   // get all Roles
   static async GetUserRoles() {
     const request = new Request(
-      K.Network.URL.Roles.GetAllRoles,
+      K.Network.URL.Roles,
       K.Network.Method.GET,
       null,
       K.Network.Header.Type.Json,
