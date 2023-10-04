@@ -1,5 +1,14 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Card, Form, Input, Space, Table, message } from "antd";
+import {
+  Button,
+  Card,
+  DatePicker,
+  Form,
+  Input,
+  Space,
+  Table,
+  message,
+} from "antd";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
@@ -11,6 +20,7 @@ import {
   setFieldErrorsFromServer,
 } from "~/utilities/generalUtility";
 import ProductModal from "./productModal";
+import dayjs from "dayjs";
 
 const ProductAntd = () => {
   const [form] = Form.useForm();
@@ -30,10 +40,6 @@ const ProductAntd = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
-
-  useEffect(() => {
-    fetchProductDetails();
-  }, [payload]);
 
   const fetchProductDetails = async () => {
     try {
@@ -147,6 +153,91 @@ const ProductAntd = () => {
         text
       ),
   });
+
+  const getColumnSearchDateProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <DatePicker
+          style={{
+            marginBottom: 8,
+            display: "block",
+          }}
+          value={selectedKeys[0] ? dayjs(selectedKeys[0]) : null}
+          onChange={(date) => {
+            setSelectedKeys(date ? [date.format("YYYY-MM-DD 00:00:00")] : []);
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => {
+              confirm();
+            }}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => {
+      return (
+        <SearchOutlined
+          style={{
+            color: filtered ? "#1677ff" : undefined,
+          }}
+        />
+      );
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+
   const columns = [
     {
       title: "ID",
@@ -176,13 +267,13 @@ const ProductAntd = () => {
       title: "Created At",
       dataIndex: "createdAt",
       sorter: true,
-      // ...getColumnSearchDateProps("createdAt"),
+      ...getColumnSearchDateProps("createdAt"),
     },
     {
       title: "Updated At",
       dataIndex: "updatedAt",
       sorter: true,
-      // ...getColumnSearchDateProps("updatedAt"),
+      ...getColumnSearchDateProps("updatedAt"),
     },
     {
       title: "Action",
@@ -209,7 +300,7 @@ const ProductAntd = () => {
     return !column.hidden;
   });
 
-  const onPageChange = (pagination, filters, sorter) => {
+  const handleTableChange = (pagination, filters, sorter) => {
     const params = { page: pagination.current, limit: pagination.pageSize };
     if (sorter.field && sorter.order) {
       params.sortBy = sorter.field;
@@ -243,7 +334,7 @@ const ProductAntd = () => {
     }
   };
 
-  const onFinish = async (values) => {
+  const onFinish = (values) => {
     if (!editId.current) {
       createProducts(values);
     } else {
@@ -275,8 +366,8 @@ const ProductAntd = () => {
     try {
       await Product.updateProductData(
         values.name,
-        parseInt(values.quantity),
-        parseFloat(values.price),
+        values.quantity,
+        values.price,
         editId.current,
       );
       message.success("Product updated successfully");
@@ -286,6 +377,10 @@ const ProductAntd = () => {
       setFieldErrorsFromServer(error);
     }
   };
+
+  useEffect(() => {
+    fetchProductDetails();
+  }, [payload]);
 
   return (
     <>
@@ -315,14 +410,14 @@ const ProductAntd = () => {
         <Table
           rowKey="id"
           columns={columns}
-          onChange={onPageChange}
+          onChange={handleTableChange}
           dataSource={productData?.products}
+          scroll={{ x: 950 }}
           pagination={{
             current: payload.page,
             total: productData.total,
             pageSize: payload.limit,
           }}
-          scroll={{ x: 950 }}
         />
       </Card>
 

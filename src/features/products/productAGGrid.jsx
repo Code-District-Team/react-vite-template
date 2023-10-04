@@ -43,13 +43,14 @@ const ProductAGGrid = () => {
         const body = {
           page,
           limit,
+          filterType: "ag-grid",
           query: searchQuery,
           sortBy: params.request.sortModel[0]?.colId,
           sortOrder:
             params.request.sortModel.length > 0
               ? sortDict[params.request.sortModel[0]["sort"]]
               : null,
-          agGrid: payload.length === 0 ? null : payload,
+          agGrid: payload.length === 0 ? undefined : payload,
         };
         try {
           const { data } = await Product.getProductData(body);
