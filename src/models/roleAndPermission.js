@@ -98,16 +98,12 @@ export default class RoleAndPermission {
       K.Network.Method.PATCH,
       body,
       K.Network.Header.Type.Json,
-      {
-        // Authorization: `Bearer ${idToken}`,
-      },
+      {},
       false,
       K.Network.ResponseType.Json,
       true,
     );
-    console.log("request", request);
     const res = await NetworkCall.fetch(request);
-    console.log("res", res);
     return res;
   }
 }
