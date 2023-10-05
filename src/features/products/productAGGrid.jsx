@@ -141,7 +141,9 @@ const ProductAGGrid = () => {
         >
           Edit
         </Button>
-        <Button onClick={() => handleButtonDelete(productId)}>Delete</Button>
+        <Button danger onClick={() => handleButtonDelete(productId)}>
+          Delete
+        </Button>
       </Space>
     );
   };
@@ -149,7 +151,6 @@ const ProductAGGrid = () => {
   const columnDefs = [
     {
       field: "id",
-      flex: 1,
     },
     {
       field: "name",
@@ -166,11 +167,9 @@ const ProductAGGrid = () => {
     {
       field: "createdAt",
       filter: "agDateColumnFilter",
-      flex: 1,
     },
     {
       field: "updatedAt",
-      flex: 1,
     },
     {
       field: "actions",
