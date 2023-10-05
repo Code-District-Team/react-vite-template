@@ -25,9 +25,7 @@ export default class RoleAndPermission {
       K.Network.Method.GET,
       null,
       K.Network.Header.Type.Json,
-      {
-        "ngrok-skip-browser-warning": true,
-      },
+      { "ngrok-skip-browser-warning": true },
       false,
       K.Network.ResponseType.Json,
       true,
@@ -55,7 +53,7 @@ export default class RoleAndPermission {
 
   static async getRoleById(id) {
     const request = new Request(
-      `${K.Network.URL.Roles}/${id}`,
+      K.Network.URL.Roles + `/${id}`,
       K.Network.Method.GET,
       null,
       K.Network.Header.Type.Json,
@@ -69,7 +67,7 @@ export default class RoleAndPermission {
   }
   static async deleteRole(id, body) {
     const request = new Request(
-      `${K.Network.URL.Roles}/${id}`,
+      K.Network.URL.Roles + `/${id}`,
       K.Network.Method.DELETE,
       body,
       K.Network.Header.Type.Json,
@@ -84,7 +82,7 @@ export default class RoleAndPermission {
 
   static async updateRole(id, body) {
     const request = new Request(
-      `${K.Network.URL.Roles}/${id}`,
+      K.Network.URL.Roles + `/${id}`,
       K.Network.Method.PATCH,
       body,
       K.Network.Header.Type.Json,

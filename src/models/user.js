@@ -167,7 +167,6 @@ export default class User {
     return await NetworkCall.fetch(request, true);
   }
 
-  // //get User Details
   static async userData() {
     const request = new Request(
       K.Network.URL.Users.GetUser,
@@ -182,9 +181,8 @@ export default class User {
   }
 
   static async deleteUser(id) {
-    const params = `${K.Network.URL.Users.DeleteUser}?id=${id}`;
     const request = new Request(
-      params,
+      K.Network.URL.Users.DeleteUser + `?id=${id}`,
       K.Network.Method.DELETE,
       K.Network.Header.Type.Json,
       {},

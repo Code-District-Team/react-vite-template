@@ -18,9 +18,8 @@ export default class Product {
 
   //get product by id
   static async getProductDataById(id) {
-    const params = `${K.Network.URL.Products.GetProductsById}/${id}`;
     const request = new Request(
-      params,
+      K.Network.URL.Products.GetProductsById + `/${id}`,
       K.Network.Method.GET,
       K.Network.Header.Type.Json,
       {},
