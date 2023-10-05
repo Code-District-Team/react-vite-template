@@ -86,7 +86,10 @@ const K = {
   },
   Permissions: {
     Admin: "ADMIN",
-    User: "USER",
+    ReadUser: "Read.User",
+    WriteUser: "Write.User",
+    ReadProducts: "Read.Product",
+    WriteProducts: "Write.Product",
   },
 };
 export default K;

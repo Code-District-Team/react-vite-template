@@ -225,6 +225,7 @@ export default function RolesPermission() {
         }
       >
         <Table
+          rowKey="id"
           dataSource={listing.roles}
           columns={columnDefs}
           scroll={{ x: 600 }}

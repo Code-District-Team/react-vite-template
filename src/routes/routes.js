@@ -136,25 +136,24 @@ const routes = [
   {
     path: "/products/product-ag-grid",
     name: "Prod-AG-Grid",
-    component: ProductAGGrid,
     authenticated: true,
-
+    permission: [K.Permissions.ReadProducts],
+    component: ProductAGGrid,
     layout: LoggedInPageLayout,
   },
   {
     path: "/products/product-antd",
     name: "Prod-Antd",
-    component: ProductAntd,
+    permission: [K.Permissions.ReadProducts],
     authenticated: true,
-
+    component: ProductAntd,
     layout: LoggedInPageLayout,
   },
   {
     path: "/config",
     name: "Configurations",
-    component: RolesPermission,
     authenticated: true,
-    // permission: [],
+    component: RolesPermission,
     layout: LoggedInPageLayout,
   },
   {
