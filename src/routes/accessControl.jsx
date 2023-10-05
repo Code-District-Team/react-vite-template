@@ -1,5 +1,7 @@
+import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import User from "~/models/user";
+import { selectUser } from "~/redux/user/userSlice";
 import K from "~/utilities/constants";
 import {
   isPermissionPresent,
@@ -11,6 +13,7 @@ export default function AccessControl({
   isAuthenticatedRoute,
   routePermission,
 }) {
+  const userData = useSelector(selectUser);
   if (
     !isAuthenticatedRoute ||
     (isAuthenticatedRoute && User.isTokenAvailable())
@@ -24,8 +27,10 @@ export default function AccessControl({
     )
       return <Navigate to="/" replace />;
     // Check permission
-    const userRoles = User.getRole();
-    const hasPermission = isPermissionPresent(routePermission, userRoles);
+    const hasPermission = isPermissionPresent(
+      routePermission,
+      userData.permissionsHash,
+    );
 
     if (hasPermission) {
       return <Outlet />;

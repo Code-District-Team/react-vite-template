@@ -33,15 +33,6 @@ import RolesPermission from "~/features/rolesPermission/rolesPermission";
   }
 */
 
-/* const defaultCrudChildren = [
-  {
-    path: "store/create",
-    name: "Create",
-    // component: CreateProjects,
-    // layout: LoggedInPageLayout,
-  },
-]; */
-
 const routes = [
   {
     path: "/login",

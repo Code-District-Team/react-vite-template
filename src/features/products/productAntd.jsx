@@ -9,22 +9,20 @@ import {
   Table,
   message,
 } from "antd";
+import dayjs from "dayjs";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
+import FilterActions from "~/common/filterActions/filterActions";
 import Product from "~/models/product";
-import User from "~/models/user";
 import K from "~/utilities/constants";
 import { isPermissionPresent } from "~/utilities/generalUtility";
 import ProductModal from "./productModal";
-import dayjs from "dayjs";
-import FilterActions from "~/common/filterActions/filterActions";
 
 const ProductAntd = () => {
   const [form] = Form.useForm();
   const editId = useRef(null);
   const searchInput = useRef(null);
-  const userRole = User.getRole();
 
   const [payload, setPayload] = useState({
     page: 1,
@@ -219,7 +217,7 @@ const ProductAntd = () => {
       sorter: true,
       ...getColumnSearchDateProps("updatedAt"),
     },
-    ...(isPermissionPresent([K.Permissions.Admin], userRole)
+    ...(isPermissionPresent(K.Permissions.Admin, new Map([]))
       ? [
           {
             title: "Action",
