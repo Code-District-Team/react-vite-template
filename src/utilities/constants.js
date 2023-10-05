@@ -33,6 +33,7 @@ const K = {
         UpdateProfileData: "/user/update-profile",
         DeleteUser: "/user/delete-user",
         InviteUser: "/user/invite-user",
+        UploadProfilePicture: "user/upload-picture",
       },
       Products: {
         GetProducts: "/product/get",

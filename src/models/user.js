@@ -206,6 +206,7 @@ export default class User {
 
     const user = await NetworkCall.fetch(request, true);
     const data = User.getUserObjectFromCookies();
+    user.roles = data.user.roles;
     const cookieData = {
       apiToken: data?.apiToken,
       user,
@@ -242,11 +243,25 @@ export default class User {
   // get all Roles
   static async GetUserRoles() {
     const request = new Request(
-      K.Network.URL.Roles.GetAllRoles,
+      K.Network.URL.Roles,
       K.Network.Method.GET,
       null,
       K.Network.Header.Type.Json,
       { "ngrok-skip-browser-warning": true },
+      false,
+    );
+
+    return NetworkCall.fetch(request, true);
+  }
+
+  // Upload Profile Picture
+  static async UploadProfilePicture(body) {
+    const request = new Request(
+      K.Network.URL.Users.UploadProfilePicture,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {},
       false,
     );
 
