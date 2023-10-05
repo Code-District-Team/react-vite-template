@@ -20,8 +20,8 @@ export default function App() {
     ) {
       const userRoles = User.getRole();
       dispatch(setPermissionsHash(userRoles));
-      setShouldLoad(true);
     }
+    setShouldLoad(true);
   }, []);
 
   if (!shouldLoad) return <Spinner />;
