@@ -2,7 +2,7 @@ import { Button, Card, Form, Input, Table, message } from "antd";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import RoleAndPermission from "~/models/roleAndPermission";
-import User from "~/models/user";
+// import User from "~/models/user";
 import { stringSorting } from "~/utilities/generalUtility";
 import RolesModal from "./rolesModal";
 
@@ -22,7 +22,13 @@ export default function RolesPermission() {
   const actionColumnRenderer = (_, record) => {
     return (
       <>
-        <Button type="link" onClick={() => handleEdit(record.id)}>
+        <Button
+          type="link"
+          onClick={() => {
+            handleEdit(record.id);
+            console.log("hsbrecordid", record.id);
+          }}
+        >
           Edit
         </Button>
         <Button
@@ -133,19 +139,12 @@ export default function RolesPermission() {
   const filterOption = (inputValue, option) =>
     option.displayName.toLowerCase().indexOf(inputValue) > -1;
 
-  const handleEdit = async (roleId) => {
+  const handleEdit = async (roleid) => {
     try {
-      const res = await RoleAndPermission.getRoleById(roleId, User.getId());
-
-      if (!res || !res.permissions) {
-        throw new Error("Unexpected data structure from getRoleById.");
-      }
-
-      const permissions = res.permissions.map((pr) => pr.id);
-
-      editId.current = roleId;
-      setTargetKeys([...permissions]);
-      form.setFieldsValue({ name: res.name });
+      const filtered = listing.roles.filter((obj) => obj.id === roleid);
+      setTargetKeys(filtered[0].permissions.map((item) => item.id));
+      editId.current = filtered[0].id;
+      form.setFieldsValue({ name: filtered[0].name });
 
       showModal();
     } catch (error) {

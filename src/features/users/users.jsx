@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Spinner from "~/common/spinner/spinner";
 import User from "~/models/user";
 import K from "~/utilities/constants";
+import { selectUser } from "~/redux/user/userSlice";
 import {
   isPermissionPresent,
   numberSorting,
@@ -11,16 +12,16 @@ import {
   stringSorting,
 } from "~/utilities/generalUtility";
 import UserModal from "./userModal";
+import { useSelector } from "react-redux";
 
 export default function Users() {
   const [searchedText, setSearchedText] = useState("");
   const [userData, setUserData] = useState([]);
-  const userRole = User.getRole();
   const editId = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const [roles, setRoles] = useState([]);
-
+  const userDataUpdate = useSelector(selectUser);
   const getUserRolesData = async (values) => {
     try {
       const response = await User.GetUserRoles(values);
@@ -132,7 +133,10 @@ export default function Users() {
     {
       title: "Action",
       key: "action",
-      hidden: !isPermissionPresent([K.Permissions.Admin], userRole),
+      hidden: !isPermissionPresent(
+        K.Permissions.WriteProducts,
+        userDataUpdate.permissionsHash,
+      ),
       render: (_, data) => (
         <Button danger size="small" onClick={() => handleDelete(data.id)}>
           Delete

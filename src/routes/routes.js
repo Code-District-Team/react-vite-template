@@ -63,7 +63,6 @@ const routes = [
     name: "ProfilePage",
     component: ProfilePage,
     layout: LoggedInPageLayout,
-    permission: K.Permissions.User,
   },
   {
     path: "/projects",
@@ -79,7 +78,7 @@ const routes = [
     name: "Users",
     component: Users,
     authenticated: true,
-    permission: null,
+    permission: K.Permissions.Admin,
     layout: LoggedInPageLayout,
   },
   {
@@ -87,7 +86,7 @@ const routes = [
     name: "Create",
     component: CreateUser,
     authenticated: true,
-    permission: null,
+    permission: K.Permissions.Admin,
     layout: LoggedInPageLayout,
   },
   {
@@ -121,7 +120,7 @@ const routes = [
     name: "Ag-Grid",
     component: AGGridTable,
     authenticated: true,
-    permission: K.Permissions.Admin,
+    permission: K.Permissions.ReadProducts,
     layout: LoggedInPageLayout,
   },
   {
@@ -143,6 +142,7 @@ const routes = [
   {
     path: "/config",
     name: "Configurations",
+    permission: K.Permissions.Admin,
     authenticated: true,
     component: RolesPermission,
     layout: LoggedInPageLayout,

@@ -1,4 +1,5 @@
 import { SearchOutlined } from "@ant-design/icons";
+import { selectUser } from "~/redux/user/userSlice";
 import {
   Button,
   Card,
@@ -18,6 +19,7 @@ import Product from "~/models/product";
 import K from "~/utilities/constants";
 import { isPermissionPresent } from "~/utilities/generalUtility";
 import ProductModal from "./productModal";
+import { useSelector } from "react-redux";
 
 const ProductAntd = () => {
   const [form] = Form.useForm();
@@ -36,7 +38,7 @@ const ProductAntd = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
-
+  const userData = useSelector(selectUser);
   const fetchProductDetails = async () => {
     try {
       const response = await Product.getProductData(payload);
@@ -217,7 +219,10 @@ const ProductAntd = () => {
       sorter: true,
       ...getColumnSearchDateProps("updatedAt"),
     },
-    ...(isPermissionPresent(K.Permissions.Admin, new Map([]))
+    ...(isPermissionPresent(
+      K.Permissions.WriteProducts,
+      userData.permissionsHash,
+    )
       ? [
           {
             title: "Action",

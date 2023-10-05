@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   userDetails: "",
-  permissionsHash: [],
+  permissionsHash: new Map([]),
 };
 
 export const userSlice = createSlice({

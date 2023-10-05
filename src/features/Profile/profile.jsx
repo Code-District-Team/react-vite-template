@@ -1,8 +1,9 @@
-import { Button, Card, Col, Form, Input, Row, Upload } from "antd";
+import { Button, Card, Col, Form, Input, Row, Upload, message } from "antd";
 import { useState } from "react";
 import User from "~/models/user";
 import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
 import ImgCrop from "antd-img-crop";
+import K from "~/utilities/constants";
 
 const onPreview = async (file) => {
   let src = file.url;
@@ -23,15 +24,32 @@ export default function ProfilePage() {
   const [form] = Form.useForm();
   const data = User.getUserObjectFromCookies();
   // const [loading, setLoading] = useState(false);
-  const [fileList, setFileList] = useState([]);
+  const BaseUrl = K.Network.URL.BaseAPI;
+  const [fileList, setFileList] = useState([
+    {
+      // uid: "-1",
+      // name: `${data.user.profileImageUrl}`,
+      // status: "done",
+      url: `${BaseUrl}/${data.user.profileImageUrl}`,
+    },
+  ]);
 
-  const handleUpload = (info) => {
+  const handleUpload = async (info) => {
+    const formData = new FormData();
     console.log("handleupload", info);
+    formData.append("file", info?.file);
+    console.log("hsbinfo", info.file);
+    try {
+      await User.UploadProfilePicture(formData);
+    } catch (error) {
+      message.error("Failed to Upload file");
+    }
   };
   const onChange = ({ fileList: newFileList }) => {
     console.log("File list", newFileList);
     setFileList(newFileList);
   };
+
   const onFinish = async (values) => {
     const { email, status, ...rest } = values;
     rest.id = User.getId();
@@ -57,9 +75,9 @@ export default function ProfilePage() {
                 customRequest={(info) => {
                   handleUpload(info);
                   console.log("Info....", info);
-                  // info.onSuccess((value) => {
-                  //   console.log("Info success", value);
-                  // });
+                  info.onSuccess((value) => {
+                    console.log("Info success", value);
+                  });
                 }}
                 onChange={onChange}
                 onPreview={onPreview}
