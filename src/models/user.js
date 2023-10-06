@@ -313,7 +313,7 @@ export default class User {
   }
 
   static getFullName() {
-    const { firstName, lastName } = this.getUserObjectFromCookies();
+    const { firstName, lastName } = this.getUserObjectFromCookies().user;
     return firstName?.concat(" ", lastName) ?? "";
   }
 

@@ -23,22 +23,15 @@ const onPreview = async (file) => {
 export default function ProfilePage() {
   const [form] = Form.useForm();
   const data = User.getUserObjectFromCookies();
-  // const [loading, setLoading] = useState(false);
   const BaseUrl = K.Network.URL.BaseAPI;
   const [fileList, setFileList] = useState([
     {
-      // uid: "-1",
-      // name: `${data.user.profileImageUrl}`,
-      // status: "done",
       url: `${BaseUrl}/${data.user.profileImageUrl}`,
     },
   ]);
-
   const handleUpload = async (info) => {
     const formData = new FormData();
-    console.log("handleupload", info);
     formData.append("file", info?.file);
-    console.log("hsbinfo", info.file);
     try {
       await User.UploadProfilePicture(formData);
     } catch (error) {
@@ -46,7 +39,6 @@ export default function ProfilePage() {
     }
   };
   const onChange = ({ fileList: newFileList }) => {
-    console.log("File list", newFileList);
     setFileList(newFileList);
   };
 
@@ -62,19 +54,17 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-container">
-      <Card title="User Profile">
+      <Card className="card-wrapper" title="User Profile">
         <Row>
           <Col span={8}>
             <ImgCrop rotationSlider>
               <Upload
                 maxCount={1}
                 multiple={false}
-                action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                 listType="picture-card"
                 fileList={fileList}
                 customRequest={(info) => {
                   handleUpload(info);
-                  console.log("Info....", info);
                   info.onSuccess((value) => {
                     console.log("Info success", value);
                   });

@@ -17,10 +17,8 @@ const ChangePassword = () => {
   };
   return (
     <>
-      <Card bordered={false} className="login-card">
-        <div className="login-container">
-          <div className="lc-logo">{/* <img src={Logo} alt="logo" /> */}</div>
-          <h4>Change Password</h4>
+      <Card title="Change Password" className="card-wrapper" bordered={false}>
+        <div className="login-container pt-0">
           <Form
             name="set-password-form"
             initialValues={{

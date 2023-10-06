@@ -199,6 +199,7 @@ const ProductAGGrid = () => {
         title={
           <Input
             size="large"
+            allowClear
             placeholder="Search"
             onChange={debounce((value) => {
               setSearchQuery(value.target.defaultValue);

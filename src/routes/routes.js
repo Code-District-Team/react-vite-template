@@ -78,7 +78,7 @@ const routes = [
     name: "Users",
     component: Users,
     authenticated: true,
-    permission: K.Permissions.Admin,
+    permission: K.Permissions.ReadUser,
     layout: LoggedInPageLayout,
   },
   {

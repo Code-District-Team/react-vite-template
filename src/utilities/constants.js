@@ -85,7 +85,7 @@ const K = {
     },
   },
   Permissions: {
-    Admin: "ADMIN",
+    Admin: "Admin",
     ReadUser: "Read.User",
     WriteUser: "Write.User",
     ReadProducts: "Read.Product",

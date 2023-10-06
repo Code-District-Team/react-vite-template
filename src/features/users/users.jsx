@@ -162,7 +162,6 @@ export default function Users() {
         title={
           <Input
             allowClear
-            className="mb-3"
             placeholder="Search"
             onSearch={onSearch}
             onChange={debounce(onSearch, 500)}
