@@ -1,9 +1,10 @@
 import { Button, Card, Col, Form, Input, Row, Upload, message } from "antd";
+import ImgCrop from "antd-img-crop";
 import { useState } from "react";
 import User from "~/models/user";
-import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
-import ImgCrop from "antd-img-crop";
 import K from "~/utilities/constants";
+import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
+import image from "../../assets/images/images.jpeg";
 
 const onPreview = async (file) => {
   let src = file.url;
@@ -22,11 +23,15 @@ const onPreview = async (file) => {
 
 export default function ProfilePage() {
   const [form] = Form.useForm();
+  const defaultImageUrl = image;
   const data = User.getUserObjectFromCookies();
   const BaseUrl = K.Network.URL.BaseAPI;
   const [fileList, setFileList] = useState([
     {
-      url: `${BaseUrl}/${data.user.profileImageUrl}`,
+      url:
+        data.user?.profileImageUrl != null
+          ? `${BaseUrl}/${data.user.profileImageUrl}`
+          : defaultImageUrl,
     },
   ]);
   const handleUpload = async (info) => {
@@ -34,6 +39,20 @@ export default function ProfilePage() {
     formData.append("file", info?.file);
     try {
       await User.UploadProfilePicture(formData);
+    } catch (error) {
+      message.error("Failed to Upload file");
+    }
+  };
+
+  const onRemove = async (file) => {
+    try {
+      await User.DeleteProfilePicture(file);
+      setFileList([
+        {
+          url: defaultImageUrl,
+        },
+      ]);
+      return false;
     } catch (error) {
       message.error("Failed to Upload file");
     }
@@ -71,6 +90,7 @@ export default function ProfilePage() {
                 }}
                 onChange={onChange}
                 onPreview={onPreview}
+                onRemove={onRemove}
               >
                 {fileList.length < 5 && "+ Upload"}
               </Upload>

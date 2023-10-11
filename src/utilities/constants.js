@@ -34,6 +34,7 @@ const K = {
         DeleteUser: "/user/delete-user",
         InviteUser: "/user/invite-user",
         UploadProfilePicture: "user/upload-picture",
+        DeleteProfilePicture: "user/profile-picture",
       },
       Products: {
         GetProducts: "/product/get",

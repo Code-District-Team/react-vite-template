@@ -284,6 +284,38 @@ export default class User {
     return result;
   }
 
+  //Delete Profile Picture
+
+  static async DeleteProfilePicture(remember) {
+    const request = new Request(
+      K.Network.URL.Users.DeleteProfilePicture,
+      K.Network.Method.DELETE,
+      K.Network.Header.Type.File,
+      {},
+      false,
+    );
+
+    const result = await NetworkCall.fetch(request, true,);
+    let data = User.getUserObjectFromCookies();
+    console.log("data delete before", data.user.profileImageUrl);
+    data.user.profileImageUrl = result.path;
+    console.log("data delete  after", data.user.profileImageUrl);
+    const cookieData = {
+      apiToken: data?.apiToken,
+      user: data.user,
+    };
+    let encryptedUser = CryptoJS.AES.encrypt(
+      JSON.stringify(cookieData),
+      K.Cookie.Key.EncryptionKey,
+    );
+    Cookies.set(K.Cookie.Key.User, encryptedUser, {
+      path: "/",
+      domain: K.Network.URL.Client.BaseHost,
+      expires: remember ? 365 : "",
+    });
+    return result;
+  }
+
   // * Helpers
 
   static getUserObjectFromCookies() {
