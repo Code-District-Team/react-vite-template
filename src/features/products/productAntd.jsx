@@ -20,6 +20,7 @@ import K from "~/utilities/constants";
 import { isPermissionPresent } from "~/utilities/generalUtility";
 import ProductModal from "./productModal";
 import { useSelector } from "react-redux";
+import CsvModal from "./csvModal";
 
 const ProductAntd = () => {
   const [form] = Form.useForm();
@@ -36,6 +37,7 @@ const ProductAntd = () => {
   });
   const [productData, setProductData] = useState({ products: [], total: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCsvModalOpen, setisCsvModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const userData = useSelector(selectUser);
@@ -297,6 +299,7 @@ const ProductAntd = () => {
     }
     setIsModalOpen(true);
   };
+
   const handleCancel = () => {
     setIsModalOpen(false);
   };
@@ -324,6 +327,14 @@ const ProductAntd = () => {
     } catch (error) {
       message.error("Failed to Edit the Product");
     }
+  };
+
+  const showCsvModal = () => {
+    setisCsvModalOpen(true);
+  };
+
+  const handleCsvCancelButton = () => {
+    setisCsvModalOpen(false);
   };
 
   useEffect(() => {
@@ -355,6 +366,22 @@ const ProductAntd = () => {
           </Button>
         }
       >
+        {" "}
+        <Space>
+          <Button
+            type="primary"
+            size="large"
+            onClick={() => {
+              console.log("csvModal open", showCsvModal());
+            }}
+          >
+            Import Csv
+          </Button>
+
+          <Button type="primary" size="large">
+            Export Csv
+          </Button>
+        </Space>
         <Table
           rowKey="id"
           columns={columns}
@@ -376,6 +403,10 @@ const ProductAntd = () => {
         onFinish={onFinish}
         editId={editId}
       />
+      <CsvModal
+        isCsvModalOpen={isCsvModalOpen}
+        handleCancel={handleCsvCancelButton}
+      ></CsvModal>
     </>
   );
 };
