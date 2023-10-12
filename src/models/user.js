@@ -297,9 +297,7 @@ export default class User {
 
     const result = await NetworkCall.fetch(request, true);
     let data = User.getUserObjectFromCookies();
-    console.log("data delete before", data.user.profileImageUrl);
     data.user.profileImageUrl = result.path;
-    console.log("data delete  after", data.user.profileImageUrl);
     const cookieData = {
       apiToken: data?.apiToken,
       user: data.user,

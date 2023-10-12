@@ -168,12 +168,12 @@ export default function RolesPermission() {
     try {
       const { id, ...restValues } = data;
 
-      // const res =
-      await RoleAndPermission.updateRole(id, restValues);
+      const res = await RoleAndPermission.updateRole(id, restValues);
+      const { name } = res;
       message.success("Role updated successfully");
-      getAllRoles();
-      // TODO: Need to update state on update remove above API Call
-      /* setListing((prev) => {
+      form.setFieldsValue({ name: name });
+
+      setListing((prev) => {
         return {
           ...prev,
           roles: prev.roles.map((item) => {
@@ -181,7 +181,7 @@ export default function RolesPermission() {
             return item;
           }),
         };
-      }); */
+      });
 
       setInitialValues();
     } catch (error) {

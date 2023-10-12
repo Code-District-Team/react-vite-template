@@ -6,6 +6,7 @@ import {
   DatePicker,
   Form,
   Input,
+  Modal,
   Space,
   Table,
   message,
@@ -41,6 +42,80 @@ const ProductAntd = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const userData = useSelector(selectUser);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectedKeys) => {
+      setSelectedRowKeys(selectedKeys);
+    },
+  };
+
+  const downloadCSV = (csvContent, filename = "export.csv") => {
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportCsvFile = async () => {
+    try {
+      // Create a payload with the selected row keys
+      const body = {
+        ids: selectedRowKeys,
+      };
+
+      // Call the API with the payload
+      const csvContent = await Product.exportCsvFile(body);
+
+      // Use the helper function to download the CSV content
+      downloadCSV(csvContent, "products_export.csv");
+    } catch (error) {
+      console.error("Failed to export CSV file", error);
+    }
+  };
+  // const formatServerErrors = (errors) => {
+  //   console.log("ourerrorsreceived", errors);
+  //   return errors
+  //     .map((error) => {
+  //       return `Row ${error.error.row}: ${error.error.errors.join(", ")}`;
+  //     })
+  //     .join("\n");
+  // };
+
+  const formatServerErrors = (errorsObject) => {
+    // Convert errorsObject to array
+    const errorsArray = Object.values(errorsObject);
+
+    return errorsArray
+      .map((errorEntry) => {
+        return `Row ${errorEntry.row}: ${errorEntry.errors.join(", ")}`;
+      })
+      .join("\n");
+  };
+
+  const handleUpload = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      await Product.importCsvFile(formData);
+      setisCsvModalOpen(false);
+      fetchProductDetails();
+    } catch (error) {
+      const serverErrors = error?.error?.data?.errors || null;
+      if (serverErrors) {
+        const formattedErrors = formatServerErrors(serverErrors);
+        message.error(formattedErrors);
+      } else {
+        message.error("An error occurred while uploading the file.");
+      }
+    }
+  };
+
   const fetchProductDetails = async () => {
     try {
       const response = await Product.getProductData(payload);
@@ -304,13 +379,26 @@ const ProductAntd = () => {
     setIsModalOpen(false);
   };
 
-  const handleButtonDelete = async (id) => {
-    try {
-      await Product.deleteProductData(id);
-      fetchProductDetails();
-    } catch (error) {
-      message.error("Failed to Delete Product");
-    }
+  const handleButtonDelete = (id) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this product?",
+      content: "This operation cannot be undone.",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk: async () => {
+        try {
+          await Product.deleteProductData(id);
+          fetchProductDetails();
+          message.success("Product deleted successfully");
+        } catch (error) {
+          message.error("Failed to Delete Product");
+        }
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
   };
 
   const handleButtonEdit = async (values) => {
@@ -378,7 +466,7 @@ const ProductAntd = () => {
             Import Csv
           </Button>
 
-          <Button type="primary" size="large">
+          <Button onClick={handleExportCsvFile} type="primary" size="large">
             Export Csv
           </Button>
         </Space>
@@ -393,6 +481,7 @@ const ProductAntd = () => {
             total: productData.total,
             pageSize: payload.limit,
           }}
+          rowSelection={rowSelection}
         />
       </Card>
 
@@ -404,6 +493,7 @@ const ProductAntd = () => {
         editId={editId}
       />
       <CsvModal
+        handleUpload={handleUpload}
         isCsvModalOpen={isCsvModalOpen}
         handleCancel={handleCsvCancelButton}
       ></CsvModal>
