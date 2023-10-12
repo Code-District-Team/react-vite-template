@@ -69,7 +69,6 @@ const ProductAntd = () => {
         ids: selectedRowKeys,
       };
 
-      // Call the API with the payload
       const csvContent = await Product.exportCsvFile(body);
 
       // Use the helper function to download the CSV content
@@ -78,14 +77,6 @@ const ProductAntd = () => {
       console.error("Failed to export CSV file", error);
     }
   };
-  // const formatServerErrors = (errors) => {
-  //   console.log("ourerrorsreceived", errors);
-  //   return errors
-  //     .map((error) => {
-  //       return `Row ${error.error.row}: ${error.error.errors.join(", ")}`;
-  //     })
-  //     .join("\n");
-  // };
 
   const formatServerErrors = (errorsObject) => {
     // Convert errorsObject to array
