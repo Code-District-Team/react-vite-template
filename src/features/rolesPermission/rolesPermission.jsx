@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input, Table, message } from "antd";
+import { Button, Card, Form, Input, Modal, Table, message } from "antd";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import RoleAndPermission from "~/models/roleAndPermission";
@@ -153,15 +153,27 @@ export default function RolesPermission() {
   };
 
   const handleDelete = async (record) => {
-    try {
-      await RoleAndPermission.deleteRole(record.id, { name: record.name });
-      setListing((prev) => ({
-        ...prev,
-        roles: prev.roles.filter(({ id }) => id !== record.id),
-      }));
-    } catch (error) {
-      message.error(error);
-    }
+    Modal.confirm({
+      title: "Are you sure you want to delete this product?",
+      content: "This operation cannot be undone.",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk: async () => {
+        try {
+          await RoleAndPermission.deleteRole(record.id, { name: record.name });
+          setListing((prev) => ({
+            ...prev,
+            roles: prev.roles.filter(({ id }) => id !== record.id),
+          }));
+        } catch (error) {
+          message.error(error);
+        }
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
   };
 
   const updateRole = async (data) => {
