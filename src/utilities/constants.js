@@ -37,9 +37,8 @@ const K = {
         DeleteProfilePicture: "user/profile-picture",
       },
       Csv: {
-        ImportCsvFile:"/product/bulk-import",
+        ImportCsvFile: "/product/bulk-import",
         ExportCsvFile: "/product/bulk-export",
-
       },
       Products: {
         GetProducts: "/product/get",
