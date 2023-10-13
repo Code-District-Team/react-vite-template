@@ -5,9 +5,6 @@ import { Meta, Primary, Controls, Story } from "@storybook/blocks";
 
 ### Client Side Filters For Ant Design
 
-<Story of={Filters.Table} />
-<Controls />
-
 ```jsx
 import { Button, Card, Input, Table } from "antd";
 import "antd/dist/reset.css";
@@ -55,18 +52,6 @@ export default function ClientSideFilters() {
     {
       title: "Status",
       dataIndex: "status",
-    },
-    {
-      title: "Action",
-      dataIndex: "action",
-      render: () => (
-        <Button
-          danger
-          size="small" //onClick={() => handleDelete(data.id)}
-        >
-          Delete
-        </Button>
-      ),
     },
   ];
 

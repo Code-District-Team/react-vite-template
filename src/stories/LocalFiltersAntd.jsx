@@ -1,9 +1,9 @@
-import { Button, Card, Input, Table } from "antd";
+import { Card, Input, Table } from "antd";
 import "antd/dist/reset.css";
 import { debounce } from "lodash";
+import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { stringSorting } from "~/utilities/generalUtility";
-import PropTypes from "prop-types";
 import { fetchUsers } from "./utilities/utilities";
 
 export const LocalFiltersAntd = ({ pageSize, pagination }) => {
@@ -46,18 +46,6 @@ export const LocalFiltersAntd = ({ pageSize, pagination }) => {
     {
       title: "Status",
       dataIndex: "status",
-    },
-    {
-      title: "Action",
-      dataIndex: "action",
-      render: () => (
-        <Button
-          danger
-          size="small" //onClick={() => handleDelete(data.id)}
-        >
-          Delete
-        </Button>
-      ),
     },
   ];
 

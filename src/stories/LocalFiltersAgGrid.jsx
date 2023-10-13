@@ -1,10 +1,10 @@
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { AgGridReact } from "ag-grid-react";
-import { Button, Card, Input } from "antd";
+import { Card, Input } from "antd";
+import PropTypes from "prop-types";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { fetchUsers } from "./utilities/utilities";
-import PropTypes from "prop-types";
 
 export const LocalFiltersAgGrid = ({ pageSize, pagination }) => {
   const gridRef = useRef(null);
@@ -14,6 +14,7 @@ export const LocalFiltersAgGrid = ({ pageSize, pagination }) => {
     () => ({
       sortable: true,
       filter: true,
+      flex: 1,
     }),
     [],
   );
@@ -45,18 +46,6 @@ export const LocalFiltersAgGrid = ({ pageSize, pagination }) => {
     {
       headerName: "Status",
       field: "status",
-    },
-    {
-      headerName: "Action",
-      field: "action",
-      cellRenderer: () => (
-        <Button
-          danger
-          size="small" //onClick={() => handleDelete(data.id)}
-        >
-          Delete
-        </Button>
-      ),
     },
   ];
 

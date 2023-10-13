@@ -3,10 +3,7 @@ import { Meta, Primary, Controls, Story } from "@storybook/blocks";
 
 <Meta of={Filters} />
 
-### Client Side Filters For Ant Design
-
-<Story of={Filters.Table} />
-<Controls />
+### Client Side Filters For AG Grid
 
 ```jsx
 import "ag-grid-community/styles/ag-grid.css";
@@ -55,18 +52,6 @@ export const LocalFiltersAgGrid = ({ pageSize }) => {
     {
       headerName: "Status",
       field: "status",
-    },
-    {
-      headerName: "Action",
-      field: "action",
-      cellRenderer: () => (
-        <Button
-          danger
-          size="small" //onClick={() => handleDelete(data.id)}
-        >
-          Delete
-        </Button>
-      ),
     },
   ];
 
