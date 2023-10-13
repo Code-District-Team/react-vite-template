@@ -43,6 +43,7 @@ const ProductAntd = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const userData = useSelector(selectUser);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [serverErrors, setServerErrors] = useState([]);
 
   const rowSelection = {
     selectedRowKeys,
@@ -100,7 +101,7 @@ const ProductAntd = () => {
       const serverErrors = error?.error?.data?.errors || null;
       if (serverErrors) {
         const formattedErrors = formatServerErrors(serverErrors);
-        message.error(formattedErrors);
+        setServerErrors(formattedErrors.split("\n"));
       } else {
         message.error("An error occurred while uploading the file.");
       }
@@ -447,13 +448,7 @@ const ProductAntd = () => {
       >
         {" "}
         <Space>
-          <Button
-            type="primary"
-            size="large"
-            onClick={() => {
-              console.log("csvModal open", showCsvModal());
-            }}
-          >
+          <Button type="primary" size="large" onClick={showCsvModal}>
             Import Csv
           </Button>
 
@@ -484,6 +479,7 @@ const ProductAntd = () => {
         editId={editId}
       />
       <CsvModal
+        serverErrors={serverErrors}
         handleUpload={handleUpload}
         isCsvModalOpen={isCsvModalOpen}
         handleCancel={handleCsvCancelButton}

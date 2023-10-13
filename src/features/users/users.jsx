@@ -68,14 +68,6 @@ export default function Users() {
     }
   };
 
-  // const handleDelete = async (id) => {
-  //   try {
-  //     await User.deleteUser(id);
-  //     fetchUserDetails();
-  //   } catch (error) {
-  //     setFieldErrorsFromServer(error);
-  //   }
-  // };
   const handleDelete = async (id) => {
     Modal.confirm({
       title: "Are you sure you want to delete this product?",
