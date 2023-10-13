@@ -10,9 +10,10 @@ export default {
 export const Table = {
   args: {
     pageSize: 10,
+    pagination: true,
   },
 
-  render: ({ pageSize }) => {
-    return <LocalFiltersAntd pageSize={pageSize} />;
-  },
+  // render: ({ pageSize }) => {
+  //   return <LocalFiltersAntd pageSize={pageSize} />;
+  // },
 };

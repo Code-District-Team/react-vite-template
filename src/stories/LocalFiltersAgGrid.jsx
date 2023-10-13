@@ -4,8 +4,9 @@ import { AgGridReact } from "ag-grid-react";
 import { Button, Card, Input } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { fetchUsers } from "./utilities/utilities";
+import PropTypes from "prop-types";
 
-export const LocalFiltersAgGrid = ({ pageSize }) => {
+export const LocalFiltersAgGrid = ({ pageSize, pagination }) => {
   const gridRef = useRef(null);
   const [users, setUsers] = useState([]);
 
@@ -85,10 +86,20 @@ export const LocalFiltersAgGrid = ({ pageSize }) => {
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           rowData={users}
-          pagination
+          pagination={pagination}
           paginationPageSize={pageSize}
         />
       </div>
     </Card>
   );
+};
+
+LocalFiltersAgGrid.propTypes = {
+  pageSize: PropTypes.number,
+  pagination: PropTypes.bool,
+};
+
+LocalFiltersAgGrid.defaultProps = {
+  pageSize: 10,
+  pagination: true,
 };

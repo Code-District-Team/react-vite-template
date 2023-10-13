@@ -6,7 +6,7 @@ import { stringSorting } from "~/utilities/generalUtility";
 import PropTypes from "prop-types";
 import { fetchUsers } from "./utilities/utilities";
 
-export const LocalFiltersAntd = ({ pageSize }) => {
+export const LocalFiltersAntd = ({ pageSize, pagination }) => {
   const [searchedText, setSearchedText] = useState("");
   const [users, setUsers] = useState([]);
 
@@ -94,7 +94,7 @@ export const LocalFiltersAntd = ({ pageSize }) => {
         bordered
         columns={columns}
         dataSource={users}
-        pagination={{ pageSize }}
+        pagination={pagination ? { pageSize } : pagination}
       />
     </Card>
   );
@@ -102,8 +102,10 @@ export const LocalFiltersAntd = ({ pageSize }) => {
 
 LocalFiltersAntd.propTypes = {
   pageSize: PropTypes.number,
+  pagination: PropTypes.bool,
 };
 
 LocalFiltersAntd.defaultProps = {
   pageSize: 10,
+  pagination: true,
 };
