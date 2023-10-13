@@ -1,7 +1,7 @@
 import { LocalFiltersAntd } from "./LocalFiltersAntd";
 
 export default {
-  title: "Features/ClientSideFilters/Ant Design",
+  title: "Features/Client Side Filters/Ant Design",
   component: LocalFiltersAntd,
   parameters: {},
   // tags: ["autodocs"],

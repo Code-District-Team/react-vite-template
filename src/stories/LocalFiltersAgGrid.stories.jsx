@@ -1,7 +1,7 @@
 import { LocalFiltersAgGrid } from "./LocalFiltersAgGrid";
 
 export default {
-  title: "Features/ClientSideFilters/Ag Grid",
+  title: "Features/Client Side Filters/Ag Grid",
   component: LocalFiltersAgGrid,
   parameters: {},
   // tags: ["autodocs"],
