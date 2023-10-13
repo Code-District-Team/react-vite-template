@@ -18,6 +18,7 @@ import CreateUser from "~/features/users/createUser";
 import ProductAGGrid from "~/features/products/productAGGrid";
 import ProductAntd from "~/features/products/productAntd";
 import RolesPermission from "~/features/rolesPermission/rolesPermission";
+import ProductGridView from "~/features/products/productGridView";
 
 /* 
   * Template for a route
@@ -137,6 +138,14 @@ const routes = [
     permission: K.Permissions.ReadProducts,
     authenticated: true,
     component: ProductAntd,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/products/grid-view-virtual-listing",
+    name: "Grid-View",
+    permission: K.Permissions.ReadProducts,
+    authenticated: true,
+    component: ProductGridView,
     layout: LoggedInPageLayout,
   },
   {

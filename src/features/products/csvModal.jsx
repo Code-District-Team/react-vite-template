@@ -10,6 +10,8 @@ const CsvModal = ({
   handleCancel,
   handleUpload,
   serverErrors,
+  uploadedFile,
+  setUploadedFile,
 }) => {
   return (
     <Modal
@@ -20,8 +22,10 @@ const CsvModal = ({
       footer={false}
     >
       <Dragger
+        fileList={uploadedFile}
         beforeUpload={(file) => {
           handleUpload(file);
+          setUploadedFile([file]);
           return false; // Return false to stop auto-uploading
         }}
       >

@@ -44,6 +44,7 @@ const ProductAntd = () => {
   const userData = useSelector(selectUser);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [serverErrors, setServerErrors] = useState([]);
+  const [uploadedFile, setUploadedFile] = useState([]);
 
   const rowSelection = {
     selectedRowKeys,
@@ -415,6 +416,8 @@ const ProductAntd = () => {
 
   const handleCsvCancelButton = () => {
     setisCsvModalOpen(false);
+    setUploadedFile([]);
+    setServerErrors([]);
   };
 
   useEffect(() => {
@@ -479,11 +482,13 @@ const ProductAntd = () => {
         editId={editId}
       />
       <CsvModal
+        uploadedFile={uploadedFile}
+        setUploadedFile={setUploadedFile}
         serverErrors={serverErrors}
         handleUpload={handleUpload}
         isCsvModalOpen={isCsvModalOpen}
         handleCancel={handleCsvCancelButton}
-      ></CsvModal>
+      />
     </>
   );
 };
