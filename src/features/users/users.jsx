@@ -1,10 +1,11 @@
 import { Button, Card, Form, Input, Table, message } from "antd";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import Spinner from "~/common/spinner/spinner";
 import User from "~/models/user";
-import K from "~/utilities/constants";
 import { selectUser } from "~/redux/user/userSlice";
+import K from "~/utilities/constants";
 import {
   isPermissionPresent,
   numberSorting,
@@ -12,7 +13,6 @@ import {
   stringSorting,
 } from "~/utilities/generalUtility";
 import UserModal from "./userModal";
-import { useSelector } from "react-redux";
 
 export default function Users() {
   const [searchedText, setSearchedText] = useState("");
@@ -109,7 +109,6 @@ export default function Users() {
     {
       title: "Email",
       dataIndex: "email",
-
       key: "email",
       sorter: (a, b) => stringSorting(a, b, "email"),
     },

@@ -1,11 +1,21 @@
+import * as Filters from "./LocalFiltersAntd.stories";
+import { Meta, Primary, Controls, Story } from "@storybook/blocks";
+
+<Meta of={Filters} />
+
+## Client Side Filters For Ant Design
+
+<Story of={Filters.Table} />
+<Controls />
+
+```jsx
 import { Button, Card, Input, Table } from "antd";
 import "antd/dist/reset.css";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { stringSorting } from "~/utilities/generalUtility";
-import PropTypes from "prop-types";
 
-export const LocalFilters = ({ pageSize }) => {
+export default function ClientSideFilters() {
   const [searchedText, setSearchedText] = useState("");
   const [users, setUsers] = useState([]);
 
@@ -101,16 +111,9 @@ export const LocalFilters = ({ pageSize }) => {
         bordered
         columns={columns}
         dataSource={users}
-        pagination={{ pageSize }}
+        pagination={{ pageSize: 10 }}
       />
     </Card>
   );
-};
-
-LocalFilters.propTypes = {
-  pageSize: PropTypes.number,
-};
-
-LocalFilters.defaultProps = {
-  pageSize: 10,
-};
+}
+```

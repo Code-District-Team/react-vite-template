@@ -1,68 +1,55 @@
-import * as Filters from "./LocalFilters.stories";
-import { Meta, Primary, Controls, Story } from "@storybook/blocks";
-
-<Meta of={Filters} title="Features" id="features-antd" />
-
-## Client Side Filters For Ant Design
-
-<Story of={Filters.ClientSideFilters} />
-
-```jsx
 import { Button, Card, Input, Table } from "antd";
 import "antd/dist/reset.css";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { stringSorting } from "~/utilities/generalUtility";
+import PropTypes from "prop-types";
+import { fetchUsers } from "./utilities/utilities";
 
-export default function LocalFilters() {
+export const LocalFiltersAntd = ({ pageSize }) => {
   const [searchedText, setSearchedText] = useState("");
   const [users, setUsers] = useState([]);
+
+  const onTableFilter = (value, record) => {
+    return (
+      [record.id, record.age].includes(+value) ||
+      record.firstName?.toLowerCase().includes(value.toLowerCase()) ||
+      record.lastName?.toLowerCase().includes(value.toLowerCase()) ||
+      record.email?.toLowerCase().includes(value.toLowerCase()) ||
+      record.address?.toLowerCase().includes(value.toLowerCase())
+    );
+  };
 
   const columns = [
     {
       title: "ID",
       dataIndex: "id",
-      key: "id",
       sorter: (a, b) => stringSorting(a, b, "id"),
     },
     {
       title: "First Name",
       dataIndex: "firstName",
       filteredValue: [searchedText],
-      onFilter: (value, record) => {
-        return (
-          [record.id, record.age].includes(+value) ||
-          record.firstName?.toLowerCase().includes(value.toLowerCase()) ||
-          record.lastName?.toLowerCase().includes(value.toLowerCase()) ||
-          record.email?.toLowerCase().includes(value.toLowerCase()) ||
-          record.address?.toLowerCase().includes(value.toLowerCase())
-        );
-      },
-      key: "name",
+      onFilter: onTableFilter,
       sorter: (a, b) => stringSorting(a, b, "firstName"),
     },
     {
       title: "Last Name",
       dataIndex: "lastName",
-      key: "lastName",
       sorter: (a, b) => stringSorting(a, b, "lastName"),
     },
     {
       title: "Email",
       dataIndex: "email",
-
-      key: "email",
       sorter: (a, b) => stringSorting(a, b, "email"),
     },
     {
       title: "Status",
-      key: "status",
       dataIndex: "status",
     },
     {
       title: "Action",
-      key: "action",
-
+      dataIndex: "action",
       render: () => (
         <Button
           danger
@@ -82,16 +69,8 @@ export default function LocalFilters() {
   };
 
   const fetchData = async () => {
-    fetch("http://localhost:8082/user/get-all", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((list) => {
-        setUsers(list.data);
-      });
+    const data = await fetchUsers();
+    setUsers(data);
   };
 
   useEffect(() => {
@@ -115,9 +94,16 @@ export default function LocalFilters() {
         bordered
         columns={columns}
         dataSource={users}
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize }}
       />
     </Card>
   );
-}
-```
+};
+
+LocalFiltersAntd.propTypes = {
+  pageSize: PropTypes.number,
+};
+
+LocalFiltersAntd.defaultProps = {
+  pageSize: 10,
+};
