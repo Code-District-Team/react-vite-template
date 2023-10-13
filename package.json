@@ -14,7 +14,9 @@
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "prettify": "prettier --write \"src/**/*.{js,jsx}\"",
     "preview": "vite preview",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
@@ -41,6 +43,14 @@
     "react-router-dom": "^6.16.0"
   },
   "devDependencies": {
+    "@storybook/addon-essentials": "^7.4.6",
+    "@storybook/addon-interactions": "^7.4.6",
+    "@storybook/addon-links": "^7.4.6",
+    "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/blocks": "^7.4.6",
+    "@storybook/react": "^7.4.6",
+    "@storybook/react-vite": "^7.4.6",
+    "@storybook/testing-library": "^0.2.2",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
@@ -48,11 +58,14 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "eslint-plugin-storybook": "^0.6.15",
     "history": "^5.3.0",
     "husky": "^8.0.3",
     "prettier": "^3.0.3",
+    "prop-types": "^15.8.1",
     "redux-logger": "^3.0.6",
     "sass": "^1.68.0",
+    "storybook": "^7.4.6",
     "vite": "^4.4.5",
     "vite-plugin-eslint": "^1.8.1"
   }

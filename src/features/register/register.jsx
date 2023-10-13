@@ -17,7 +17,6 @@ export default function Register() {
   const location = useLocation(); // useLocation hook to get the current location object
   const searchParams = new URLSearchParams(location.search); // Create a URLSearchParams object with the current query string
   const email = searchParams.get("email")?.replace(/ /g, "+");
-  console.log("email", email);
   email && form.setFieldsValue({ email });
 
   const onFinish = async (values) => {
