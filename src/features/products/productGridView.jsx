@@ -1,78 +1,84 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Divider, List, Skeleton, Typography } from "antd";
 import Card from "antd/es/card/Card";
+import Product from "~/models/product";
+
 const ProductGridView = () => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const loadMoreData = () => {
-    if (loading) {
-      return;
+  const [data, setData] = useState({ products: [], total: 0 });
+  const pageNumber = useRef(0);
+
+  const fetchProductDetails = async () => {
+    try {
+      pageNumber.current = pageNumber.current + 1;
+      const payload = {
+        page: pageNumber.current,
+        limit: 10,
+        // query: "",
+        filterType: "antd",
+        // sortBy: undefined,
+        // sortOrder: undefined,
+      };
+      const response = await Product.getProductData(payload);
+      setData((prevData) => ({
+        products: [...prevData.products, ...response.data.products],
+        total: response.data.total,
+      }));
+    } catch (error) {
+      console.error(error);
     }
-    setLoading(true);
-    fetch(
-      "https://randomuser.me/api/?results=10&inc=name,gender,email,nat,picture&noinfo",
-    )
-      .then((res) => res.json())
-      .then((body) => {
-        setData([...data, ...body.results]);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
   };
+
   useEffect(() => {
-    loadMoreData();
+    fetchProductDetails();
   }, []);
-  console.log("our data", data);
+
   return (
     <>
-      <Card>
-        <Typography.Title>
-          Virtual Products List with Grid View
-        </Typography.Title>
-        <div
-          id="scrollableDiv"
-          style={{
-            height: 900,
-            overflow: "auto",
-            padding: "0 16px",
-            border: "1px solid rgba(140, 140, 140, 0.35)",
-          }}
-        >
-          <InfiniteScroll
-            dataLength={data.length}
-            next={loadMoreData}
-            hasMore={data.length < 50}
-            loader={
-              <Skeleton
-                avatar
-                paragraph={{
-                  rows: 1,
-                }}
-                active
-              />
-            }
-            endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-            scrollableTarget="scrollableDiv"
-          >
-            <List
-              dataSource={data}
-              renderItem={(item) => (
-                <List.Item key={item.email}>
-                  <List.Item.Meta
-                    // avatar={<Avatar src={item.picture.large} />}
-                    title="Product Name Sample Name"
-                    description="Qty:10 "
-                  />
-                  <div>Price: 1500/-</div>
-                </List.Item>
-              )}
+      <span>
+        <Typography.Title>Products List</Typography.Title>
+      </span>
+      <div id="scrollableDiv" className="scrollableDivStyle">
+        <InfiniteScroll
+          height={500}
+          dataLength={data.products?.length || 0} // Safely access the length
+          next={fetchProductDetails}
+          hasMore={data.products?.length < data.total} // Compare against the total value
+          loader={
+            <Skeleton
+              avatar
+              paragraph={{
+                rows: 1,
+              }}
+              active
             />
-          </InfiniteScroll>
-        </div>
-      </Card>
+          }
+          endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+          scrollableTarget="scrollableDiv"
+          className="infiniteScrollStyle"
+          // style={{ height: 730 }}
+        >
+          <List
+            grid={{ gutter: 8, column: 4 }}
+            dataSource={data.products}
+            renderItem={(item) => (
+              <List.Item key={item.id}>
+                <Card>
+                  <List.Item.Meta
+                    title={
+                      <span style={{ fontSize: "1.25rem", fontWeight: "bold" }}>
+                        {item.name}
+                      </span>
+                    }
+                  />
+                  <p>Qty: {item.quantity}</p>
+                  <p>Price: {item.price}</p>
+                </Card>
+              </List.Item>
+            )}
+          />
+        </InfiniteScroll>
+      </div>
     </>
   );
 };
