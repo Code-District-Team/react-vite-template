@@ -49,11 +49,8 @@ export const LocalFiltersAntd = ({ pageSize, pagination }) => {
     },
   ];
 
-  const onSearch = (param) => {
-    let value = undefined;
-    if (param.target) value = param.target.value;
-    else value = param;
-    setSearchedText(value ? value : "");
+  const onSearch = (evt) => {
+    setSearchedText(evt.target.value);
   };
 
   const fetchData = async () => {
@@ -72,7 +69,6 @@ export const LocalFiltersAntd = ({ pageSize, pagination }) => {
           allowClear
           placeholder="Search in table"
           size="large"
-          onSearch={onSearch}
           onChange={debounce(onSearch, 500)}
         />
       }

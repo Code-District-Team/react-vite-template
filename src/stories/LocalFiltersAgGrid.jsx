@@ -5,6 +5,7 @@ import { Card, Input } from "antd";
 import PropTypes from "prop-types";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { fetchUsers } from "./utilities/utilities";
+import { debounce } from "lodash";
 
 export const LocalFiltersAgGrid = ({ pageSize, pagination }) => {
   const gridRef = useRef(null);
@@ -19,11 +20,8 @@ export const LocalFiltersAgGrid = ({ pageSize, pagination }) => {
     [],
   );
 
-  const onSearch = (param) => {
-    let value = undefined;
-    if (param.target) value = param.target.value;
-    else value = param;
-    gridRef.current.api.setQuickFilter(value);
+  const onSearch = (evt) => {
+    gridRef.current.api.setQuickFilter(evt.target.value);
   };
 
   const columnDefs = [
@@ -64,8 +62,7 @@ export const LocalFiltersAgGrid = ({ pageSize, pagination }) => {
           allowClear
           placeholder="Search in table"
           size="large"
-          onSearch={onSearch}
-          onChange={onSearch}
+          onChange={debounce(onSearch, 500)}
         />
       }
     >
