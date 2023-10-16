@@ -14,10 +14,7 @@ const ProductGridView = () => {
       const payload = {
         page: pageNumber.current,
         limit: 10,
-        // query: "",
         filterType: "antd",
-        // sortBy: undefined,
-        // sortOrder: undefined,
       };
       const response = await Product.getProductData(payload);
       setData((prevData) => ({
@@ -56,7 +53,6 @@ const ProductGridView = () => {
           endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
           scrollableTarget="scrollableDiv"
           className="infiniteScrollStyle"
-          // style={{ height: 730 }}
         >
           <List
             grid={{ gutter: 8, column: 4 }}

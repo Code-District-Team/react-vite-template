@@ -41,6 +41,11 @@ const productChildren = (basePath) => [
     name: "Grid-View",
     roles: [K.Permissions.Admin],
   },
+  {
+    path: `${basePath}/list-view-virtual-listing`,
+    name: "List-View",
+    roles: [K.Permissions.Admin],
+  },
 ];
 const rolePermissionChildren = (basePath) => [
   {
