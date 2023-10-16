@@ -31,6 +31,9 @@ const ProductFormModal = ({
       okText={editId ? "Update" : "Create"}
       onOk={form.submit}
       onCancel={handleCancel}
+      afterClose={() => {
+        form.resetFields();
+      }}
     >
       <Form name="product-form" form={form} onFinish={onFinish}>
         <Form.Item
@@ -85,8 +88,9 @@ const ProductFormModal = ({
 export const CRUDComponent = () => {
   const [form] = Form.useForm();
   const editId = useRef(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [products, setProducts] = useState([]);
+  const [refetch, setRefetch] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -98,7 +102,7 @@ export const CRUDComponent = () => {
       })
         .then((res) => res.json())
         .then((jsonRes) => {
-          setProducts(jsonRes.data.products);
+          setProducts(jsonRes);
         });
     } catch (error) {
       console.error(error);
@@ -118,6 +122,7 @@ export const CRUDComponent = () => {
           .then(() => {
             message.success(`Product Updated Successfully`);
             setIsModalOpen(false);
+            setRefetch(!refetch);
           })
           .catch(() => {
             message.error("Failed to Update");
@@ -219,7 +224,7 @@ export const CRUDComponent = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [refetch]);
 
   return (
     <>
