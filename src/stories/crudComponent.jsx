@@ -5,14 +5,14 @@ import {
   Input,
   InputNumber,
   Modal,
+  Popconfirm,
   Space,
   Table,
   message,
 } from "antd";
 import { useEffect, useRef, useState } from "react";
-import Product from "~/models/product";
 
-const CreateModal = ({
+const ProductFormModal = ({
   form,
   editId,
   onFinish,
@@ -90,20 +90,11 @@ export const CRUDComponent = () => {
 
   const fetchProducts = async () => {
     try {
-      // TODO: Will be without payload
-      fetch("http://localhost:8082/product/get", {
-        method: "POST",
+      fetch("http://localhost:8082/product/get-all", {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          page: 1,
-          limit: 10,
-          query: "",
-          filterType: "antd",
-          sortBy: undefined,
-          sortOrder: undefined,
-        }),
       })
         .then((res) => res.json())
         .then((jsonRes) => {
@@ -116,31 +107,39 @@ export const CRUDComponent = () => {
 
   const onFinish = async (values) => {
     try {
-      const response = !editId.current
-        ? await fetch("http://localhost:8082/product", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
+      if (editId.current) {
+        fetch(`http://localhost:8082/product/${editId.current}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        })
+          .then(() => {
+            message.success(`Product Updated Successfully`);
+            setIsModalOpen(false);
           })
-        : await fetch(`http://localhost:8082/product/${editId.current}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
+          .catch(() => {
+            message.error("Failed to Update");
           });
-
-      console.log(response);
-      const data = await response.json();
-      console.log(data);
-
-      message.success(
-        `Product ${editId.current ? "Updated" : "Created"} Successfully`,
-      );
-      setProducts((prev) => [...prev, data]);
-      setIsModalOpen(false);
+      } else {
+        fetch("http://localhost:8082/product", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            message.success(`Product Created Successfully`);
+            setProducts((prev) => [...prev, data]);
+            setIsModalOpen(false);
+          })
+          .catch(() => {
+            message.error("Failed to Create");
+          });
+      }
     } catch (err) {
       message.error("Failed");
     }
@@ -185,9 +184,14 @@ export const CRUDComponent = () => {
           >
             Edit
           </Button>
-          <Button danger onClick={() => handleButtonDelete(data.id)}>
-            Delete
-          </Button>
+          <Popconfirm
+            description="Are you sure to delete this product?"
+            onConfirm={() => handleButtonDelete(data.id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button danger>Delete</Button>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -195,7 +199,19 @@ export const CRUDComponent = () => {
 
   const handleButtonDelete = async (id) => {
     try {
-      await Product.deleteProductData(id);
+      fetch(`http://localhost:8082/product/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then(() => {
+          message.success("Product Deleted.");
+        })
+        .catch(() => {
+          message.error("Failed to delete");
+        });
+      setProducts((prev) => prev.filter((item) => item.id !== id));
     } catch (error) {
       message.error("Failed to Delete Product");
     }
@@ -228,7 +244,7 @@ export const CRUDComponent = () => {
           scroll={{ x: 900 }}
         />
       </Card>
-      <CreateModal
+      <ProductFormModal
         form={form}
         onFinish={onFinish}
         editId={editId.current}
