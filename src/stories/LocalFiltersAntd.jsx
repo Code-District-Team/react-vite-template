@@ -3,8 +3,8 @@ import "antd/dist/reset.css";
 import { debounce } from "lodash";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import User from "~/models/user";
 import { stringSorting } from "~/utilities/generalUtility";
-import { fetchUsers } from "./utilities/utilities";
 
 export const LocalFiltersAntd = ({ pageSize, pagination }) => {
   const [searchedText, setSearchedText] = useState("");
@@ -54,8 +54,12 @@ export const LocalFiltersAntd = ({ pageSize, pagination }) => {
   };
 
   const fetchData = async () => {
-    const data = await fetchUsers();
-    setUsers(data);
+    try {
+      const res = await User.getAll();
+      setUsers(res.data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {

@@ -24,19 +24,19 @@ export default function Users() {
   const userDataUpdate = useSelector(selectUser);
   const getUserRolesData = async (values) => {
     try {
-      const response = await User.GetUserRoles(values);
+      const response = await User.getUserRoles(values);
       setRoles(response);
     } catch (error) {
       setFieldErrorsFromServer(error);
     }
   };
 
-  const fetchUserDetails = async (values) => {
+  const getAllUsers = async () => {
     try {
-      const response = await User.userData(values);
+      const response = await User.getAll();
       setUserData(response.data);
-    } catch (error) {
-      setFieldErrorsFromServer(error, values);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -78,7 +78,7 @@ export default function Users() {
       onOk: async () => {
         try {
           await User.deleteUser(id);
-          fetchUserDetails();
+          getAllUsers();
         } catch (error) {
           setFieldErrorsFromServer(error);
         }
@@ -159,7 +159,7 @@ export default function Users() {
   });
 
   useEffect(() => {
-    fetchUserDetails();
+    getAllUsers();
     getUserRolesData();
   }, []);
 

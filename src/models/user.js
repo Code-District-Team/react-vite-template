@@ -167,7 +167,7 @@ export default class User {
     return await NetworkCall.fetch(request, true);
   }
 
-  static async userData() {
+  static async getAll() {
     const request = new Request(
       K.Network.URL.Users.GetUser,
       K.Network.Method.GET,
@@ -177,7 +177,7 @@ export default class User {
       false,
     );
 
-    return NetworkCall.fetch(request, true);
+    return await NetworkCall.fetch(request, true);
   }
 
   static async deleteUser(id) {
@@ -239,7 +239,7 @@ export default class User {
     return NetworkCall.fetch(request, true);
   }
   // get all Roles
-  static async GetUserRoles() {
+  static async getUserRoles() {
     const request = new Request(
       K.Network.URL.Roles,
       K.Network.Method.GET,

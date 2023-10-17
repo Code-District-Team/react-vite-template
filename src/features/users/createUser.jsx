@@ -17,7 +17,7 @@ const CreateUser = () => {
 
   const getUserRolesData = async (values) => {
     try {
-      const response = await User.GetUserRoles(values);
+      const response = await User.getUserRoles(values);
       setRoles(response);
     } catch (error) {
       setFieldErrorsFromServer(error);
