@@ -36,6 +36,10 @@ const K = {
         UploadProfilePicture: "user/upload-picture",
         DeleteProfilePicture: "user/profile-picture",
       },
+      Csv: {
+        ImportCsvFile: "/product/bulk-import",
+        ExportCsvFile: "/product/bulk-export",
+      },
       Products: {
         GetProducts: "/product/get",
         GetProductsById: "/product",

@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input, Table, message } from "antd";
+import { Button, Card, Form, Input, Modal, Table, message } from "antd";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import RoleAndPermission from "~/models/roleAndPermission";
@@ -153,27 +153,39 @@ export default function RolesPermission() {
   };
 
   const handleDelete = async (record) => {
-    try {
-      await RoleAndPermission.deleteRole(record.id, { name: record.name });
-      setListing((prev) => ({
-        ...prev,
-        roles: prev.roles.filter(({ id }) => id !== record.id),
-      }));
-    } catch (error) {
-      message.error(error);
-    }
+    Modal.confirm({
+      title: "Are you sure you want to delete this product?",
+      content: "This operation cannot be undone.",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk: async () => {
+        try {
+          await RoleAndPermission.deleteRole(record.id, { name: record.name });
+          setListing((prev) => ({
+            ...prev,
+            roles: prev.roles.filter(({ id }) => id !== record.id),
+          }));
+        } catch (error) {
+          message.error(error);
+        }
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
   };
 
   const updateRole = async (data) => {
     try {
       const { id, ...restValues } = data;
 
-      // const res =
-      await RoleAndPermission.updateRole(id, restValues);
+      const res = await RoleAndPermission.updateRole(id, restValues);
+      const { name } = res;
       message.success("Role updated successfully");
-      getAllRoles();
-      // TODO: Need to update state on update remove above API Call
-      /* setListing((prev) => {
+      form.setFieldsValue({ name: name });
+
+      setListing((prev) => {
         return {
           ...prev,
           roles: prev.roles.map((item) => {
@@ -181,7 +193,7 @@ export default function RolesPermission() {
             return item;
           }),
         };
-      }); */
+      });
 
       setInitialValues();
     } catch (error) {

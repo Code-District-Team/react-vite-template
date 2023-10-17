@@ -70,5 +70,31 @@ export default class Product {
       false,
     );
     return await NetworkCall.fetch(request, true);
+
+    // Export Csv File
+  }
+  static async exportCsvFile(body) {
+    const request = new Request(
+      K.Network.URL.Csv.ExportCsvFile,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.File,
+      {},
+      false,
+    );
+    return await NetworkCall.fetch(request, true);
+  }
+  // Import Csv File
+  static async importCsvFile(body) {
+    const request = new Request(
+      K.Network.URL.Csv.ImportCsvFile,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.File,
+      {},
+      false,
+    );
+
+    return NetworkCall.fetch(request, true);
   }
 }

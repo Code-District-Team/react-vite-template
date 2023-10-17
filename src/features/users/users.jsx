@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input, Table, message } from "antd";
+import { Button, Card, Form, Input, Modal, Table, message } from "antd";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -69,12 +69,24 @@ export default function Users() {
   };
 
   const handleDelete = async (id) => {
-    try {
-      await User.deleteUser(id);
-      fetchUserDetails();
-    } catch (error) {
-      setFieldErrorsFromServer(error);
-    }
+    Modal.confirm({
+      title: "Are you sure you want to delete this product?",
+      content: "This operation cannot be undone.",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk: async () => {
+        try {
+          await User.deleteUser(id);
+          fetchUserDetails();
+        } catch (error) {
+          setFieldErrorsFromServer(error);
+        }
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
   };
 
   const columns = [

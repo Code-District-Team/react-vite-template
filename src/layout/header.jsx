@@ -8,10 +8,17 @@ import { Avatar, Dropdown, Layout } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import User from "~/models/user";
+import K from "~/utilities/constants";
 
 export default function Header({ collapsed, toggle }) {
   const { Header } = Layout;
   const navigate = useNavigate();
+  const data = User.getUserObjectFromCookies();
+  const BaseUrl = K.Network.URL.BaseAPI;
+
+  const imageUrl = data.user?.profileImageUrl
+    ? `${BaseUrl}/${data.user.profileImageUrl}`
+    : null;
 
   const handleMenuClick = ({ key }) => {
     const actions = {
@@ -55,7 +62,8 @@ export default function Header({ collapsed, toggle }) {
               className="ant-dropdown-link"
               onClick={(e) => e.preventDefault()}
             >
-              <Avatar icon={<UserOutlined />} /> {User.getFullName()}
+              <Avatar src={imageUrl} icon={!imageUrl && <UserOutlined />} />
+              {User.getFullName()}
               <DownOutlined />
             </a>
           </Dropdown>

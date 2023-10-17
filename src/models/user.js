@@ -204,7 +204,6 @@ export default class User {
 
     const user = await NetworkCall.fetch(request, true);
     const data = User.getUserObjectFromCookies();
-    console.log("hsbData", data);
     user.roles = data.user.roles;
     const cookieData = {
       apiToken: data?.apiToken,
@@ -265,9 +264,7 @@ export default class User {
     );
     const result = await NetworkCall.fetch(request, true);
     let data = User.getUserObjectFromCookies();
-    console.log("data before", data.user.profileImageUrl);
     data.user.profileImageUrl = result.path;
-    console.log("data after", data.user.profileImageUrl);
     const cookieData = {
       apiToken: data?.apiToken,
       user: data.user,
@@ -297,9 +294,7 @@ export default class User {
 
     const result = await NetworkCall.fetch(request, true);
     let data = User.getUserObjectFromCookies();
-    console.log("data delete before", data.user.profileImageUrl);
     data.user.profileImageUrl = result.path;
-    console.log("data delete  after", data.user.profileImageUrl);
     const cookieData = {
       apiToken: data?.apiToken,
       user: data.user,
