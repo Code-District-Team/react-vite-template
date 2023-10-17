@@ -167,7 +167,7 @@ export default class User {
     return await NetworkCall.fetch(request, true);
   }
 
-  static async userData() {
+  static async getAll() {
     const request = new Request(
       K.Network.URL.Users.GetUser,
       K.Network.Method.GET,
@@ -203,7 +203,7 @@ export default class User {
     );
 
     const user = await NetworkCall.fetch(request, true);
-    const data = User.getUserObjectFromCookies();
+    const data = this.getUserObjectFromCookies();
     user.roles = data.user.roles;
     const cookieData = {
       apiToken: data?.apiToken,
@@ -222,7 +222,7 @@ export default class User {
     return user;
   }
   // Invite User
-  static async InviteUser(email, roleId) {
+  static async inviteUser(email, roleId) {
     const body = {
       email,
       roleId,
@@ -239,7 +239,7 @@ export default class User {
     return NetworkCall.fetch(request, true);
   }
   // get all Roles
-  static async GetUserRoles() {
+  static async getUserRoles() {
     const request = new Request(
       K.Network.URL.Roles,
       K.Network.Method.GET,
@@ -253,7 +253,7 @@ export default class User {
   }
 
   // Upload Profile Picture
-  static async UploadProfilePicture(body, remember) {
+  static async uploadProfilePicture(body, remember) {
     const request = new Request(
       K.Network.URL.Users.UploadProfilePicture,
       K.Network.Method.POST,
@@ -263,7 +263,7 @@ export default class User {
       false,
     );
     const result = await NetworkCall.fetch(request, true);
-    let data = User.getUserObjectFromCookies();
+    let data = this.getUserObjectFromCookies();
     data.user.profileImageUrl = result.path;
     const cookieData = {
       apiToken: data?.apiToken,
@@ -283,7 +283,7 @@ export default class User {
 
   //Delete Profile Picture
 
-  static async DeleteProfilePicture(remember) {
+  static async deleteProfilePicture(remember) {
     const request = new Request(
       K.Network.URL.Users.DeleteProfilePicture,
       K.Network.Method.DELETE,
@@ -293,7 +293,7 @@ export default class User {
     );
 
     const result = await NetworkCall.fetch(request, true);
-    let data = User.getUserObjectFromCookies();
+    let data = this.getUserObjectFromCookies();
     data.user.profileImageUrl = result.path;
     const cookieData = {
       apiToken: data?.apiToken,

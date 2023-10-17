@@ -33,7 +33,7 @@ export default function Users() {
 
   const fetchUserDetails = async (values) => {
     try {
-      const response = await User.userData(values);
+      const response = await User.getAll(values);
       setUserData(response.data);
     } catch (error) {
       setFieldErrorsFromServer(error, values);
@@ -52,15 +52,13 @@ export default function Users() {
   };
 
   const showModal = () => {
-    if (!editId.current) {
-      form.resetFields();
-    }
+    if (!editId.current) form.resetFields();
     setIsModalOpen(true);
   };
 
   const onFinish = async (values) => {
     try {
-      await User.InviteUser(values.email, values.roleId);
+      await User.inviteUser(values.email, values.roleId);
       message.success(`An email has been sent to ${values.email}`);
       setIsModalOpen(false);
     } catch (error) {

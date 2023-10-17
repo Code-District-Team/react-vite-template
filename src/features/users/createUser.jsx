@@ -17,7 +17,7 @@ const CreateUser = () => {
 
   const getUserRolesData = async (values) => {
     try {
-      const response = await User.GetUserRoles(values);
+      const response = await User.getUserRoles(values);
       setRoles(response);
     } catch (error) {
       setFieldErrorsFromServer(error);
@@ -25,7 +25,7 @@ const CreateUser = () => {
   };
   const onFinish = async (values) => {
     try {
-      const response = await User.InviteUser(values.email, values.roleId);
+      const response = await User.inviteUser(values.email, values.roleId);
       console.log(response);
       message.success("User Invite has been sent");
     } catch (error) {

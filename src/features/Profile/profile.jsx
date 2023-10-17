@@ -38,7 +38,7 @@ export default function ProfilePage() {
     const formData = new FormData();
     formData.append("file", info?.file);
     try {
-      await User.UploadProfilePicture(formData);
+      await User.uploadProfilePicture(formData);
     } catch (error) {
       message.error("Failed to Upload file");
     }
@@ -46,7 +46,7 @@ export default function ProfilePage() {
 
   const onRemove = async (file) => {
     try {
-      await User.DeleteProfilePicture(file);
+      await User.deleteProfilePicture(file);
       setFileList([
         {
           url: defaultImageUrl,

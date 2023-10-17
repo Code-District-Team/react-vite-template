@@ -4,7 +4,7 @@ import K from "~/utilities/constants";
 
 export default class Product {
   //get product
-  static async getProductData(body) {
+  static async getByFilters(body) {
     const request = new Request(
       K.Network.URL.Products.GetProducts,
       K.Network.Method.POST,
@@ -16,8 +16,20 @@ export default class Product {
     return await NetworkCall.fetch(request, true);
   }
 
+  static async getAll() {
+    const request = new Request(
+      K.Network.URL.Products.GetAll,
+      K.Network.Method.GET,
+      null,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+    return await NetworkCall.fetch(request, true);
+  }
+
   //get product by id
-  static async getProductDataById(id) {
+  static async getById(id) {
     const request = new Request(
       K.Network.URL.Products.GetProductsById + `/${id}`,
       K.Network.Method.GET,
@@ -27,15 +39,11 @@ export default class Product {
     );
     return await NetworkCall.fetch(request, true);
   }
+
   // Create Product
-  static async createProductData(name, quantity, price) {
-    const body = {
-      name,
-      quantity,
-      price,
-    };
+  static async create(body) {
     const request = new Request(
-      K.Network.URL.Products.CreateProducts,
+      K.Network.URL.Products.Create,
       K.Network.Method.POST,
       body,
       K.Network.Header.Type.Json,
@@ -44,12 +52,8 @@ export default class Product {
     );
     return await NetworkCall.fetch(request, true);
   }
-  static async updateProductData(name, quantity, price, id) {
-    const body = {
-      name,
-      quantity,
-      price,
-    };
+
+  static async update(id, body) {
     const request = new Request(
       K.Network.URL.Products.UpdateProducts + `/${id}`,
       K.Network.Method.PATCH,
@@ -60,7 +64,8 @@ export default class Product {
     );
     return await NetworkCall.fetch(request, true);
   }
-  static async deleteProductData(id) {
+
+  static async delete(id) {
     const params = `${K.Network.URL.Products.DeleteProducts}/${id}`;
     const request = new Request(
       params,
@@ -70,9 +75,9 @@ export default class Product {
       false,
     );
     return await NetworkCall.fetch(request, true);
-
-    // Export Csv File
   }
+
+  // Export Csv File
   static async exportCsvFile(body) {
     const request = new Request(
       K.Network.URL.Csv.ExportCsvFile,
@@ -84,6 +89,7 @@ export default class Product {
     );
     return await NetworkCall.fetch(request, true);
   }
+
   // Import Csv File
   static async importCsvFile(body) {
     const request = new Request(
@@ -94,7 +100,6 @@ export default class Product {
       {},
       false,
     );
-
     return NetworkCall.fetch(request, true);
   }
 }
