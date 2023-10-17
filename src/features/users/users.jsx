@@ -52,15 +52,13 @@ export default function Users() {
   };
 
   const showModal = () => {
-    if (!editId.current) {
-      form.resetFields();
-    }
+    if (!editId.current) form.resetFields();
     setIsModalOpen(true);
   };
 
   const onFinish = async (values) => {
     try {
-      await User.InviteUser(values.email, values.roleId);
+      await User.inviteUser(values.email, values.roleId);
       message.success(`An email has been sent to ${values.email}`);
       setIsModalOpen(false);
     } catch (error) {

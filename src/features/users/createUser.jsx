@@ -25,7 +25,7 @@ const CreateUser = () => {
   };
   const onFinish = async (values) => {
     try {
-      const response = await User.InviteUser(values.email, values.roleId);
+      const response = await User.inviteUser(values.email, values.roleId);
       console.log(response);
       message.success("User Invite has been sent");
     } catch (error) {
