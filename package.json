@@ -24,7 +24,7 @@
     "ag-grid-community": "^30.2.0",
     "ag-grid-enterprise": "^30.2.0",
     "ag-grid-react": "^30.2.0",
-    "antd": "^5.9.4",
+    "antd": "^5.10.1",
     "antd-img-crop": "^4.13.0",
     "axios": "^1.5.0",
     "crypto-js": "^4.1.1",

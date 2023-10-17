@@ -3,6 +3,7 @@ import { Button, Card, DatePicker, Input, Space, Table, message } from "antd";
 import dayjs from "dayjs";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
+import Highlighter from "react-highlight-words";
 
 const FilterActions = ({ confirm, close, clearFilters, handleReset }) => {
   return (
@@ -44,6 +45,8 @@ const FilterActions = ({ confirm, close, clearFilters, handleReset }) => {
 
 export const ServerSideAntd = () => {
   const searchInput = useRef(null);
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
   const [productData, setProductData] = useState({ products: [], total: 0 });
   const [payload, setPayload] = useState({
     page: 1,
@@ -58,8 +61,10 @@ export const ServerSideAntd = () => {
     setPayload((prev) => ({ ...prev, query: value, page: 1 }));
   };
 
-  const handleQuickSearch = async (selectedKeys, confirm) => {
+  const handleQuickSearch = async (selectedKeys, confirm, dataIndex) => {
     try {
+      setSearchText(selectedKeys[0]);
+      setSearchedColumn(dataIndex);
       confirm();
     } catch (error) {
       message.error("Failed to Search");
@@ -67,6 +72,7 @@ export const ServerSideAntd = () => {
   };
 
   const handleReset = (clearFilters) => {
+    setSearchText("");
     clearFilters();
   };
 
@@ -116,6 +122,20 @@ export const ServerSideAntd = () => {
         />
       );
     },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
   });
 
   const getColumnSearchDateProps = (dataIndex) => ({
@@ -160,6 +180,20 @@ export const ServerSideAntd = () => {
         />
       );
     },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
   });
   const columns = [
     {
