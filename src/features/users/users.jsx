@@ -31,7 +31,7 @@ export default function Users() {
     }
   };
 
-  const fetchUserDetails = async (values) => {
+  const getAllUsers = async (values) => {
     try {
       const response = await User.getAll(values);
       setUserData(response.data);
@@ -76,7 +76,7 @@ export default function Users() {
       onOk: async () => {
         try {
           await User.deleteUser(id);
-          fetchUserDetails();
+          getAllUsers();
         } catch (error) {
           setFieldErrorsFromServer(error);
         }
@@ -158,7 +158,7 @@ export default function Users() {
   });
 
   useEffect(() => {
-    fetchUserDetails();
+    getAllUsers();
     getUserRolesData();
   }, []);
 
