@@ -173,7 +173,7 @@ export default class User {
       K.Network.Method.GET,
       null,
       K.Network.Header.Type.Json,
-      { "ngrok-skip-browser-warning": true },
+      {},
       false,
     );
 
@@ -245,7 +245,7 @@ export default class User {
       K.Network.Method.GET,
       null,
       K.Network.Header.Type.Json,
-      { "ngrok-skip-browser-warning": true },
+      {},
       false,
     );
 
