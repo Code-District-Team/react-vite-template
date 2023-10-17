@@ -104,15 +104,24 @@ export const CRUDComponent = () => {
 
   const createNewProduct = async (values) => {
     try {
-      console.log(values);
-      // const res = await Product
+      const data = await Product.create(values);
+      message.success(`Product Created Successfully`);
+      setProducts((prev) => [...prev, data]);
+      setIsModalOpen(false);
     } catch (err) {
       console.error(err);
     }
   };
   const updateProduct = async (id, values) => {
     try {
-      console.log(values, id);
+      try {
+        const res = await Product.update(id, values);
+        message.success(res);
+        setIsModalOpen(false);
+        setRefetch(!refetch);
+      } catch (err) {
+        console.error(err);
+      }
       setRefetch(!refetch);
     } catch (err) {
       console.error(err);
@@ -122,45 +131,6 @@ export const CRUDComponent = () => {
   const onFinish = async (values) => {
     if (editId.current) updateProduct(editId.current, values);
     else createNewProduct(values);
-
-    /* try {
-      if (editId.current) {
-        fetch(`http://localhost:8082/product/${editId.current}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        })
-          .then(() => {
-            message.success(`Product Updated Successfully`);
-            setIsModalOpen(false);
-            setRefetch(!refetch);
-          })
-          .catch(() => {
-            message.error("Failed to Update");
-          });
-      } else {
-        fetch("http://localhost:8082/product", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            message.success(`Product Created Successfully`);
-            setProducts((prev) => [...prev, data]);
-            setIsModalOpen(false);
-          })
-          .catch(() => {
-            message.error("Failed to Create");
-          });
-      }
-    } catch (err) {
-      message.error("Failed");
-    } */
   };
 
   const columns = [

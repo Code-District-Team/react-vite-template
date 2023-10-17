@@ -53,7 +53,7 @@ export const LocalFiltersAntd = ({ pageSize, pagination }) => {
     setSearchedText(evt.target.value);
   };
 
-  const fetchData = async () => {
+  const fetchUsers = async () => {
     try {
       const res = await User.getAll();
       setUsers(res.data);
@@ -63,7 +63,7 @@ export const LocalFiltersAntd = ({ pageSize, pagination }) => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchUsers();
   }, []);
 
   return (

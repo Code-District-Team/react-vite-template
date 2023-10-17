@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
+import Product from "~/models/product";
 
 const FilterActions = ({ confirm, close, clearFilters, handleReset }) => {
   return (
@@ -246,18 +247,12 @@ export const ServerSideAntd = () => {
   };
 
   const fetchProducts = async () => {
-    fetch("http://localhost:8082/product/get", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then(({ data }) => {
-        setProductData(data);
-      })
-      .catch(() => {});
+    try {
+      const { data } = await Product.getByFilters(payload);
+      setProductData(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {

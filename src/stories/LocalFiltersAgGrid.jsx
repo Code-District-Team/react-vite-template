@@ -47,7 +47,7 @@ export const LocalFiltersAgGrid = ({ pageSize, pagination }) => {
     },
   ];
 
-  const fetchData = async () => {
+  const fetchUsers = async () => {
     try {
       const res = await User.getAll();
       setUsers(res.data);
@@ -57,7 +57,7 @@ export const LocalFiltersAgGrid = ({ pageSize, pagination }) => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchUsers();
   }, []);
 
   return (

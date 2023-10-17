@@ -6,6 +6,7 @@ import { Card, Input } from "antd";
 import { debounce } from "lodash";
 import PropTypes from "prop-types";
 import { useCallback, useMemo, useRef, useState } from "react";
+import Product from "~/models/product";
 
 const columnDefs = [
   {
@@ -78,23 +79,17 @@ export const ServerSideAgGrid = ({ pageSize }) => {
             params.request.sortModel[0]?.sort.toUpperCase() ?? undefined,
           agGrid: payload.length ? payload : undefined,
         };
-        fetch("http://localhost:8082/product/get", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        })
-          .then((res) => res.json())
-          .then(({ data }) => {
-            params.success({
-              rowData: data.products,
-              rowCount: data.total,
-            });
-          })
-          .catch(() => {
-            params.fail();
+
+        try {
+          const { data } = await Product.getByFilters(body);
+          params.success({
+            rowData: data.products,
+            rowCount: data.total,
           });
+        } catch (err) {
+          params.fail();
+          console.error(err);
+        }
       },
     },
     [searchQuery],
