@@ -20,7 +20,7 @@ const ProductListView = () => {
         // sortBy: undefined,
         // sortOrder: undefined,
       };
-      const response = await Product.getProductData(payload);
+      const response = await Product.getByFilters(payload);
       setData((prevData) => ({
         products: [...prevData.products, ...response.data.products],
         total: response.data.total,

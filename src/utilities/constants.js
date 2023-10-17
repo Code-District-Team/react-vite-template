@@ -41,9 +41,10 @@ const K = {
         ExportCsvFile: "/product/bulk-export",
       },
       Products: {
+        GetAll: "product/get-all",
         GetProducts: "/product/get",
         GetProductsById: "/product",
-        CreateProducts: "/product",
+        Create: "/product",
         UpdateProducts: "/product",
         DeleteProducts: "/product",
       },

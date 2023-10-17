@@ -111,7 +111,7 @@ const ProductAntd = () => {
 
   const fetchProductDetails = async () => {
     try {
-      const response = await Product.getProductData(payload);
+      const response = await Product.getByFilters(payload);
       setProductData(response.data);
     } catch (error) {
       console.error(error);
@@ -336,11 +336,7 @@ const ProductAntd = () => {
 
   const createProducts = async (values) => {
     try {
-      const res = await Product.createProductData(
-        values.name,
-        values.quantity,
-        values.price,
-      );
+      const res = await Product.create(values);
       setProductData((prev) => ({
         total: prev.total + 1,
         products: [...prev.products, res],
@@ -381,7 +377,7 @@ const ProductAntd = () => {
       cancelText: "No",
       onOk: async () => {
         try {
-          await Product.deleteProductData(id);
+          await Product.delete(id);
           fetchProductDetails();
           message.success("Product deleted successfully");
         } catch (error) {
@@ -396,12 +392,7 @@ const ProductAntd = () => {
 
   const handleButtonEdit = async (values) => {
     try {
-      await Product.updateProductData(
-        values.name,
-        values.quantity,
-        values.price,
-        editId.current,
-      );
+      await Product.update(editId.current, values);
       message.success("Product updated successfully");
       fetchProductDetails();
       setIsModalOpen(false);

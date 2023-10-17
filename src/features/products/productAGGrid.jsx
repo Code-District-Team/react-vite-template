@@ -53,7 +53,7 @@ const ProductAGGrid = () => {
           agGrid: payload.length === 0 ? undefined : payload,
         };
         try {
-          const { data } = await Product.getProductData(body);
+          const { data } = await Product.getByFilters(body);
           params.success({
             rowData: data.products,
             rowCount: data.total,
@@ -72,11 +72,7 @@ const ProductAGGrid = () => {
 
   const createProducts = async (values) => {
     try {
-      await Product.createProductData(
-        values.name,
-        values.quantity,
-        values.price,
-      );
+      await Product.create(values);
       setIsModalOpen(false);
       setRefreshTable(!refreshTable);
       message.success("Product created Successfully");
@@ -104,7 +100,7 @@ const ProductAGGrid = () => {
 
   const handleButtonDelete = async (id) => {
     try {
-      await Product.deleteProductData(id);
+      await Product.delete(id);
       setRefreshTable(!refreshTable);
     } catch (error) {
       console.error(error);
@@ -112,12 +108,7 @@ const ProductAGGrid = () => {
   };
   const handleButtonEdit = async (values) => {
     try {
-      await Product.updateProductData(
-        values.name,
-        parseInt(values.quantity),
-        parseFloat(values.price),
-        productId,
-      );
+      await Product.update(productId, values);
       message.success("Product updated successfully");
       setIsModalOpen(false);
       setRefreshTable(!refreshTable);

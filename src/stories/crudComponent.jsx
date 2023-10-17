@@ -11,6 +11,7 @@ import {
   message,
 } from "antd";
 import { useEffect, useRef, useState } from "react";
+import Product from "~/models/product";
 
 const ProductFormModal = ({
   form,
@@ -94,23 +95,35 @@ export const CRUDComponent = () => {
 
   const fetchProducts = async () => {
     try {
-      fetch("http://localhost:8082/product/get-all", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((jsonRes) => {
-          setProducts(jsonRes);
-        });
+      const res = await Product.getAll();
+      setProducts(res);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const onFinish = async (values) => {
+  const createNewProduct = async (values) => {
     try {
+      console.log(values);
+      // const res = await Product
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const updateProduct = async (id, values) => {
+    try {
+      console.log(values, id);
+      setRefetch(!refetch);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const onFinish = async (values) => {
+    if (editId.current) updateProduct(editId.current, values);
+    else createNewProduct(values);
+
+    /* try {
       if (editId.current) {
         fetch(`http://localhost:8082/product/${editId.current}`, {
           method: "PATCH",
@@ -147,7 +160,7 @@ export const CRUDComponent = () => {
       }
     } catch (err) {
       message.error("Failed");
-    }
+    } */
   };
 
   const columns = [
