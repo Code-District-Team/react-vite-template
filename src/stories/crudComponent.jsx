@@ -13,13 +13,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import Product from "~/models/product";
 
-const ProductFormModal = ({
-  form,
-  editId,
-  onFinish,
-  isModalOpen,
-  setIsModalOpen,
-}) => {
+const ProductFormModal = ({ form, onFinish, isModalOpen, setIsModalOpen }) => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
@@ -27,9 +21,9 @@ const ProductFormModal = ({
   return (
     <Modal
       centered
-      title="Create Product"
+      title="Product Form"
       open={isModalOpen}
-      okText={editId ? "Update" : "Create"}
+      okText="Save"
       onOk={form.submit}
       onCancel={handleCancel}
       afterClose={() => {
@@ -86,7 +80,7 @@ const ProductFormModal = ({
   );
 };
 
-export const CRUDComponent = () => {
+export const ProductsCRUD = () => {
   const [form] = Form.useForm();
   const editId = useRef(null);
   const [products, setProducts] = useState([]);
@@ -101,6 +95,58 @@ export const CRUDComponent = () => {
       console.error(error);
     }
   };
+
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+    },
+    {
+      title: "Product Name",
+      dataIndex: "name",
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      render: (text) => `$${text.toLocaleString("en")}`,
+    },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+    },
+    {
+      title: "Created At",
+      dataIndex: "createdAt",
+    },
+    {
+      title: "Updated At",
+      dataIndex: "updatedAt",
+    },
+    {
+      title: "Action",
+      render: (_, record) => (
+        <Space>
+          <Button
+            onClick={() => {
+              editId.current = record.id;
+              setIsModalOpen(true);
+              form.setFieldsValue(record);
+            }}
+          >
+            Edit
+          </Button>
+          <Popconfirm
+            description="Are you sure to delete this product?"
+            onConfirm={() => deleteProduct(record.id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button danger>Delete</Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
 
   const createNewProduct = async (values) => {
     try {
@@ -133,72 +179,10 @@ export const CRUDComponent = () => {
     else createNewProduct(values);
   };
 
-  const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-    },
-    {
-      title: "Product Name",
-      dataIndex: "name",
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      render: (text) => `$${text.toLocaleString("en")}`,
-    },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-    },
-    {
-      title: "Created At",
-      dataIndex: "createdAt",
-    },
-    {
-      title: "Updated At",
-      dataIndex: "updatedAt",
-    },
-    {
-      title: "Action",
-      render: (_, data) => (
-        <Space>
-          <Button
-            onClick={() => {
-              editId.current = data.id;
-              setIsModalOpen(true);
-              form.setFieldsValue(data);
-            }}
-          >
-            Edit
-          </Button>
-          <Popconfirm
-            description="Are you sure to delete this product?"
-            onConfirm={() => handleButtonDelete(data.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button danger>Delete</Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
-
-  const handleButtonDelete = async (id) => {
+  const deleteProduct = async (id) => {
     try {
-      fetch(`http://localhost:8082/product/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then(() => {
-          message.success("Product Deleted.");
-        })
-        .catch(() => {
-          message.error("Failed to delete");
-        });
+      const res = await Product.delete(id);
+      message.success(res);
       setProducts((prev) => prev.filter((item) => item.id !== id));
     } catch (error) {
       message.error("Failed to Delete Product");
@@ -235,7 +219,6 @@ export const CRUDComponent = () => {
       <ProductFormModal
         form={form}
         onFinish={onFinish}
-        editId={editId.current}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
       />

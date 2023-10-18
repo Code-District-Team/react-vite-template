@@ -1,8 +1,8 @@
-import { CRUDComponent } from "./crudComponent";
+import { ProductsCRUD } from "./crudComponent";
 
 export default {
   title: "Features/CRUD Operations",
-  component: CRUDComponent,
+  component: ProductsCRUD,
   parameters: {},
 };
 
