@@ -311,6 +311,9 @@ const ProductAntd = () => {
                 <Button danger onClick={() => handleButtonDelete(data.id)}>
                   Delete
                 </Button>
+                <Button onClick={() => console.log("stripedata", data)}>
+                  Buy Now
+                </Button>
               </Space>
             ),
           },

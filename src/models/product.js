@@ -43,7 +43,7 @@ export default class Product {
   // Create Product
   static async create(body) {
     const request = new Request(
-      K.Network.URL.Products.Create,
+      K.Network.URL.Products.CreateProducts,
       K.Network.Method.POST,
       body,
       K.Network.Header.Type.Json,

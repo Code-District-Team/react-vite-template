@@ -24,7 +24,7 @@ export default function Users() {
   const userDataUpdate = useSelector(selectUser);
   const getUserRolesData = async (values) => {
     try {
-      const response = await User.GetUserRoles(values);
+      const response = await User.getUserRoles(values);
       setRoles(response);
     } catch (error) {
       setFieldErrorsFromServer(error);
