@@ -357,6 +357,7 @@ return (
         size="large"
         placeholder="Search"
         onChange={debounce(handleSearch, 500)}
+        // Used debounce to delay the calling of `handleSearch` by 500 ms rather than calling on every key press
       />
     }
   >
