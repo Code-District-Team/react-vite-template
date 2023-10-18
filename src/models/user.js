@@ -57,7 +57,7 @@ export default class User {
       lastName,
       mobilePhone,
       companyEmail,
-    companyName,
+      companyName,
       password,
     };
     // * Request Instance
