@@ -116,7 +116,7 @@ export default function Register() {
             rules={[
               {
                 required: true,
-                message: "Please input your Last Name",
+                message: "Please input your Company Name",
               },
             ]}
           >
@@ -134,7 +134,7 @@ export default function Register() {
             rules={[
               {
                 required: true,
-                message: "Please input your Last Name",
+                message: "Please input your Company Website",
               },
             ]}
           >
@@ -153,7 +153,7 @@ export default function Register() {
             rules={[
               {
                 required: true,
-                message: "Please input your email",
+                message: "Please input your Company email",
               },
             ]}
           >
