@@ -1,9 +1,41 @@
 import * as ServerSideFilters from "./ServerSideAntd.stories";
 import { Meta, Primary, Controls, Story } from "@storybook/blocks";
 
-<Meta of={ServerSideFilters} />
+<Meta title="Features/Server Side Filters/Ant Design/Frontend Docs" />
 
-### Server Side Filters For Ant Design
+# Server-Side Ant Design Table
+
+The `ServerSideAntd` component is a React component that demonstrates how to create a server-side data table using Ant Design.
+It includes features like searching, sorting, and filtering data.
+
+## Features
+
+The `ServerSideAntd` offers the following features:
+
+- Server-side data fetching for efficient handling of large datasets.
+- Search functionality with a debounce delay for optimal user experience.
+- Sorting of data by different columns.
+- Filtering data using Ant Design's filter dropdown.
+- Display of pagination controls.
+
+## Component Structure
+
+The code for the ServerSideAntd component is organized into different sections, including:
+
+- Import statements for required components and dependencies.
+- Definition of filter and search functions.
+- Configuration of Ant Design table columns, including search and sort functionality.
+- Handling of table changes, such as pagination, sorting, and filtering.
+- Data fetching from a server endpoint using a POST request.
+
+## Usage
+
+To use the `ServerSideAntd`, you can follow these steps:
+
+This component is designed to illustrate how to create an efficient server-side data table using Ant Design in your React application.
+You can customize and integrate it into your project to handle large datasets effectively.
+
+1. Import the necessary dependencies into your React application.
 
 ```jsx
 import { SearchOutlined } from "@ant-design/icons";
@@ -11,8 +43,213 @@ import { Button, Card, DatePicker, Input, Space, Table, message } from "antd";
 import dayjs from "dayjs";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
+import Highlighter from "react-highlight-words";
+import Product from "~/models/product";
+```
 
-const FilterActions = ({ confirm, close, clearFilters, handleReset }) => {
+2. Create a React component and add following necessary statements.
+
+```jsx
+export default function ServerSideAntd() {
+  // Input Ref used in antd filter dropdown
+  const searchInput = useRef(null);
+
+  // States for table listing and filters for data
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const [productData, setProductData] = useState({ products: [], total: 0 });
+  const [payload, setPayload] = useState({
+    page: 1,
+    limit: 5,
+    query: "",
+    filterType: "antd",
+    sortBy: undefined,
+    sortOrder: undefined,
+  });
+}
+```
+
+3. Declare an array of object named `columns` for Ant Design table columns and create methods for rendering filter dropdown.
+
+```jsx
+const getColumnSearchDateProps = (dataIndex) => ({
+  filterDropdown: ({
+    setSelectedKeys,
+    selectedKeys,
+    confirm,
+    clearFilters,
+    close,
+  }) => (
+    <div
+      style={{
+        padding: 8,
+      }}
+      onKeyDown={(e) => e.stopPropagation()}
+    >
+      <DatePicker
+        style={{
+          marginBottom: 8,
+          display: "block",
+        }}
+        value={selectedKeys[0] ? dayjs(selectedKeys[0]) : null}
+        onChange={(date) => {
+          handleQuickSearch(selectedKeys, confirm, dataIndex);
+          setSelectedKeys(date ? [date.format("YYYY-MM-DD 00:00:00")] : []);
+        }}
+      />
+      <FilterActions
+        close={close}
+        confirm={confirm}
+        clearFilters={clearFilters}
+        handleReset={handleReset}
+      />
+    </div>
+  ),
+  filterIcon: (filtered) => {
+    return (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    );
+  },
+  render: (text) =>
+    searchedColumn === dataIndex ? (
+      <Highlighter
+        highlightStyle={{
+          backgroundColor: "#ffc069",
+          padding: 0,
+        }}
+        searchWords={[searchText]}
+        autoEscape
+        textToHighlight={text ? text.toString() : ""}
+      />
+    ) : (
+      text
+    ),
+});
+
+const getColumnSearchProps = (dataIndex) => ({
+  filterDropdown: ({
+    setSelectedKeys,
+    selectedKeys,
+    confirm,
+    clearFilters,
+    close,
+  }) => (
+    <div
+      style={{
+        padding: 8,
+      }}
+      onKeyDown={(e) => e.stopPropagation()}
+    >
+      <Input
+        ref={searchInput}
+        placeholder={`Search ${dataIndex}`}
+        value={selectedKeys[0]}
+        onChange={(e) =>
+          setSelectedKeys(e.target.value ? [e.target.value] : [])
+        }
+        onPressEnter={() => handleQuickSearch(selectedKeys, confirm, dataIndex)}
+        style={{
+          marginBottom: 8,
+          display: "block",
+        }}
+      />
+      <FilterActions
+        close={close}
+        confirm={confirm}
+        clearFilters={clearFilters}
+        handleReset={handleReset}
+      />
+    </div>
+  ),
+  filterIcon: (filtered) => {
+    return (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    );
+  },
+  render: (text) =>
+    searchedColumn === dataIndex ? (
+      <Highlighter
+        highlightStyle={{
+          backgroundColor: "#ffc069",
+          padding: 0,
+        }}
+        searchWords={[searchText]}
+        autoEscape
+        textToHighlight={text ? text.toString() : ""}
+      />
+    ) : (
+      text
+    ),
+});
+
+const columns = [
+  {
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
+  },
+  {
+    title: "Product Name",
+    dataIndex: "name",
+    sorter: true,
+    ...getColumnSearchProps("name"),
+  },
+  {
+    title: "Price",
+    dataIndex: "price",
+    sorter: true,
+    ...getColumnSearchProps("price"),
+  },
+  {
+    title: "Quantity",
+    dataIndex: "quantity",
+    sorter: true,
+    ...getColumnSearchProps("quantity"),
+  },
+  {
+    title: "Created At",
+    dataIndex: "createdAt",
+    sorter: true,
+    ...getColumnSearchDateProps("createdAt"),
+  },
+  {
+    title: "Updated At",
+    dataIndex: "updatedAt",
+    sorter: true,
+    ...getColumnSearchDateProps("updatedAt"),
+  },
+];
+```
+
+4. Create a sperate React component for action buttons. These buttons will be used in filter dropdown that were create in above step.
+
+The `FilterActions` component is a reusable component that provides a set of buttons for filtering and managing actions.
+Import the `FilterActions` into your `ServerSideAntd` component.
+
+### Props
+
+The `FilterActions` component accepts the following props:
+
+- `confirm` (function): A callback function to confirm and apply the filter or search action.
+- `close` (function): A callback function to close or dismiss the filter dropdown.
+- `clearFilters` (function): A callback function to clear the filters or reset filter settings.
+- `handleReset` (function): A callback function to handle filter reset, using `clearFilters`.
+
+```jsx
+export default function FilterActions({
+  confirm,
+  close,
+  clearFilters,
+  handleReset,
+}) {
   return (
     <Space>
       <Button
@@ -40,7 +277,6 @@ const FilterActions = ({ confirm, close, clearFilters, handleReset }) => {
       <Button
         type="link"
         size="small"
-        s
         onClick={() => {
           close();
         }}
@@ -49,220 +285,98 @@ const FilterActions = ({ confirm, close, clearFilters, handleReset }) => {
       </Button>
     </Space>
   );
-};
-
-export const ServerSideAntd = () => {
-  const searchInput = useRef(null);
-  const [productData, setProductData] = useState({ products: [], total: 0 });
-  const [payload, setPayload] = useState({
-    page: 1,
-    limit: 5,
-    query: "",
-    filterType: "antd",
-    sortBy: undefined,
-    sortOrder: undefined,
-  });
-
-  const handleSearch = async ({ target: { value } }) => {
-    setPayload((prev) => ({ ...prev, query: value, page: 1 }));
-  };
-
-  const handleQuickSearch = async (selectedKeys, confirm) => {
-    try {
-      confirm();
-    } catch (error) {
-      message.error("Failed to Search");
-    }
-  };
-
-  const handleReset = (clearFilters) => {
-    clearFilters();
-  };
-
-  const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
-      <div
-        style={{
-          padding: 8,
-        }}
-        onKeyDown={(e) => e.stopPropagation()}
-      >
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleQuickSearch(selectedKeys, confirm, dataIndex)
-          }
-          style={{
-            marginBottom: 8,
-            display: "block",
-          }}
-        />
-        <FilterActions
-          close={close}
-          confirm={confirm}
-          clearFilters={clearFilters}
-          handleReset={handleReset}
-        />
-      </div>
-    ),
-    filterIcon: (filtered) => {
-      return (
-        <SearchOutlined
-          style={{
-            color: filtered ? "#1677ff" : undefined,
-          }}
-        />
-      );
-    },
-  });
-
-  const getColumnSearchDateProps = (dataIndex) => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
-      <div
-        style={{
-          padding: 8,
-        }}
-        onKeyDown={(e) => e.stopPropagation()}
-      >
-        <DatePicker
-          style={{
-            marginBottom: 8,
-            display: "block",
-          }}
-          value={selectedKeys[0] ? dayjs(selectedKeys[0]) : null}
-          onChange={(date) => {
-            handleQuickSearch(selectedKeys, confirm, dataIndex);
-            setSelectedKeys(date ? [date.format("YYYY-MM-DD 00:00:00")] : []);
-          }}
-        />
-        <FilterActions
-          close={close}
-          confirm={confirm}
-          clearFilters={clearFilters}
-          handleReset={handleReset}
-        />
-      </div>
-    ),
-    filterIcon: (filtered) => {
-      return (
-        <SearchOutlined
-          style={{
-            color: filtered ? "#1677ff" : undefined,
-          }}
-        />
-      );
-    },
-  });
-  const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-    },
-    {
-      title: "Product Name",
-      dataIndex: "name",
-      sorter: true,
-      ...getColumnSearchProps("name"),
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      sorter: true,
-      ...getColumnSearchProps("price"),
-    },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      sorter: true,
-      ...getColumnSearchProps("quantity"),
-    },
-    {
-      title: "Created At",
-      dataIndex: "createdAt",
-      sorter: true,
-      ...getColumnSearchDateProps("createdAt"),
-    },
-    {
-      title: "Updated At",
-      dataIndex: "updatedAt",
-      sorter: true,
-      ...getColumnSearchDateProps("updatedAt"),
-    },
-  ];
-
-  const handleTableChange = (pagination, filters, sorter) => {
-    const params = { page: pagination.current, limit: pagination.pageSize };
-    if (sorter.field && sorter.order) {
-      params.sortBy = sorter.field;
-      params.sortOrder = sorter.order === "ascend" ? "ASC" : "DESC";
-    } else {
-      params.sortBy = undefined;
-      params.sortOrder = undefined;
-    }
-    setPayload((prev) => ({ ...prev, ...params, filters }));
-  };
-
-  const fetchProducts = async () => {
-    fetch("http://localhost:8082/product/get", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then(({ data }) => {
-        setProductData(data);
-      })
-      .catch(() => {});
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, [payload]);
-
-  return (
-    <Card
-      title={
-        <Input
-          allowClear
-          size="large"
-          placeholder="Search"
-          onChange={debounce(handleSearch, 500)}
-        />
-      }
-    >
-      <Table
-        rowKey="id"
-        columns={columns}
-        onChange={handleTableChange}
-        scroll={{ x: 950 }}
-        dataSource={productData.products}
-        pagination={{
-          current: payload.page,
-          total: productData.total,
-          pageSize: payload.limit,
-        }}
-      />
-    </Card>
-  );
-};
+}
 ```
+
+5. Add following methods in the `ServerSideAntd`
+
+- `handleSearch` used for searching the product.
+- `handleQuickSearch` used in filter dropdown of antd table column.
+- `handleReset` used for reset table column filters.
+- `handleTableChange` used for handle table changes, such as pagination, sorting, and filtering.
+- `fetchProducts` called from useEffect on render.
+
+```jsx
+const handleSearch = async ({ target: { value } }) => {
+  // Called on search using input field available at top of table component
+  setPayload((prev) => ({ ...prev, query: value, page: 1 }));
+};
+
+const handleQuickSearch = async (selectedKeys, confirm, dataIndex) => {
+  try {
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+    confirm();
+  } catch (error) {
+    message.error("Failed to Search");
+  }
+};
+
+const handleReset = (clearFilters) => {
+  setSearchText("");
+  clearFilters();
+};
+
+const handleTableChange = (pagination, filters, sorter) => {
+  const params = { page: pagination.current, limit: pagination.pageSize };
+  if (sorter.field && sorter.order) {
+    // Checking if field and sortOrder is present in sorter object
+    params.sortBy = sorter.field;
+    params.sortOrder = sorter.order === "ascend" ? "ASC" : "DESC";
+  } else {
+    params.sortBy = undefined;
+    params.sortOrder = undefined;
+  }
+  // Set payload within state to trigger refetching of products with selected filters
+  setPayload((prev) => ({ ...prev, ...params, filters }));
+};
+
+const fetchProducts = async () => {
+  try {
+    const { data } = await Product.getByFilters(payload);
+    setProductData(data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+useEffect(() => {
+  fetchProducts();
+  // Will be executed on component render and changing of filters (payload)
+}, [payload]);
+```
+
+6. In the final step add return statements with following jsx code in `ServerSideAntd` component.
+
+```jsx
+return (
+  <Card
+    title={
+      <Input
+        allowClear
+        size="large"
+        placeholder="Search"
+        onChange={debounce(handleSearch, 500)}
+      />
+    }
+  >
+    <Table
+      rowKey="id"
+      columns={columns}
+      onChange={handleTableChange}
+      scroll={{ x: 950 }}
+      dataSource={productData.products}
+      pagination={{
+        current: payload.page, // Current page number
+        total: productData.total, // For total number of pages available based on total records
+        pageSize: payload.limit, //  No of records per page
+      }}
+    />
+  </Card>
+);
+```
+
+## Note
+
+- Ensure you have the required dependencies, including Ant Design, lodash, and dayjs, installed in your project to use this component effectively.
+- Customize the component to match your specific data source and UI requirements.

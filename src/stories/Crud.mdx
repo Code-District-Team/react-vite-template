@@ -18,11 +18,11 @@ The `ProductsCRUD` offers the following features:
 
 ## Component Structure
 
-The code for the CRUDComponent is organized into different sections, including:
+The code for the `ProductsCRUD` is organized into different sections, including:
 
 - Import statements for required components and dependencies.
-- The ProductFormModal component, used for creating and updating products.
-- The main CRUDComponent component, which manages the list of products, including fetching, creating, updating, and deleting products.
+- The `ProductFormModal` component, used for creating and updating products.
+- The main `ProductsCRUD` component, which manages the list of products, including fetching, creating, updating, and deleting products.
 
 ## Usage
 
@@ -183,14 +183,16 @@ useEffect(() => {
 The `ProductFormModal` component is a React modal that serves as a form for creating and editing product information.
 It allows users to input the product's name, quantity, and price.
 
+Import the `ProductFormModal` into your `ProductsCRUD` component.
+
 ### Props
 
-The ProductFormModal component accepts the following props:
+The `ProductFormModal` component accepts the following props:
 
-- form (object): A Form instance provided by Ant Design's Form component, used for managing form state and validation.
-- onFinish (function): A callback function to handle the form submission.
-- isModalOpen (boolean): A boolean that controls whether the modal is open.
-- setIsModalOpen (function): A function to set the modal's open state.
+- `form` (object): A Form instance provided by Ant Design's Form component, used for managing form state and validation.
+- `onFinish` (function): A callback function to handle the form submission.
+- `isModalOpen` (boolean): A boolean that controls whether the modal is open.
+- `setIsModalOpen` (function): A function to set the modal's open state.
 
 ```jsx
 export default function ProductFormModal({
