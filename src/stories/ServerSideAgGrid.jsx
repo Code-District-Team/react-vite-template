@@ -120,7 +120,7 @@ export const ServerSideAgGrid = ({ pageSize }) => {
           cacheBlockSize={pageSize}
           onGridReady={onGridReady}
           rowModelType="serverSide"
-          domLayout="autoHeight"
+          // domLayout="autoHeight"
           serverSideDatasource={datasource}
         />
       </div>
