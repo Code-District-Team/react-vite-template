@@ -44,7 +44,7 @@ const K = {
         GetAll: "product/get-all",
         GetProducts: "/product/get",
         GetProductsById: "/product",
-        Create: "/product",
+        CreateProducts: "/product",
         UpdateProducts: "/product",
         DeleteProducts: "/product",
       },
