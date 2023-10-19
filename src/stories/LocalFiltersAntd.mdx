@@ -1,31 +1,53 @@
-import * as Filters from "./LocalFiltersAntd.stories";
 import { Meta, Primary, Controls, Story } from "@storybook/blocks";
 
-<Meta of={Filters} />
+<Meta title="Features/Client Side Filters/Ant Design/Frontend Docs" />
 
-### Client Side Filters For Ant Design
+# Client Side Filters Ant Design Table
+
+## Features
+
+The `LocalFiltersAntd` offers the following features:
+
+- Client-side data filtering, sorting, and searching.
+- A search input to quickly filter data.
+- Customizable column configuration.
+- Filtering data using Ag-Grid's filter options.
+- Pagination support.
+
+## Component Structure
+
+The code for the `LocalFiltersAntd` component is structured as follows:
+
+- Import statements for required dependencies, including Ant Design components, lodash for debouncing, and utility functions.
+- Definition of column configuration (`columns`) to set up table columns with filtering and sorting options.
+- Handling of user input with the `onSearch` function and client-side filtering logic.
+- Fetching user data using the `fetchUsers` function.
+- Usage of Ant Design's `Table` component to display the data table within a `Card` component.
+
+## Usage
+
+This component is designed to showcase the use of Ant Design for client-side data filtering, sorting, and display.
+You can customize and integrate it into your React application to provide a user-friendly data table with advanced features.
+
+1. Import the necessary dependencies into your React application.
 
 ```jsx
-import { Button, Card, Input, Table } from "antd";
-import "antd/dist/reset.css";
+import { Card, Input, Table } from "antd";
+import "antd/dist/reset.css"; // import antd css if not included in your app's top-level
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
+import User from "~/models/user";
 import { stringSorting } from "~/utilities/generalUtility";
+```
 
-export default function ClientSideFilters() {
+2. Create a React component and add following necessary statements.
+
+```jsx
+export default function LocalFiltersAntd() {
   const [searchedText, setSearchedText] = useState("");
   const [users, setUsers] = useState([]);
 
-  const onTableFilter = (value, record) => {
-    return (
-      [record.id, record.age].includes(+value) ||
-      record.firstName?.toLowerCase().includes(value.toLowerCase()) ||
-      record.lastName?.toLowerCase().includes(value.toLowerCase()) ||
-      record.email?.toLowerCase().includes(value.toLowerCase()) ||
-      record.address?.toLowerCase().includes(value.toLowerCase())
-    );
-  };
-
+  //Column definition
   const columns = [
     {
       title: "ID",
@@ -35,8 +57,8 @@ export default function ClientSideFilters() {
     {
       title: "First Name",
       dataIndex: "firstName",
-      filteredValue: [searchedText],
-      onFilter: onTableFilter,
+      filteredValue: [searchedText], // Value to search within listing
+      onFilter: onTableFilter, // Called when above `filteredValue` will change
       sorter: (a, b) => stringSorting(a, b, "firstName"),
     },
     {
@@ -54,53 +76,67 @@ export default function ClientSideFilters() {
       dataIndex: "status",
     },
   ];
-
-  const onSearch = (param) => {
-    let value = undefined;
-    if (param.target) value = param.target.value;
-    else value = param;
-    setSearchedText(value ? value : "");
-  };
-
-  const fetchData = async () => {
-    fetch("http://localhost:8082/user/get-all", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((list) => {
-        setUsers(list.data);
-      });
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  return (
-    <Card
-      title={
-        <Input
-          allowClear
-          placeholder="Search in table"
-          size="large"
-          onSearch={onSearch}
-          onChange={debounce(onSearch, 500)}
-        />
-      }
-    >
-      <Table
-        rowKey="id"
-        bordered
-        columns={columns}
-        dataSource={users}
-        pagination={{ pageSize: 10 }}
-      />
-    </Card>
-  );
 }
+```
+
+3. Add following methods in the `LocalFiltersAntd`
+
+- `onSearch` used for searching in users listing.
+- `onTableFilter` will be called on user searching by Ant Design.
+- `fetchUsers` called from useEffect on render.
+
+```jsx
+const onTableFilter = (value, record) => {
+  return (
+    [record.id, record.age].includes(+value) ||
+    record.firstName?.toLowerCase().includes(value.toLowerCase()) ||
+    record.lastName?.toLowerCase().includes(value.toLowerCase()) ||
+    record.email?.toLowerCase().includes(value.toLowerCase()) ||
+    record.address?.toLowerCase().includes(value.toLowerCase())
+  );
+};
+
+const onSearch = (evt) => {
+  setSearchedText(evt.target.value);
+};
+
+const fetchUsers = async () => {
+  try {
+    const res = await User.getAll();
+    setUsers(res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+useEffect(() => {
+  fetchUsers();
+}, []);
+```
+
+4. In the final step add return statements with following jsx code in `LocalFiltersAgGrid` component.
+
+```jsx
+return (
+  <Card
+    title={
+      <Input
+        allowClear
+        placeholder="Search in table"
+        size="large"
+        onChange={debounce(onSearch, 500)}
+      />
+    }
+  >
+    <Table
+      rowKey="id"
+      bordered
+      pagination
+      columns={columns}
+      dataSource={users}
+    />
+  </Card>
+);
 ```
 
 ## Note
