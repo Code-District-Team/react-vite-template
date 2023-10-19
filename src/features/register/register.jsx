@@ -25,7 +25,8 @@ export default function Register() {
         values.firstName,
         values.lastName,
         values.mobilePhone,
-        values.email,
+        values.companyEmail,
+        values.companyName,
         md5(values.password),
         values.remember,
       );
@@ -111,12 +112,48 @@ export default function Register() {
             ></PatternFormat>
           </Form.Item>
           <Form.Item
-            name="email"
+            name="companyName"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Company Name",
+              },
+            ]}
+          >
+            <Input
+              type="name"
+              prefix={
+                <UserOutlined className="site-form-item-icon text-primary" />
+              }
+              placeholder="Company Name"
+              size="large"
+            />
+          </Form.Item>
+          <Form.Item
+            name="website"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Company Website",
+              },
+            ]}
+          >
+            <Input
+              type="website"
+              prefix={
+                <UserOutlined className="site-form-item-icon text-primary" />
+              }
+              placeholder="Company Website"
+              size="large"
+            />
+          </Form.Item>
+          <Form.Item
+            name="companyEmail"
             hasFeedback
             rules={[
               {
                 required: true,
-                message: "Please input your email",
+                message: "Please input your Company email",
               },
             ]}
           >
@@ -125,7 +162,7 @@ export default function Register() {
               prefix={
                 <UserOutlined className="site-form-item-icon text-primary" />
               }
-              placeholder="Email"
+              placeholder="Company Email"
               size="large"
             ></Input>
           </Form.Item>
