@@ -229,12 +229,12 @@ const columns = [
 ];
 ```
 
-4. Create a sperate React component for action buttons. These buttons will be used in filter dropdown that were create in above step.
+4.Create a new file named `FilterActions.jsx` for sperate action buttons. These buttons will be used in filter dropdown that were create in above step.
 
 The `FilterActions` component is a reusable component that provides a set of buttons for filtering and managing actions.
 Import the `FilterActions` into your `ServerSideAntd` component.
 
-### Props
+##### Props:
 
 The `FilterActions` component accepts the following props:
 
@@ -244,6 +244,7 @@ The `FilterActions` component accepts the following props:
 - `handleReset` (function): A callback function to handle filter reset, using `clearFilters`.
 
 ```jsx
+// FilterActions.jsx
 export default function FilterActions({
   confirm,
   close,
