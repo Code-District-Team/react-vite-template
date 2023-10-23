@@ -4,7 +4,7 @@ import "ag-grid-enterprise";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Spinner from "~/common/spinner/spinner";
-import ThemeProvider from "~/features/theme/themeProvider";
+import ThemeProvider from "~/theme/themeProvider";
 import User from "~/models/user";
 import { setPermissionsHash } from "~/redux/user/userSlice";
 import RouterProvider from "~/routes/routerProvider";
