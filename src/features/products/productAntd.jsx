@@ -1,12 +1,12 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { selectUser } from "~/redux/user/userSlice";
 import {
   Button,
   Card,
   DatePicker,
+  Divider,
   Form,
   Input,
-  Modal,
+  Popconfirm,
   Space,
   Table,
   message,
@@ -15,13 +15,14 @@ import dayjs from "dayjs";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
+import { useSelector } from "react-redux";
 import FilterActions from "~/common/filterActions/filterActions";
 import Product from "~/models/product";
+import { selectUser } from "~/redux/user/userSlice";
 import K from "~/utilities/constants";
 import { isPermissionPresent } from "~/utilities/generalUtility";
-import ProductModal from "./productModal";
-import { useSelector } from "react-redux";
 import CsvModal from "./csvModal";
+import ProductModal from "./productModal";
 
 const ProductAntd = () => {
   const [form] = Form.useForm();
@@ -297,21 +298,34 @@ const ProductAntd = () => {
           {
             title: "Action",
             key: "action",
-            render: (_, data) => (
-              <Space>
+            render: (_, record) => (
+              <Space split={<Divider type="vertical" />}>
                 <Button
+                  className="p-0"
+                  type="link"
                   onClick={() => {
-                    editId.current = data.id;
+                    editId.current = record.id;
                     showModal();
-                    form.setFieldsValue(data);
+                    form.setFieldsValue(record);
                   }}
                 >
                   Edit
                 </Button>
-                <Button danger onClick={() => handleButtonDelete(data.id)}>
-                  Delete
-                </Button>
-                <Button onClick={() => console.log("stripedata", data)}>
+                <Popconfirm
+                  description="Are you sure to delete this product?"
+                  onConfirm={() => handleButtonDelete(record.id)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button type="link" danger className="p-0">
+                    Delete
+                  </Button>
+                </Popconfirm>
+                <Button
+                  type="link"
+                  className="p-0"
+                  onClick={() => console.log("stripedata", record)}
+                >
                   Buy Now
                 </Button>
               </Space>
@@ -371,26 +385,17 @@ const ProductAntd = () => {
     setIsModalOpen(false);
   };
 
-  const handleButtonDelete = (id) => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this product?",
-      content: "This operation cannot be undone.",
-      okText: "Yes",
-      okType: "danger",
-      cancelText: "No",
-      onOk: async () => {
-        try {
-          await Product.delete(id);
-          fetchProductDetails();
-          message.success("Product deleted successfully");
-        } catch (error) {
-          message.error("Failed to Delete Product");
-        }
-      },
-      onCancel() {
-        console.log("Cancel");
-      },
-    });
+  const handleButtonDelete = async (id) => {
+    try {
+      await Product.delete(id);
+      setProductData((prev) => ({
+        products: prev.products.filter((item) => item.id !== id),
+        total: prev.total - 1,
+      }));
+      message.success("Product deleted successfully");
+    } catch (error) {
+      message.error("Failed to Delete Product");
+    }
   };
 
   const handleButtonEdit = async (values) => {
@@ -431,28 +436,27 @@ const ProductAntd = () => {
           />
         }
         extra={
-          <Button
-            type="primary"
-            size="large"
-            onClick={() => {
-              editId.current = null;
-              showModal();
-            }}
-          >
-            Create Product
-          </Button>
+          <Space>
+            <Button type="primary" size="large" onClick={showCsvModal}>
+              Import CSV
+            </Button>
+
+            <Button onClick={handleExportCsvFile} type="primary" size="large">
+              Export CSV
+            </Button>
+            <Button
+              type="primary"
+              size="large"
+              onClick={() => {
+                editId.current = null;
+                showModal();
+              }}
+            >
+              Create Product
+            </Button>
+          </Space>
         }
       >
-        {" "}
-        <Space>
-          <Button type="primary" size="large" onClick={showCsvModal}>
-            Import Csv
-          </Button>
-
-          <Button onClick={handleExportCsvFile} type="primary" size="large">
-            Export Csv
-          </Button>
-        </Space>
         <Table
           rowKey="id"
           columns={columns}

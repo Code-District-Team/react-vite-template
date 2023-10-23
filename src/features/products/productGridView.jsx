@@ -1,7 +1,6 @@
+import { Card, Divider, List, Skeleton } from "antd";
 import { useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Divider, List, Skeleton, Typography } from "antd";
-import Card from "antd/es/card/Card";
 import Product from "~/models/product";
 
 const ProductGridView = () => {
@@ -32,9 +31,6 @@ const ProductGridView = () => {
 
   return (
     <>
-      <span>
-        <Typography.Title>Products List</Typography.Title>
-      </span>
       <div id="scrollableDiv" className="scrollableDivStyle">
         <InfiniteScroll
           height={500}
@@ -59,14 +55,8 @@ const ProductGridView = () => {
             dataSource={data.products}
             renderItem={(item) => (
               <List.Item key={item.id}>
-                <Card>
-                  <List.Item.Meta
-                    title={
-                      <span style={{ fontSize: "1.25rem", fontWeight: "bold" }}>
-                        {item.name}
-                      </span>
-                    }
-                  />
+                <Card title={item.name}>
+                  <List.Item.Meta />
                   <p>Qty: {item.quantity}</p>
                   <p>Price: {item.price}</p>
                 </Card>
