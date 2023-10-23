@@ -21,7 +21,7 @@ export default class Request {
     };
     this.url = isTenant
       ? K.Network.URL.TenantURL(domainPrefix) + relativeURL
-      : K.Network.URL.BaseAPI + relativeURL;
+      : relativeURL;
     this.method = method;
     this.body = body;
     this.headers = headers;

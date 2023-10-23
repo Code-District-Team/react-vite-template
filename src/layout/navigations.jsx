@@ -16,16 +16,41 @@ import K from "~/utilities/constants";
 
 const defaultChildren = (basePath) => [
   { path: `${basePath}`, name: "List" },
-  {
-    path: `${basePath}/store/create`,
-    name: "Create",
-    roles: [K.Permissions.Admin],
-  },
+  // {
+  //   path: `${basePath}/create`,
+  //   name: "Create",
+  //   roles: [K.Permissions.Admin],
+  // },
 ];
 const projectChildren = (basePath) => [
   {
     path: `${basePath}/ag-grid`,
     name: "Ag-Grid",
+    roles: [K.Permissions.Admin],
+  },
+];
+const productChildren = (basePath) => [
+  { path: `${basePath}/product-ag-grid`, name: "Prod-AG-Grid" },
+  {
+    path: `${basePath}/product-antd`,
+    name: "Prod-Antd",
+    roles: [K.Permissions.Admin],
+  },
+  {
+    path: `${basePath}/grid-view-virtual-listing`,
+    name: "Grid-View",
+    roles: [K.Permissions.Admin],
+  },
+  {
+    path: `${basePath}/list-view-virtual-listing`,
+    name: "List-View",
+    roles: [K.Permissions.Admin],
+  },
+];
+const rolePermissionChildren = (basePath) => [
+  {
+    path: `${basePath}`,
+    name: "Roles & Permissions",
     roles: [K.Permissions.Admin],
   },
 ];
@@ -44,10 +69,24 @@ const navigations = [
     children: projectChildren("/projects"),
   },
   {
+    name: "Products",
+    // path: "/products",
+    icon: <ProjectOutlined />,
+    permission: [],
+    children: productChildren("/products"),
+  },
+
+  {
     name: "Users",
     // path: "/users",
     icon: <UserOutlined />,
     children: defaultChildren("/users"),
+  },
+  {
+    name: "Configurations",
+    // path: "/users",
+    icon: <UserOutlined />,
+    children: rolePermissionChildren("/config"),
   },
 ];
 

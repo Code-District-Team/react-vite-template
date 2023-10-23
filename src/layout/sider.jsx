@@ -29,6 +29,7 @@ export default function Sider({ collapsed, setCollapsed }) {
   return (
     <Sider
       breakpoint="md"
+      width={250}
       collapsible
       collapsed={collapsed}
       collapsedWidth={collapsedWidth}

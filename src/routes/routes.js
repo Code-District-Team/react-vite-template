@@ -14,6 +14,12 @@ import Users from "~/features/users/users";
 import GuestPageLayout from "~/layout/guestPageLayout";
 import LoggedInPageLayout from "~/layout/loggedInPageLayout";
 import K from "~/utilities/constants";
+import CreateUser from "~/features/users/createUser";
+import ProductAGGrid from "~/features/products/productAGGrid";
+import ProductAntd from "~/features/products/productAntd";
+import RolesPermission from "~/features/rolesPermission/rolesPermission";
+import ProductGridView from "~/features/products/productGridView";
+import ProductListView from "~/features/products/productListView";
 
 /* 
   * Template for a route
@@ -28,15 +34,6 @@ import K from "~/utilities/constants";
     layout: LoggedInPageLayout
   }
 */
-
-/* const defaultCrudChildren = [
-  {
-    path: "store/create",
-    name: "Create",
-    // component: CreateProjects,
-    // layout: LoggedInPageLayout,
-  },
-]; */
 
 const routes = [
   {
@@ -68,7 +65,6 @@ const routes = [
     name: "ProfilePage",
     component: ProfilePage,
     layout: LoggedInPageLayout,
-    permission: K.Permissions.User,
   },
   {
     path: "/projects",
@@ -84,7 +80,15 @@ const routes = [
     name: "Users",
     component: Users,
     authenticated: true,
-    permission: null,
+    // permission: K.Permissions.ReadUser,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/users/create",
+    name: "Create",
+    component: CreateUser,
+    authenticated: true,
+    // permission: K.Permissions.Admin,
     layout: LoggedInPageLayout,
   },
   {
@@ -118,7 +122,47 @@ const routes = [
     name: "Ag-Grid",
     component: AGGridTable,
     authenticated: true,
-    permission: K.Permissions.Admin,
+    // permission: K.Permissions.ReadProducts,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/products/product-ag-grid",
+    name: "Prod-AG-Grid",
+    authenticated: true,
+    // permission: K.Permissions.ReadProducts,
+    component: ProductAGGrid,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/products/product-antd",
+    name: "Prod-Antd",
+    // permission: K.Permissions.ReadProducts,
+    authenticated: true,
+    component: ProductAntd,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/products/grid-view-virtual-listing",
+    name: "Grid-View",
+    permission: K.Permissions.ReadProducts,
+    authenticated: true,
+    component: ProductGridView,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/products/list-view-virtual-listing",
+    name: "List-View",
+    permission: K.Permissions.ReadProducts,
+    authenticated: true,
+    component: ProductListView,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/config",
+    name: "Configurations",
+    // permission: K.Permissions.Admin,
+    authenticated: true,
+    component: RolesPermission,
     layout: LoggedInPageLayout,
   },
   {

@@ -77,7 +77,7 @@ img {
   float: right;
 
   .loggedin-user-dd {
-    &>a {
+    & > a {
       @extend .font-weight-medium;
       color: #262626;
 
@@ -93,4 +93,26 @@ img {
       }
     }
   }
+}
+
+.card-wrapper {
+  margin: 24px;
+
+  .ant-card-head {
+    padding: 24px;
+
+    .ant-card-head-title {
+      max-width: 550px;
+    }
+  }
+}
+
+.scrollableDivStyle {
+  overflow: auto;
+  padding: 8px 16px;
+  border: 1px solid rgba(140, 140, 140, 0.35);
+}
+
+.infiniteScrollStyle {
+  height: 730px !important;
 }

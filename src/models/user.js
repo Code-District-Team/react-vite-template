@@ -25,7 +25,6 @@ export default class User {
 
     return async (dispatch) => {
       const user = await NetworkCall.fetch(request);
-      console.log("User", user);
       let encryptedUser = CryptoJS.AES.encrypt(
         JSON.stringify(user),
         K.Cookie.Key.EncryptionKey,
@@ -48,7 +47,8 @@ export default class User {
     firstName,
     lastName,
     mobilePhone,
-    email,
+    companyEmail,
+    companyName,
     password,
     remember,
   ) {
@@ -56,7 +56,8 @@ export default class User {
       firstName,
       lastName,
       mobilePhone,
-      email,
+      companyEmail,
+      companyName,
       password,
     };
     // * Request Instance
@@ -74,7 +75,6 @@ export default class User {
       JSON.stringify(user),
       K.Cookie.Key.EncryptionKey,
     );
-    console.info(encryptedUser);
     Cookies.set(K.Cookie.Key.User, encryptedUser, {
       path: "/",
       domain: K.Network.URL.Client.BaseHost,
@@ -129,7 +129,6 @@ export default class User {
         JSON.stringify(user),
         K.Cookie.Key.EncryptionKey,
       );
-      console.info(encryptedUser);
       Cookies.set(K.Cookie.Key.User, encryptedUser, {
         path: "/",
         domain: K.Network.URL.Client.BaseHost,
@@ -161,6 +160,7 @@ export default class User {
     const request = new Request(
       K.Network.URL.Users.LoggedInUserDetails,
       K.Network.Method.GET,
+      null,
       K.Network.Header.Type.Json,
       {},
       false,
@@ -169,23 +169,22 @@ export default class User {
     return await NetworkCall.fetch(request, true);
   }
 
-  // //get User Details
-  static async userData() {
+  static async getAll() {
     const request = new Request(
       K.Network.URL.Users.GetUser,
       K.Network.Method.GET,
+      null,
       K.Network.Header.Type.Json,
       {},
       false,
     );
 
-    return NetworkCall.fetch(request, true);
+    return await NetworkCall.fetch(request, true);
   }
 
-  static async deleteUser(body) {
+  static async deleteUser(id) {
     const request = new Request(
-      K.Network.URL.Users.DeleteUser,
-      body,
+      K.Network.URL.Users.DeleteUser + `?id=${id}`,
       K.Network.Method.DELETE,
       K.Network.Header.Type.Json,
       {},
@@ -206,7 +205,8 @@ export default class User {
     );
 
     const user = await NetworkCall.fetch(request, true);
-    const data = User.getUserObjectFromCookies();
+    const data = this.getUserObjectFromCookies();
+    user.roles = data.user.roles;
     const cookieData = {
       apiToken: data?.apiToken,
       user,
@@ -223,6 +223,96 @@ export default class User {
 
     return user;
   }
+  // Invite User
+  static async inviteUser(email, roleId) {
+    const body = {
+      email,
+      roleId,
+    };
+    const request = new Request(
+      K.Network.URL.Users.InviteUser,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    return NetworkCall.fetch(request, true);
+  }
+  // get all Roles
+  static async getUserRoles() {
+    const request = new Request(
+      K.Network.URL.Roles,
+      K.Network.Method.GET,
+      null,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    return NetworkCall.fetch(request, true);
+  }
+
+  // Upload Profile Picture
+  static async uploadProfilePicture(body, remember) {
+    const request = new Request(
+      K.Network.URL.Users.UploadProfilePicture,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.File,
+      {},
+      false,
+    );
+    const result = await NetworkCall.fetch(request, true);
+    let data = this.getUserObjectFromCookies();
+    data.user.profileImageUrl = result.path;
+    const cookieData = {
+      apiToken: data?.apiToken,
+      user: data.user,
+    };
+    let encryptedUser = CryptoJS.AES.encrypt(
+      JSON.stringify(cookieData),
+      K.Cookie.Key.EncryptionKey,
+    );
+    Cookies.set(K.Cookie.Key.User, encryptedUser, {
+      path: "/",
+      domain: K.Network.URL.Client.BaseHost,
+      expires: remember ? 365 : "",
+    });
+    return result;
+  }
+
+  //Delete Profile Picture
+
+  static async deleteProfilePicture(remember) {
+    const request = new Request(
+      K.Network.URL.Users.DeleteProfilePicture,
+      K.Network.Method.DELETE,
+      K.Network.Header.Type.File,
+      {},
+      false,
+    );
+
+    const result = await NetworkCall.fetch(request, true);
+    let data = this.getUserObjectFromCookies();
+    data.user.profileImageUrl = result.path;
+    const cookieData = {
+      apiToken: data?.apiToken,
+      user: data.user,
+    };
+    let encryptedUser = CryptoJS.AES.encrypt(
+      JSON.stringify(cookieData),
+      K.Cookie.Key.EncryptionKey,
+    );
+    Cookies.set(K.Cookie.Key.User, encryptedUser, {
+      path: "/",
+      domain: K.Network.URL.Client.BaseHost,
+      expires: remember ? 365 : "",
+    });
+    return result;
+  }
+
   // * Helpers
 
   static getUserObjectFromCookies() {
@@ -252,7 +342,7 @@ export default class User {
   }
 
   static getFullName() {
-    const { firstName, lastName } = this.getUserObjectFromCookies();
+    const { firstName, lastName } = this.getUserObjectFromCookies().user;
     return firstName?.concat(" ", lastName) ?? "";
   }
 
@@ -264,6 +354,6 @@ export default class User {
     return this.getUserObjectFromCookies().tenant?.domainPrefix ?? "";
   }
   static getRole() {
-    return this.getUserObjectFromCookies()?.user?.role ?? null;
+    return this.getUserObjectFromCookies()?.user?.roles ?? null;
   }
 }

@@ -4,7 +4,6 @@ import history from "./history";
 import User from "~/models/user";
 
 export const handleError = (error) => {
-  console.error(error);
   message.error(error.message);
   return null;
 };
@@ -38,15 +37,13 @@ export const isDecimalRegex = () => {
   return new RegExp("^\\d+\\.?\\d*$");
 };
 
-export const isPermissionPresent = (permission, userRoles) => {
-  const hashMap = new Map([[userRoles?.name ?? "", userRoles?.name ?? ""]]); // * User has role but no permission
-
-  /* const permissionMap = {};
-  for (const obj of [userRoles] ?? []) {
-    permissionMap[obj] = true;
-  } */
+export const isPermissionPresent = (permission, permissionHash) => {
+  // const hash = new Map(permissionHash);
+  // * Uncomment above code if permissionHash not stored as instance of Map.
   if (permission) {
-    return hashMap.has(K.Permissions.Admin) || hashMap.has(permission);
+    return (
+      permissionHash.has(K.Permissions.Admin) || permissionHash.has(permission)
+    );
   }
   return true;
 };
@@ -159,7 +156,7 @@ export const deleteQueryParam = (key) => {
 };
 
 export const stringSorting = (a, b, name) => {
-  return a[name].localeCompare(b[name]);
+  return a[name]?.localeCompare(b[name]);
 };
 
 export const numberSorting = (a, b, name) => {

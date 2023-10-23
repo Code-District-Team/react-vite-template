@@ -2,7 +2,7 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, Typography } from "antd";
 import md5 from "md5";
 import { PatternFormat } from "react-number-format";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "~/assets/images/logo.svg";
 import User from "~/models/user";
 import {
@@ -14,6 +14,10 @@ const { Title } = Typography;
 
 export default function Register() {
   const [form] = Form.useForm();
+  const location = useLocation(); // useLocation hook to get the current location object
+  const searchParams = new URLSearchParams(location.search); // Create a URLSearchParams object with the current query string
+  const email = searchParams.get("email")?.replace(/ /g, "+");
+  email && form.setFieldsValue({ email });
 
   const onFinish = async (values) => {
     try {
@@ -21,7 +25,8 @@ export default function Register() {
         values.firstName,
         values.lastName,
         values.mobilePhone,
-        values.email,
+        values.companyEmail,
+        values.companyName,
         md5(values.password),
         values.remember,
       );
@@ -31,6 +36,7 @@ export default function Register() {
       setFieldErrorsFromServer(error, form, values);
     }
   };
+
   return (
     <div className="login-container">
       <div className="lc-logo">
@@ -106,12 +112,48 @@ export default function Register() {
             ></PatternFormat>
           </Form.Item>
           <Form.Item
-            name="email"
+            name="companyName"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Company Name",
+              },
+            ]}
+          >
+            <Input
+              type="name"
+              prefix={
+                <UserOutlined className="site-form-item-icon text-primary" />
+              }
+              placeholder="Company Name"
+              size="large"
+            />
+          </Form.Item>
+          <Form.Item
+            name="website"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Company Website",
+              },
+            ]}
+          >
+            <Input
+              type="website"
+              prefix={
+                <UserOutlined className="site-form-item-icon text-primary" />
+              }
+              placeholder="Company Website"
+              size="large"
+            />
+          </Form.Item>
+          <Form.Item
+            name="companyEmail"
             hasFeedback
             rules={[
               {
                 required: true,
-                message: "Please input your email",
+                message: "Please input your Company email",
               },
             ]}
           >
@@ -120,7 +162,7 @@ export default function Register() {
               prefix={
                 <UserOutlined className="site-form-item-icon text-primary" />
               }
-              placeholder="Email"
+              placeholder="Company Email"
               size="large"
             ></Input>
           </Form.Item>

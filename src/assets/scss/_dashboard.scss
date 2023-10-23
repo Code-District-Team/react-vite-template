@@ -1,0 +1,47 @@
+/* src/HomePage.css */
+
+.hero {
+    position: relative;
+    background-image: url('https://coolbackgrounds.io/images/backgrounds/white/white-contour-c990a61f.svg');
+    /* Change the path to your image */
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+    /* Adjust to your preferred height */
+    // color: #fff;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hero-content {
+    // background-color: rgba(0, 0, 0, 0.7);
+    /* Add a semi-transparent background */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}

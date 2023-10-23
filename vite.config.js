@@ -16,7 +16,12 @@ export default defineConfig(({ mode }) => {
        * Add `window.global ||= window;` in main.jsx
        */
     },
-    plugins: [react(), eslint()],
+    plugins: [
+      react(),
+      eslint({
+        exclude: [/virtual:/, /node_modules/],
+      }),
+    ],
     resolve: {
       alias: {
         "~": resolve(__dirname, "./src"),

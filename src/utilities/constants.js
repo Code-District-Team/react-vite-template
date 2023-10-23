@@ -31,8 +31,26 @@ const K = {
         GetUser: "/user/get-all",
         LoggedInUserDetails: "/user/me",
         UpdateProfileData: "/user/update-profile",
-        DeleteUser: "user/delete-user",
+        DeleteUser: "/user/delete-user",
+        InviteUser: "/user/invite-user",
+        UploadProfilePicture: "user/upload-picture",
+        DeleteProfilePicture: "user/profile-picture",
       },
+      Csv: {
+        ImportCsvFile: "/product/bulk-import",
+        ExportCsvFile: "/product/bulk-export",
+      },
+      Products: {
+        GetAll: "product/get-all",
+        GetProducts: "/product/get",
+        GetProductsById: "/product",
+        CreateProducts: "/product",
+        UpdateProducts: "/product",
+        DeleteProducts: "/product",
+      },
+
+      Roles: "/roles",
+      Permission: "/permissions",
     },
     Method: {
       GET: "GET",
@@ -73,8 +91,11 @@ const K = {
     },
   },
   Permissions: {
-    Admin: "ADMIN",
-    User: "USER",
+    Admin: "Admin",
+    ReadUser: "Read.User",
+    WriteUser: "Write.User",
+    ReadProducts: "Read.Product",
+    WriteProducts: "Write.Product",
   },
 };
 export default K;
