@@ -312,6 +312,31 @@ export default class User {
     });
     return result;
   }
+  static async getAllTenant() {
+    const request = new Request(
+      K.Network.URL.Users.GetTenant,
+      K.Network.Method.GET,
+      null,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    return await NetworkCall.fetch(request, true);
+  }
+
+  static async getTenantById(id) {
+    const request = new Request(
+      K.Network.URL.Users.GetTenantByID + `/${id}`,
+      K.Network.Method.GET,
+      null,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+
+    return await NetworkCall.fetch(request, true);
+  }
 
   // * Helpers
 
@@ -324,10 +349,12 @@ export default class User {
       let utfBytes = bytes.toString(CryptoJS.enc.Utf8);
       return JSON.parse(utfBytes);
     } catch (error) {
-      console.log("error", error);
       return this.logoutCall("User unauthorized");
     }
+
+    
   }
+ 
 
   static isTokenAvailable() {
     return this.getUserObjectFromCookies().apiToken ? true : false;

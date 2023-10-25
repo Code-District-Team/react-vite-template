@@ -38,11 +38,9 @@ export default class NetworkCall {
             },
           });
 
-      console.log("NetworkCall Data: ", response.data);
       return response.data;
     } catch (err) {
       let error = err.response;
-      console.log("NetworkCall Error: ", error);
       if (error === undefined) {
         message.error("Cannot connect to server");
         return Promise.reject({

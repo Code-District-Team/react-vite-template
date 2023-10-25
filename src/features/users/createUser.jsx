@@ -10,10 +10,6 @@ import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
 const CreateUser = () => {
   const [form] = Form.useForm();
   const [roles, setRoles] = useState([]);
-  // const handleMenuClick = (e) => {
-  //   message.info("Click on menu item.");
-  //   console.log("click", e);
-  // };
 
   const getUserRolesData = async (values) => {
     try {
@@ -25,8 +21,7 @@ const CreateUser = () => {
   };
   const onFinish = async (values) => {
     try {
-      const response = await User.inviteUser(values.email, values.roleId);
-      console.log(response);
+      await User.inviteUser(values.email, values.roleId);
       message.success("User Invite has been sent");
     } catch (error) {
       setFieldErrorsFromServer(error);

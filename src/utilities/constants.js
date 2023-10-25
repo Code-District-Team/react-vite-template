@@ -35,6 +35,8 @@ const K = {
         InviteUser: "/user/invite-user",
         UploadProfilePicture: "user/upload-picture",
         DeleteProfilePicture: "user/profile-picture",
+        GetTenant: "/tenant",
+        GetTenantByID:"/tenant"
       },
       Csv: {
         ImportCsvFile: "/product/bulk-import",
@@ -91,6 +93,7 @@ const K = {
     },
   },
   Permissions: {
+    SuperAdmin: "SuperAdmin",
     Admin: "Admin",
     ReadUser: "Read.User",
     WriteUser: "Write.User",

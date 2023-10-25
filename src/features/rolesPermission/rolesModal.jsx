@@ -56,7 +56,6 @@ const RolesModal = ({
       <Title level={5} className="rolesTableTypography">
         Select Permissions
       </Title>
-      {console.log("here", listing, targetKeys)}
       <Transfer
         oneWay
         showSearch

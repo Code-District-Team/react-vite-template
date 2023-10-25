@@ -20,6 +20,8 @@ import ProductAntd from "~/features/products/productAntd";
 import RolesPermission from "~/features/rolesPermission/rolesPermission";
 import ProductGridView from "~/features/products/productGridView";
 import ProductListView from "~/features/products/productListView";
+import Tenants from "~/features/multiTenants/tenants";
+import UserTenants from "~/features/multiTenants/userTenants";
 
 /* 
   * Template for a route
@@ -165,6 +167,23 @@ const routes = [
     component: RolesPermission,
     layout: LoggedInPageLayout,
   },
+  {
+    path: "/config/tenants",
+    name: "Tenants",
+    // permission: K.Permissions.Admin,
+    authenticated: true,
+    component: Tenants,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/config/user-tenants/:id",
+    name: "TenantsName",
+    // permission: K.Permissions.Admin,
+    authenticated: true,
+    component: UserTenants,
+    layout: LoggedInPageLayout,
+  },
+  
   {
     path: "*",
     name: "Not Found",
