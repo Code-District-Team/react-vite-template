@@ -1,10 +1,10 @@
 import { Button, Card, Col, Form, Input, Row, Upload, message } from "antd";
 import ImgCrop from "antd-img-crop";
 import { useState } from "react";
+import image from "~/assets/images/images.jpeg";
 import User from "~/models/user";
 import K from "~/utilities/constants";
 import { setFieldErrorsFromServer } from "~/utilities/generalUtility";
-import image from "../../assets/images/images.jpeg";
 
 const onPreview = async (file) => {
   let src = file.url;
@@ -24,13 +24,12 @@ const onPreview = async (file) => {
 export default function ProfilePage() {
   const [form] = Form.useForm();
   const defaultImageUrl = image;
-  const data = User.getUserObjectFromCookies();
-  const BaseUrl = K.Network.URL.BaseAPI;
+  const userData = User.getUserObjectFromCookies().user;
   const [fileList, setFileList] = useState([
     {
       url:
-        data.user?.profileImageUrl != null
-          ? `${BaseUrl}/${data.user.profileImageUrl}`
+        userData?.profileImageUrl != null
+          ? `${K.Network.URL.BaseAPI}/${userData.profileImageUrl}`
           : defaultImageUrl,
     },
   ]);
@@ -63,7 +62,7 @@ export default function ProfilePage() {
 
   const onFinish = async (values) => {
     const { email, status, ...rest } = values;
-    rest.id = User.getId();
+    rest.id = userData.id;
     try {
       await User.updateProfileData(rest);
     } catch (error) {
@@ -101,7 +100,7 @@ export default function ProfilePage() {
               onFinish={onFinish}
               form={form}
               name="profile-form"
-              initialValues={data.user}
+              initialValues={userData}
               layout="horizontal"
               labelCol={{
                 span: 4,
@@ -114,19 +113,19 @@ export default function ProfilePage() {
               <Form.Item name="firstName" label="FirstName">
                 <Input size="middle" />
               </Form.Item>
-              <Form.Item label="Last Name:" name="lastName">
+              <Form.Item label="Last Name" name="lastName">
                 <Input size="middle" />
               </Form.Item>
-              <Form.Item label="Mobile Phone:" name="mobilePhone">
+              <Form.Item label="Mobile Phone" name="mobilePhone">
                 <Input size="middle" />
               </Form.Item>
-              <Form.Item label="Address:" name="address">
+              <Form.Item label="Address" name="address">
                 <Input size="middle" />
               </Form.Item>
-              <Form.Item label="Email:" name="email">
+              <Form.Item label="Email" name="email">
                 <Input size="middle" disabled />
               </Form.Item>
-              <Form.Item label="Status:" name="status">
+              <Form.Item label="Status" name="status">
                 <Input size="middle" disabled />
               </Form.Item>
               <Form.Item
