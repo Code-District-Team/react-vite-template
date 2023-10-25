@@ -1,26 +1,33 @@
-import ProfilePage from "~/features/Profile/profile";
-import ChangePassword from "~/features/changepassword/changePassword";
+import { lazy } from "react";
 import AGGridTable from "~/features/agGridTable/agGridTable";
-import { Counter } from "~/features/counter/Counter";
+import ChangePassword from "~/features/changepassword/changePassword";
+import Counter from "~/features/counter/Counter";
 import Dashboard from "~/features/dashboard/dashboard";
 import ForgotPassword from "~/features/forgotPassword/forgotPassword";
 import Login from "~/features/login/login";
 import NotFound from "~/features/notFound/notFound";
-import Projects from "~/features/projects/projects";
 import Register from "~/features/register/register";
 import SetPassword from "~/features/setPassword/setPassword";
 import Unauthorized from "~/features/unauthorized/unauthorized";
-import Users from "~/features/users/users";
+import CreateUser from "~/features/users/createUser";
 import GuestPageLayout from "~/layout/guestPageLayout";
 import LoggedInPageLayout from "~/layout/loggedInPageLayout";
 import K from "~/utilities/constants";
-import CreateUser from "~/features/users/createUser";
-import ProductAGGrid from "~/features/products/productAGGrid";
-import ProductAntd from "~/features/products/productAntd";
-import RolesPermission from "~/features/rolesPermission/rolesPermission";
-import ProductGridView from "~/features/products/productGridView";
-import ProductListView from "~/features/products/productListView";
 
+const Users = lazy(() => import("~/features/users/users"));
+const Profile = lazy(() => import("~/features/Profile/profile"));
+const Projects = lazy(() => import("~/features/projects/projects"));
+const ProductAntd = lazy(() => import("~/features/products/productAntd"));
+const ProductAGGrid = lazy(() => import("~/features/products/productAGGrid"));
+const ProductGridView = lazy(() =>
+  import("~/features/products/productGridView"),
+);
+const ProductListView = lazy(() =>
+  import("~/features/products/productListView"),
+);
+const RolesPermission = lazy(() =>
+  import("~/features/rolesPermission/rolesPermission"),
+);
 /* 
   * Template for a route
   {
@@ -63,7 +70,7 @@ const routes = [
   {
     path: "/profile",
     name: "ProfilePage",
-    component: ProfilePage,
+    component: Profile,
     layout: LoggedInPageLayout,
   },
   {

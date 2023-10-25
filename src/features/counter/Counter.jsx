@@ -9,7 +9,7 @@ import {
 } from "~/redux/counter/counterSlice";
 import styles from "./Counter.module.css";
 
-export function Counter() {
+export default function Counter() {
   const dispatch = useDispatch();
   const count = useSelector(selectCount);
   const [incrementAmount, setIncrementAmount] = useState("2");
