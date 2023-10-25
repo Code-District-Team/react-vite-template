@@ -41,9 +41,7 @@ export default function ForgotPassword() {
             ]}
           >
             <Input
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<UserOutlined className="text-primary" />}
               placeholder="Email"
               size="large"
             />

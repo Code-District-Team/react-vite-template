@@ -67,9 +67,7 @@ export default function Login() {
           >
             <Input
               type="email"
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<UserOutlined className="text-primary" />}
               placeholder="Email"
               size="large"
             />
@@ -85,9 +83,7 @@ export default function Login() {
             ]}
           >
             <Input.Password
-              prefix={
-                <LockOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<LockOutlined className="text-primary" />}
               placeholder="Password"
               size="large"
               autoComplete="false"

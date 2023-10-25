@@ -64,9 +64,7 @@ export default function Register() {
           >
             <Input
               type="name"
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<UserOutlined className="text-primary" />}
               placeholder="First Name"
               size="large"
             />
@@ -82,9 +80,7 @@ export default function Register() {
           >
             <Input
               type="name"
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<UserOutlined className="text-primary" />}
               placeholder="Last Name"
               size="large"
             />
@@ -104,9 +100,7 @@ export default function Register() {
           >
             <PatternFormat
               placeholder="Enter Mobile Number"
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<UserOutlined className="text-primary" />}
               customInput={Input}
               format={"+###########"}
             ></PatternFormat>
@@ -122,9 +116,7 @@ export default function Register() {
           >
             <Input
               type="name"
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<UserOutlined className="text-primary" />}
               placeholder="Company Name"
               size="large"
             />
@@ -140,9 +132,7 @@ export default function Register() {
           >
             <Input
               type="website"
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<UserOutlined className="text-primary" />}
               placeholder="Company Website"
               size="large"
             />
@@ -159,9 +149,7 @@ export default function Register() {
           >
             <Input
               type="email"
-              prefix={
-                <UserOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<UserOutlined className="text-primary" />}
               placeholder="Company Email"
               size="large"
             ></Input>
@@ -182,9 +170,7 @@ export default function Register() {
             ]}
           >
             <Input.Password
-              prefix={
-                <LockOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<LockOutlined className="text-primary" />}
               placeholder="Password"
               size="large"
               autoComplete="false"
@@ -222,9 +208,7 @@ export default function Register() {
               placeholder="Confirm Password"
               size="large"
               autoComplete="false"
-              prefix={
-                <LockOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<LockOutlined className="text-primary" />}
             />
           </Form.Item>
           <Title level={5} className="text-center">

@@ -53,9 +53,7 @@ export default function SetPassword() {
             ]}
           >
             <Input.Password
-              prefix={
-                <LockOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<LockOutlined className="text-primary" />}
               placeholder="Password"
               size="large"
             />
@@ -76,9 +74,7 @@ export default function SetPassword() {
             ]}
           >
             <Input.Password
-              prefix={
-                <LockOutlined className="site-form-item-icon text-primary" />
-              }
+              prefix={<LockOutlined className="text-primary" />}
               placeholder="Confirm Password"
               size="large"
             />
