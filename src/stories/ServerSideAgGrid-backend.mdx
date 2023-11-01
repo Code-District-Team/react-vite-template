@@ -1,0 +1,51 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Features/Server Side Filters/Ag Grid/Backend Docs" />
+
+
+```ts filename='product.controller.ts'
+// product.controller.ts
+@ApiOperation({ summary: "Fetch paginated products" })
+@ApiBody({ type: QueryCollateralTypeDto })
+@RolesPermissions([RoleEnum.USER], [PermissionEnum.WRITE_PRODUCT])
+@HttpCode(HttpStatus.OK)
+@Post("/get")
+@PaginateEntity({ table: Product }, [])
+async getAllProducts(@Body(validationPipe) query: QueryCollateralTypeDto) {}
+```
+
+`@PaginateEntity({ table: Product }, [])` decorator is used to paginate any entity. It takes two arguments, first is
+the entity class and second is the array of relations to be joined. In this case we are not joining any relation so we
+are passing empty array.
+```ts
+{
+  table: EntityClass,
+  select: ["column1", "column2"], // optional
+}
+```
+
+The basic usage of `@PaginateEntity` is given below. It will paginate the entity and return the result with total count
+without any filter.
+```ts
+@PaginateEntity({ table: Product, select: ["id", "name"] }, [{
+  joinType: "inner",
+  property: "tenant",
+  alias: "tenant",
+  select: ["tenant.id", "tenant.name"],
+  condition: "tenant.id = :tenantId",
+  parameters: { tenantId: "tenant.id" }
+}])
+```
+
+`property`: name of the entity to be joined<br/>
+`joinType`: type of join to be applied<br/>
+`alias`: alias name of the joined entity<br/>
+`select`: array of columns to be selected from joined entity, alias name is used to select columns.<br/>
+`condition`: condition to be applied on join<br/>
+`parameters`: parameters to be passed in condition<br/>
+
+You can use this decorator on any entity. Remember to pass the `QueryCollateralTypeDto` as body of the request. Currently,
+it only supports `ant-d` and `ag-grid` filters. You can use any of them.
+
+
+
