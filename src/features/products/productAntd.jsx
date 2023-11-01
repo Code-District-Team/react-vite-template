@@ -430,7 +430,6 @@ const ProductAntd = () => {
         title={
           <Input
             allowClear
-            size="large"
             placeholder="Search"
             onChange={debounce(handleSearch, 500)}
           />
