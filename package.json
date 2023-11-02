@@ -8,7 +8,6 @@
   },
   "packageManager": "yarn@4.0.1",
   "scripts": {
-    "preinstall": "yarn set version stable",
     "dev": "vite",
     "build": "vite build --mode production",
     "build:qa": "vite build --mode qa",
@@ -17,6 +16,7 @@
     "prettify": "prettier --write \"src/**/*.{js,jsx}\"",
     "preview": "vite preview",
     "prepare": "husky install",
+    "set-stable": "yarn set version stable",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
