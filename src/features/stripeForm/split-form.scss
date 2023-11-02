@@ -1,0 +1,20 @@
+.split-form-wrapper {
+    margin-top: 1.5rem;
+    .split-form-items {
+        @extend .mb-4;
+        label {
+            @extend .font-weight-normal;
+            font-size: 0.875rem;
+            color: #5a607f;
+            margin-bottom: 4px;
+        }
+        .card-input {
+            border: 1px solid #d9e1ec;
+            border-radius: 4px;
+            padding: 1rem;
+            font-weight: 500;
+            color: #d9e1ec;
+            padding: 0.813rem;
+        }
+    }
+}

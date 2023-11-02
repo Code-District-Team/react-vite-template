@@ -21,6 +21,8 @@
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
     "@reduxjs/toolkit": "^1.9.5",
+    "@stripe/react-stripe-js": "^2.3.1",
+    "@stripe/stripe-js": "^2.1.10",
     "ag-grid-community": "^30.2.0",
     "ag-grid-enterprise": "^30.2.0",
     "ag-grid-react": "^30.2.0",

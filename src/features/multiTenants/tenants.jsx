@@ -63,14 +63,12 @@ const Tenants = () => {
 
   const getAllTenants = async () => {
     const tenants = await User.getAllTenant();
-    console.log("tenants", tenants);
     setListing((prev) => {
       return { ...prev, tenants };
     });
   };
 
   const onSearch = (param) => {
-    console.log(param.target.value);
     let value = undefined;
     if (param.target) value = param.target.value;
     else value = param;

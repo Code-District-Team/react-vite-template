@@ -23,7 +23,9 @@ import K from "~/utilities/constants";
 import { isPermissionPresent } from "~/utilities/generalUtility";
 import CsvModal from "./csvModal";
 import ProductModal from "./productModal";
-
+import StripeModal from "../stripeForm/stripeModal";
+import ElementWrapper from "../stripeForm/wrapper";
+// import ElementWrapper from "../stripeForm/wrapper";
 const ProductAntd = () => {
   const [form] = Form.useForm();
   const editId = useRef(null);
@@ -39,6 +41,7 @@ const ProductAntd = () => {
   });
   const [productData, setProductData] = useState({ products: [], total: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isStripeModalOpen, setIsStripModalOpen] = useState(false);
   const [isCsvModalOpen, setisCsvModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -46,7 +49,6 @@ const ProductAntd = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [serverErrors, setServerErrors] = useState([]);
   const [uploadedFile, setUploadedFile] = useState([]);
-
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedKeys) => {
@@ -321,11 +323,7 @@ const ProductAntd = () => {
                     Delete
                   </Button>
                 </Popconfirm>
-                <Button
-                  type="link"
-                  className="p-0"
-                  onClick={() => console.log("stripedata", record)}
-                >
+                <Button type="link" className="p-0" onClick={showStripeModal}>
                   Buy Now
                 </Button>
               </Space>
@@ -412,6 +410,12 @@ const ProductAntd = () => {
   const showCsvModal = () => {
     setisCsvModalOpen(true);
   };
+  const showStripeModal = () => {
+    setIsStripModalOpen(true);
+  };
+  const handleStripCancel = () => {
+    setIsStripModalOpen(false);
+  };
 
   const handleCsvCancelButton = () => {
     setisCsvModalOpen(false);
@@ -487,6 +491,12 @@ const ProductAntd = () => {
         isCsvModalOpen={isCsvModalOpen}
         handleCancel={handleCsvCancelButton}
       />
+      <ElementWrapper>
+        <StripeModal
+          isStripeModalOpen={isStripeModalOpen}
+          handleStripCancel={handleStripCancel}
+        />
+      </ElementWrapper>
     </>
   );
 };
