@@ -351,10 +351,7 @@ export default class User {
     } catch (error) {
       return this.logoutCall("User unauthorized");
     }
-
-    
   }
- 
 
   static isTokenAvailable() {
     return this.getUserObjectFromCookies().apiToken ? true : false;

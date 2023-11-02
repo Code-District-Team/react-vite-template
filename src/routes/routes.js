@@ -183,7 +183,7 @@ const routes = [
     component: UserTenants,
     layout: LoggedInPageLayout,
   },
-  
+
   {
     path: "*",
     name: "Not Found",
