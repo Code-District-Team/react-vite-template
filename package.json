@@ -4,10 +4,11 @@
   "version": "1.0.0",
   "type": "module",
   "engines": {
-    "node": "18"
+    "node": "20"
   },
   "packageManager": "yarn@4.0.1",
   "scripts": {
+    "preinstall": "yarn set version stable",
     "dev": "vite",
     "build": "vite build --mode production",
     "build:qa": "vite build --mode qa",
