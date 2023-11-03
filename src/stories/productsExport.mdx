@@ -44,7 +44,7 @@ export default function ImportExportProducts() {
   // States for product listing, refetch flag for refetching products on update and show/hide Modal.
   const [products, setProducts] = useState([]);
   const [refetch, setRefetch] = useState(false);
-  const [isCsvModalOpen, setisCsvModalOpen] = useState(false);
+  const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [serverErrors, setServerErrors] = useState([]);
 }
@@ -117,7 +117,7 @@ const handleUpload = async (file) => {
   formData.append("file", file);
   try {
     await Product.importCsvFile(formData);
-    setisCsvModalOpen(false);
+    setIsCsvModalOpen(false);
     setRefetch(!refetch);
     message.success("Products added successfully");
   } catch (error) {
