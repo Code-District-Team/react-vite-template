@@ -162,3 +162,14 @@ export const stringSorting = (a, b, name) => {
 export const numberSorting = (a, b, name) => {
   return a[name] - b[name];
 };
+
+export const downloadCSV = (csvContent, filename = "export.csv") => {
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};

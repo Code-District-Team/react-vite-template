@@ -1,0 +1,309 @@
+import { Meta, Primary, Controls, Story } from "@storybook/blocks";
+
+<Meta title="Features/Import & Export/Frontend Docs" />
+
+# Import & Export of Products
+
+The `ImportExportProducts` is a React component that provides a user interface for importing and exporting products.
+
+## Features
+
+The `ImportExportProducts` offers the following features:
+
+- Display a list of products.
+- Import products by uploading CSV.
+- Export product into a CSV file.
+
+## Component Structure
+
+- You import any necessary dependencies at the beginning.
+- The `CsvModal` component, used for creating products using CSV.
+- You can add additional details or explanations about the component's props and usage as needed.
+
+## Usage
+
+This component is designed to create a user-friendly product import/export interface that allows users to perform create operations on for products.
+The component can be customized and integrated into your larger React application.
+
+To use the `ImportExportProducts`, you can follow these steps:
+
+1. Import the necessary dependencies into your React application.
+
+```jsx
+import { Button, Card, Space, Table, message } from "antd";
+import { useEffect, useState } from "react";
+import CsvModal from "~/features/products/csvModal";
+import Product from "~/models/product";
+import { downloadCSV } from "~/utilities/generalUtility";
+```
+
+2. Create a React component and add following necessary statements.
+
+```jsx
+export default function ImportExportProducts() {
+  // States for product listing, refetch flag for refetching products on update and show/hide Modal.
+  const [products, setProducts] = useState([]);
+  const [refetch, setRefetch] = useState(false);
+  const [isCsvModalOpen, setisCsvModalOpen] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [serverErrors, setServerErrors] = useState([]);
+}
+```
+
+3. Declare an array of object named `columns` for Ant Design table columns
+
+```jsx
+const columns = [
+  {
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
+  },
+  {
+    title: "Product Name",
+    dataIndex: "name",
+    render: (text) => <a>{text}</a>,
+  },
+  {
+    title: "Price",
+    dataIndex: "price",
+  },
+  {
+    title: "Quantity",
+    dataIndex: "quantity",
+  },
+  {
+    title: "Created At",
+    dataIndex: "createdAt",
+  },
+  {
+    title: "Updated At",
+    dataIndex: "updatedAt",
+  },
+];
+
+// For enabling rowSelection in antd Table
+const rowSelection = {
+  selectedRowKeys,
+  onChange: (selectedKeys) => {
+    setSelectedRowKeys(selectedKeys);
+  },
+};
+```
+
+4. Add following methods in the `ImportExportProducts`
+
+- `handleExportCsvFile` used for downloading existing product as CSV.
+- `formatServerErrors` used for formatting and display server errors in CSV while uploading.
+- `showCsvModal` open CSV upload modal.
+- `handleCancel` cancel operations of CSV modal.
+- `handleUpload` used for uploading CSV.
+- `fetchProducts` called from useEffect on render.
+
+```jsx
+// * API Calls are using `NetworkCall` class and `Product` model available in react template
+
+const showCsvModal = () => {
+  setIsCsvModalOpen(true);
+};
+
+const handleCancel = () => {
+  setIsCsvModalOpen(false);
+  setServerErrors([]);
+};
+
+const handleUpload = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  try {
+    await Product.importCsvFile(formData);
+    setisCsvModalOpen(false);
+    setRefetch(!refetch);
+    message.success("Products added successfully");
+  } catch (error) {
+    const serverErrors = error?.error?.data?.errors || null;
+    if (serverErrors) {
+      const formattedErrors = formatServerErrors(serverErrors);
+      setServerErrors(formattedErrors.split("\n"));
+    } else {
+      message.error("An error occurred while uploading the file.");
+    }
+  }
+};
+
+const handleExportCsvFile = async () => {
+  try {
+    // Create a payload with the selected row keys
+    const body = {
+      ids: selectedRowKeys,
+    };
+
+    const csvContent = await Product.exportCsvFile(body);
+
+    // Use the helper function to download the CSV content
+    downloadCSV(csvContent, "products_export.csv");
+    setSelectedRowKeys([]);
+  } catch (error) {
+    console.error("Failed to export CSV file", error);
+  }
+};
+
+const formatServerErrors = (errorsObject) => {
+  // Convert errorsObject to array
+  const errorsArray = Object.values(errorsObject);
+
+  return errorsArray
+    .map((errorEntry) => {
+      return `Row ${errorEntry.row}: ${errorEntry.errors.join(", ")}`;
+    })
+    .join("\n");
+};
+
+const fetchProducts = async () => {
+  try {
+    const response = await Product.getAll();
+    setProducts(response);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+useEffect(() => {
+  fetchProducts();
+  // Will be executed on component render and changing of refetch flag
+}, [refetch]);
+```
+
+5. Create a new file named `csvModal.jsx` and paste the following code in it.
+
+The `CsvModal` component is a React modal that serves as a upload component for creating products through CSV.
+Import the `CsvModal` into your `ImportExportProducts` component.
+
+##### Props:
+
+The **CsvModal** component accepts the following props:
+
+- `serverErrors` (array): For displaying errors in csv received from server.
+- `handleUpload` (function): A callback function to handle the file upload.
+- `isCsvModalOpen` (boolean): A boolean that controls whether the modal is open.
+- `handleCancel` (function): A function to set the modal's cancel button operations.
+
+```jsx
+// Filename:  csvModal.jsx
+
+import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
+import { Button, Modal, Typography, Upload } from "antd";
+import { Scrollbars } from "react-custom-scrollbars-2";
+
+const { Dragger } = Upload;
+const csvFilePath = "/productsample.csv";
+
+const CsvModal = ({
+  isCsvModalOpen,
+  handleCancel,
+  handleUpload,
+  serverErrors,
+}) => {
+  return (
+    <Modal
+      onCancel={handleCancel}
+      open={isCsvModalOpen}
+      title="Upload Csv File"
+      destroyOnClose
+      footer={false}
+    >
+      <Dragger
+        beforeUpload={(file) => {
+          handleUpload(file);
+          return false; // Return false to stop auto-uploading
+        }}
+      >
+        <p className="ant-upload-drag-icon">
+          <InboxOutlined />
+        </p>
+        <p className="ant-upload-text">
+          Click or drag file to this area to upload
+        </p>
+        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+      </Dragger>
+
+      <div className="m-2">
+        <p className="ant-upload-text">
+          Here we have
+          <a href={csvFilePath} download="productsample.csv" className="m-1">
+            Sample Csv File
+          </a>
+          to Import
+        </p>
+      </div>
+      {serverErrors && serverErrors.length > 0 && (
+        <>
+          <Typography.Title level={5} style={{ color: "red" }}>
+            Errors in CSV:
+          </Typography.Title>
+          <Scrollbars style={{ height: 400 }}>
+            <div className="m-2">
+              <ul>
+                {serverErrors.map((error, index) => (
+                  <li key={index} style={{ color: "red" }}>
+                    {error}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Scrollbars>
+        </>
+      )}
+    </Modal>
+  );
+};
+
+export default CsvModal;
+```
+
+6. In the final step add return statements with following jsx code in `ImportExportProducts` component.
+
+```jsx
+return (
+  <>
+    <Card
+      className="card-wrapper"
+      extra={
+        <Space>
+          <Button type="primary" size="large" onClick={showCsvModal}>
+            Import CSV
+          </Button>
+
+          <Button
+            disabled={selectedRowKeys.length === 0}
+            onClick={handleExportCsvFile}
+            type="primary"
+            size="large"
+          >
+            Export CSV
+          </Button>
+        </Space>
+      }
+    >
+      <Table
+        rowKey="id"
+        columns={columns}
+        dataSource={products}
+        scroll={{ x: 950 }}
+        rowSelection={rowSelection}
+      />
+    </Card>
+
+    <CsvModal
+      serverErrors={serverErrors}
+      handleUpload={handleUpload}
+      isCsvModalOpen={isCsvModalOpen}
+      handleCancel={handleCsvCancelButton}
+    />
+  </>
+);
+```
+
+## Note
+
+Make sure you have the required dependencies, such as Ant Design components, installed in your project to use this component effectively.
