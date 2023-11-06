@@ -172,7 +172,6 @@ export default function Users() {
           <Input
             allowClear
             placeholder="Search"
-            onSearch={onSearch}
             onChange={debounce(onSearch, 500)}
           />
         }
