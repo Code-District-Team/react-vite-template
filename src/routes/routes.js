@@ -15,7 +15,7 @@ import LoggedInPageLayout from "~/layout/loggedInPageLayout";
 import K from "~/utilities/constants";
 
 const Users = lazy(() => import("~/features/users/users"));
-const Profile = lazy(() => import("~/features/Profile/profile"));
+const Profile = lazy(() => import("~/features/profile/profile"));
 const Projects = lazy(() => import("~/features/projects/projects"));
 const ProductAntd = lazy(() => import("~/features/products/productAntd"));
 const ProductAGGrid = lazy(() => import("~/features/products/productAGGrid"));
