@@ -1,14 +1,13 @@
-import { LocalFiltersAntd } from "./LocalFiltersAntd";
+import { ProductListView } from "./listView";
 
 export default {
   title: "Features/Lazy Loading/List View",
-  component: LocalFiltersAntd,
+  component: ProductListView,
   parameters: {},
 };
 
 export const List = {
   args: {
-    pageSize: 10,
-    pagination: true,
+    containerHeight: 450,
   },
 };

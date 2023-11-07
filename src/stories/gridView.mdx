@@ -81,7 +81,7 @@ return (
   <div id="scrollableDiv">
     <InfiniteScroll
       scrollableTarget="scrollableDiv"
-      height={containerHeight}
+      height={450}
       dataLength={data.products?.length || 0} // Safely access the length
       next={fetchProductDetails}
       hasMore={data.products?.length < data.total} // Compare against the total value
