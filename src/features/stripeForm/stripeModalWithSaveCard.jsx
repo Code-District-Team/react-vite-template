@@ -5,9 +5,10 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { Button, Col, Modal, Row } from "antd";
+import { Button, Col, Modal, Row, message } from "antd";
 import useResponsiveFontSize from "./useResponsiveFontSize";
 import { useMemo } from "react";
+import Product from "~/models/product";
 
 const useOptions = () => {
   const fontSize = useResponsiveFontSize();
@@ -33,7 +34,12 @@ const useOptions = () => {
   return options;
 };
 
-const StripeModal = ({ isStripeModalOpen, handleStripCancel }) => {
+const StripeModalWithSaveCard = ({
+  isStripeModalOpen,
+  handleStripCancel,
+  setIsStripeCardModalOpen,
+  setCardLastFour,
+}) => {
   const options = useOptions();
   const stripe = useStripe();
   const elements = useElements();
@@ -46,21 +52,23 @@ const StripeModal = ({ isStripeModalOpen, handleStripCancel }) => {
       return;
     }
 
-    // const payload = await stripe.createPaymentMethod({
-    //   type: "card",
-    //   card: elements.getElement(CardNumberElement),
-    // });
-    // console.log("[PaymentMethod]", payload);
-    // try {
-    //   const response = await StripeModel.savePaymentMethod({
-    //     paymentMethodId: payload.paymentMethod.id,
-    //   });
+    const payload = await stripe.createPaymentMethod({
+      type: "card",
+      card: elements.getElement(CardNumberElement),
+    });
+    try {
+      const response = await Product.stripeAddCard({
+        paymentMethodId: payload.paymentMethod.id,
+      });
 
-    //   message.success("Card Successfully Attached");
-    //   // setIsStripModalOpen(false);
-    // } catch {
-    //   message.error("Could not save card");
-    // }
+      const last4Digit = response.card.last4;
+
+      message.success("Card Successfully Attached");
+      setCardLastFour(last4Digit);
+      setIsStripeCardModalOpen(false);
+    } catch {
+      message.error("Could not save card");
+    }
   };
   return (
     <Modal
@@ -140,7 +148,7 @@ const StripeModal = ({ isStripeModalOpen, handleStripCancel }) => {
             size="large"
             type="primary"
             htmlType="submit"
-            // disabled={!stripe}
+            disabled={!stripe}
           >
             Add Card
           </Button>
@@ -150,4 +158,4 @@ const StripeModal = ({ isStripeModalOpen, handleStripCancel }) => {
   );
 };
 
-export default StripeModal;
+export default StripeModalWithSaveCard;

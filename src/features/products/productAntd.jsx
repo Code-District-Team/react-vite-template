@@ -23,8 +23,8 @@ import K from "~/utilities/constants";
 import { isPermissionPresent } from "~/utilities/generalUtility";
 import CsvModal from "./csvModal";
 import ProductModal from "./productModal";
-import StripeModal from "../stripeForm/stripeModal";
 import ElementWrapper from "../stripeForm/wrapper";
+import StripeModalDirectPayment from "../stripeForm/stripeModalDirectPayment";
 // import ElementWrapper from "../stripeForm/wrapper";
 const ProductAntd = () => {
   const [form] = Form.useForm();
@@ -48,7 +48,6 @@ const ProductAntd = () => {
   const userData = useSelector(selectUser);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [serverErrors, setServerErrors] = useState([]);
-  const [uploadedFile, setUploadedFile] = useState([]);
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedKeys) => {
@@ -100,6 +99,7 @@ const ProductAntd = () => {
     try {
       await Product.importCsvFile(formData);
       setisCsvModalOpen(false);
+      message.success("Product Created successfully");
       fetchProductDetails();
     } catch (error) {
       const serverErrors = error?.error?.data?.errors || null;
@@ -136,6 +136,16 @@ const ProductAntd = () => {
     setSearchText("");
   };
 
+  const handleBuyWithSavedCard = async (amount) => {
+    const body = {
+      amount,
+    };
+    try {
+      await Product.stripeDeductAmount(body);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -323,8 +333,18 @@ const ProductAntd = () => {
                     Delete
                   </Button>
                 </Popconfirm>
+
                 <Button type="link" className="p-0" onClick={showStripeModal}>
                   Buy Now
+                </Button>
+                <Button
+                  type="link"
+                  className="p-0"
+                  onClick={() => {
+                    handleBuyWithSavedCard(record.price);
+                  }}
+                >
+                  Buy with Saved Card
                 </Button>
               </Space>
             ),
@@ -419,7 +439,6 @@ const ProductAntd = () => {
 
   const handleCsvCancelButton = () => {
     setisCsvModalOpen(false);
-    setUploadedFile([]);
     setServerErrors([]);
   };
 
@@ -484,15 +503,13 @@ const ProductAntd = () => {
         editId={editId}
       />
       <CsvModal
-        uploadedFile={uploadedFile}
-        setUploadedFile={setUploadedFile}
         serverErrors={serverErrors}
         handleUpload={handleUpload}
         isCsvModalOpen={isCsvModalOpen}
         handleCancel={handleCsvCancelButton}
       />
       <ElementWrapper>
-        <StripeModal
+        <StripeModalDirectPayment
           isStripeModalOpen={isStripeModalOpen}
           handleStripCancel={handleStripCancel}
         />

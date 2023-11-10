@@ -102,4 +102,56 @@ export default class Product {
     );
     return NetworkCall.fetch(request, true);
   }
+
+  // Stripe Add Card
+  static async stripeAddCard(body) {
+    const request = new Request(
+      K.Network.URL.Stripe.AddCard,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.File,
+      {},
+      false,
+    );
+    return await NetworkCall.fetch(request, true);
+  }
+
+  // Stripe Payment Method
+  static async  getStripePaymentMethod() {
+    const request = new Request(
+      K.Network.URL.Stripe.GetPaymentMethods,
+      K.Network.Method.GET,
+      K.Network.Header.Type.File,
+      {},
+      false,
+    );
+    return await NetworkCall.fetch(request, true);
+  }
+
+  // Stripe Deduct Amount
+  static async stripeDeductAmount(body) {
+    const request = new Request(
+      K.Network.URL.Stripe.Buy,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.File,
+      {},
+      false,
+    );
+    return await NetworkCall.fetch(request, true);
+  }
+
+  // Stripe Delete Card
+  static async deleteCard() {
+    const request = new Request(
+      K.Network.URL.Stripe.DeleteCard,
+      K.Network.Method.GET,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+    return await NetworkCall.fetch(request, true);
+  }
+
+  
 }

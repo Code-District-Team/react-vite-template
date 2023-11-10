@@ -50,6 +50,12 @@ const K = {
         UpdateProducts: "/product",
         DeleteProducts: "/product",
       },
+      Stripe: {
+        AddCard: "stripe/add-payment-method",
+        Buy: "stripe/deduct-amount",
+        DeleteCard: "/stripe/remove-payment-method",
+        GetPaymentMethods: "stripe/payment-methods",
+      },
 
       Roles: "/roles",
       Permission: "/permissions",

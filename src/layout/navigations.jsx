@@ -58,6 +58,11 @@ const rolePermissionChildren = (basePath) => [
     name: "Tenants",
     roles: [K.Permissions.Admin],
   },
+  {
+    path: `${basePath}/settings`,
+    name: "Settings",
+    roles: [K.Permissions.Admin],
+  },
 ];
 
 const navigations = [

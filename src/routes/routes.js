@@ -22,6 +22,7 @@ import ProductGridView from "~/features/products/productGridView";
 import ProductListView from "~/features/products/productListView";
 import Tenants from "~/features/multiTenants/tenants";
 import UserTenants from "~/features/multiTenants/userTenants";
+import Settings from "~/features/settings/settings";
 
 /* 
   * Template for a route
@@ -181,6 +182,14 @@ const routes = [
     // permission: K.Permissions.Admin,
     authenticated: true,
     component: UserTenants,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/config/settings",
+    name: "Settings",
+    // permission: K.Permissions.Admin,
+    authenticated: true,
+    component: Settings,
     layout: LoggedInPageLayout,
   },
 
