@@ -2820,6 +2820,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rc-component/trigger@npm:^1.18.1":
+  version: 1.18.1
+  resolution: "@rc-component/trigger@npm:1.18.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.2"
+    "@rc-component/portal": "npm:^1.1.0"
+    classnames: "npm:^2.3.2"
+    rc-motion: "npm:^2.0.0"
+    rc-resize-observer: "npm:^1.3.1"
+    rc-util: "npm:^5.38.0"
+  peerDependencies:
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+  checksum: 4cfbfd595ab92decdce520e02f3f0552d9beb3dd5518c92709285e9db672f6bb04737465aaaa2f1059314bb289a45c5a2db3f670e43610f9f4ec56cbf41971c3
+  languageName: node
+  linkType: hard
+
 "@reduxjs/toolkit@npm:^1.9.7":
   version: 1.9.7
   resolution: "@reduxjs/toolkit@npm:1.9.7"
@@ -4634,9 +4651,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"antd@npm:^5.11.0":
-  version: 5.11.0
-  resolution: "antd@npm:5.11.0"
+"antd@npm:^5.11.1":
+  version: 5.11.1
+  resolution: "antd@npm:5.11.1"
   dependencies:
     "@ant-design/colors": "npm:^7.0.0"
     "@ant-design/cssinjs": "npm:^1.17.2"
@@ -4647,7 +4664,7 @@ __metadata:
     "@rc-component/color-picker": "npm:~1.4.1"
     "@rc-component/mutate-observer": "npm:^1.1.0"
     "@rc-component/tour": "npm:~1.10.0"
-    "@rc-component/trigger": "npm:^1.18.0"
+    "@rc-component/trigger": "npm:^1.18.1"
     classnames: "npm:^2.3.2"
     copy-to-clipboard: "npm:^3.3.3"
     dayjs: "npm:^1.11.1"
@@ -4678,18 +4695,18 @@ __metadata:
     rc-switch: "npm:~4.1.0"
     rc-table: "npm:~7.35.2"
     rc-tabs: "npm:~12.13.1"
-    rc-textarea: "npm:~1.5.1"
+    rc-textarea: "npm:~1.5.2"
     rc-tooltip: "npm:~6.1.2"
     rc-tree: "npm:~5.8.2"
     rc-tree-select: "npm:~5.15.0"
     rc-upload: "npm:~4.3.5"
-    rc-util: "npm:^5.38.0"
+    rc-util: "npm:^5.38.1"
     scroll-into-view-if-needed: "npm:^3.1.0"
     throttle-debounce: "npm:^5.0.0"
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: c65cd94b707929368d499546c535927a55117ae0e945017e945fa1adfc70b5eba22fe95b160ad089cf2580fde9b010512795abf7c0d853bd1f12f166ff4baa82
+  checksum: 497aefdd05cbb98f5595fa323ced65ddece7dd6994a8dd830afcceb1c6f890b69237ddf6a267b4a6693c686a24010898c3535e001010ee281558b1886a1084d0
   languageName: node
   linkType: hard
 
@@ -4946,14 +4963,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.0":
-  version: 1.6.0
-  resolution: "axios@npm:1.6.0"
+"axios@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "axios@npm:1.6.1"
   dependencies:
     follow-redirects: "npm:^1.15.0"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 2879e17b96cbca7e2096d231a44e2d0f03e657d79f8928ea38ec5fbaf5a5b7bf952d580cdb58a66ba328c26eb3528b89d5a32da57cc5cf89813786c044f7e9d6
+  checksum: ca2c6f56659a7f19e4a99082f549fe151952f6fd8aa72ed148559ab2d6a32ce37cd5dc72ce6d4d3cd91f0c1e2617c7c95c20077e5e244a79f319a6c0ce41204f
   languageName: node
   linkType: hard
 
@@ -10390,7 +10407,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-textarea@npm:~1.5.0, rc-textarea@npm:~1.5.1":
+"rc-textarea@npm:~1.5.0":
   version: 1.5.2
   resolution: "rc-textarea@npm:1.5.2"
   dependencies:
@@ -10403,6 +10420,22 @@ __metadata:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
   checksum: e299273c1a68c4d3bb1ce44b16e4fc67e879b0e6e5f99a28447dd1973b39d57992ee65db56f9c8c06e5848777e77bad6b48bd34911cf96115d5912e8b1dded11
+  languageName: node
+  linkType: hard
+
+"rc-textarea@npm:~1.5.2":
+  version: 1.5.3
+  resolution: "rc-textarea@npm:1.5.3"
+  dependencies:
+    "@babel/runtime": "npm:^7.10.1"
+    classnames: "npm:^2.2.1"
+    rc-input: "npm:~1.3.5"
+    rc-resize-observer: "npm:^1.0.0"
+    rc-util: "npm:^5.27.0"
+  peerDependencies:
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+  checksum: 26545b9e498068709afe6909046a829731f88c63339391f4314965c92e6c6da86f6a3c61286f261e3d3663a03a2c85375283c7a44927403b6e2fb1df9c085b46
   languageName: node
   linkType: hard
 
@@ -10476,6 +10509,19 @@ __metadata:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
   checksum: 743ca94b0e58bf640f4640a08e6d45a2844ba42784d6b05fa9f8315cd21a237040f6421bcc09411bf996f672086a18bce3ff211783c833be3e6ef2e491568879
+  languageName: node
+  linkType: hard
+
+"rc-util@npm:^5.38.1":
+  version: 5.38.1
+  resolution: "rc-util@npm:5.38.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.18.3"
+    react-is: "npm:^18.2.0"
+  peerDependencies:
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+  checksum: 353f608aee4b4b0a4a89431e047d4ad0462c2da366629e110f328dda87d2cda6839a4cb211b14d58002e09f6b8c2c6bc01e902249ed3b0a3310077ea70f52d80
   languageName: node
   linkType: hard
 
@@ -10800,9 +10846,9 @@ __metadata:
     ag-grid-community: "npm:^30.2.1"
     ag-grid-enterprise: "npm:^30.2.1"
     ag-grid-react: "npm:^30.2.1"
-    antd: "npm:^5.11.0"
+    antd: "npm:^5.11.1"
     antd-img-crop: "npm:^4.13.0"
-    axios: "npm:^1.6.0"
+    axios: "npm:^1.6.1"
     crypto-js: "npm:^4.1.1"
     dayjs: "npm:^1.11.10"
     eslint: "npm:^8.45.0"
