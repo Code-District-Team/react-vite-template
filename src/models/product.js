@@ -128,6 +128,19 @@ export default class Product {
     return await NetworkCall.fetch(request, true);
   }
 
+
+   // Stripe Verify Payment
+   static async  stripeVerifyPayment(id, client_secret, status) {
+    const url = `?payment_intent=${id}&payment_intent_client_secret=${client_secret}&redirect_status=${status}`
+    const request = new Request(
+      K.Network.URL.Stripe.VerifyPayment + url,
+      K.Network.Method.GET,
+      K.Network.Header.Type.File,
+      {},
+      false,
+    );
+    return await NetworkCall.fetch(request, true);
+  }
   // Stripe Deduct Amount
   static async stripeDeductAmount(body) {
     const request = new Request(
@@ -145,7 +158,7 @@ export default class Product {
   static async deleteCard() {
     const request = new Request(
       K.Network.URL.Stripe.DeleteCard,
-      K.Network.Method.GET,
+      K.Network.Method.DELETE,
       K.Network.Header.Type.Json,
       {},
       false,

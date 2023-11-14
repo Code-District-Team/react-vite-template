@@ -25,7 +25,6 @@ import CsvModal from "./csvModal";
 import ProductModal from "./productModal";
 import ElementWrapper from "../stripeForm/wrapper";
 import StripeModalDirectPayment from "../stripeForm/stripeModalDirectPayment";
-// import ElementWrapper from "../stripeForm/wrapper";
 const ProductAntd = () => {
   const [form] = Form.useForm();
   const editId = useRef(null);
@@ -141,11 +140,39 @@ const ProductAntd = () => {
       amount,
     };
     try {
-      await Product.stripeDeductAmount(body);
+      const response = await Product.stripeDeductAmount(body);
+
+      if (response.status === "succeeded") {
+        message.success("Payment successful");
+      }
+
+      if (response.status === "requires_action") {
+        const { id, url, client_secret, status } = response;
+
+        let paymentWindow = window.open(
+          url,
+          "PopupWindow",
+          "width=600,height=400,scrollbars=no,resizable=no",
+        );
+
+        // Define the event listener function
+        const handleMessage = async (event) => {
+          if (event.data === "paymentCompleted") {
+            paymentWindow.close();
+            window.removeEventListener("message", handleMessage);
+
+            await Product.stripeVerifyPayment(id, client_secret, status);
+          }
+        };
+
+        // Add the event listener
+        window.addEventListener("message", handleMessage);
+      }
     } catch (error) {
-      console.error(error);
+      message.error("Payment was not successful");
     }
   };
+
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
