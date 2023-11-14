@@ -19,14 +19,14 @@ const Profile = lazy(() => import("~/features/profile/profile"));
 const Projects = lazy(() => import("~/features/projects/projects"));
 const ProductAntd = lazy(() => import("~/features/products/productAntd"));
 const ProductAGGrid = lazy(() => import("~/features/products/productAGGrid"));
-const ProductGridView = lazy(() =>
-  import("~/features/products/productGridView"),
+const ProductGridView = lazy(
+  () => import("~/features/products/productGridView"),
 );
-const ProductListView = lazy(() =>
-  import("~/features/products/productListView"),
+const ProductListView = lazy(
+  () => import("~/features/products/productListView"),
 );
-const RolesPermission = lazy(() =>
-  import("~/features/rolesPermission/rolesPermission"),
+const RolesPermission = lazy(
+  () => import("~/features/rolesPermission/rolesPermission"),
 );
 /* 
   * Template for a route
