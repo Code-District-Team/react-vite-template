@@ -9734,7 +9734,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.0.3":
+"prettier@npm:^3.1.0":
   version: 3.1.0
   resolution: "prettier@npm:3.1.0"
   bin:
@@ -10830,7 +10830,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     md5: "npm:^2.3.0"
     node-sass: "npm:^9.0.0"
-    prettier: "npm:^3.0.3"
+    prettier: "npm:^3.1.0"
     prop-types: "npm:^15.8.1"
     qs: "npm:^6.11.2"
     react: "npm:^18.2.0"
