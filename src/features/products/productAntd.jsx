@@ -24,7 +24,10 @@ import { isPermissionPresent } from "~/utilities/generalUtility";
 import CsvModal from "./csvModal";
 import ProductModal from "./productModal";
 import ElementWrapper from "../stripeForm/wrapper";
-import StripeModalDirectPayment from "../stripeForm/stripeModalDirectPayment";
+import StripeModalWithSaveCard from "../stripeForm/stripeModalWithSaveCard";
+import CheckoutForm from "../stripeForm/checkoutForm";
+// import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 const ProductAntd = () => {
   const [form] = Form.useForm();
   const editId = useRef(null);
@@ -41,12 +44,18 @@ const ProductAntd = () => {
   const [productData, setProductData] = useState({ products: [], total: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isStripeModalOpen, setIsStripModalOpen] = useState(false);
+  const [isStripeOwnModalOpen, setIsStripeOwnModalOpen] = useState(false);
   const [isCsvModalOpen, setisCsvModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const userData = useSelector(selectUser);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [serverErrors, setServerErrors] = useState([]);
+  // const [clientSecret, setClientSecret] = useState("");
+  // const stripePromise = loadStripe(
+  //   "pk_test_51O2UHMG9aw8LuACQpfTv0d5ruJjE7NbLmpRcm1DzIZH3l5Tkcq0P17PYazWkKjm08aBcTqh3sZhZtL67ErqrncpK00llOIE5F3",
+  // );
+  const stripePromise = loadStripe(K.Stripe.Key);
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedKeys) => {
@@ -361,7 +370,7 @@ const ProductAntd = () => {
                   </Button>
                 </Popconfirm>
 
-                <Button type="link" className="p-0" onClick={showStripeModal}>
+                <Button type="link" className="p-0" onClick={StripeOwnModal}>
                   Buy Now
                 </Button>
                 <Button
@@ -457,8 +466,8 @@ const ProductAntd = () => {
   const showCsvModal = () => {
     setisCsvModalOpen(true);
   };
-  const showStripeModal = () => {
-    setIsStripModalOpen(true);
+  const StripeOwnModal = () => {
+    setIsStripeOwnModalOpen(true);
   };
   const handleStripCancel = () => {
     setIsStripModalOpen(false);
@@ -467,6 +476,14 @@ const ProductAntd = () => {
   const handleCsvCancelButton = () => {
     setisCsvModalOpen(false);
     setServerErrors([]);
+  };
+
+  const appearance = {
+    theme: "stripe",
+  };
+  const options = {
+    // clientSecret,
+    appearance,
   };
 
   useEffect(() => {
@@ -536,11 +553,16 @@ const ProductAntd = () => {
         handleCancel={handleCsvCancelButton}
       />
       <ElementWrapper>
-        <StripeModalDirectPayment
+        <StripeModalWithSaveCard
           isStripeModalOpen={isStripeModalOpen}
           handleStripCancel={handleStripCancel}
         />
       </ElementWrapper>
+      <div className="App">
+        <ElementWrapper options={options} stripe={stripePromise}>
+          <CheckoutForm isStripeOwnModalOpen={isStripeOwnModalOpen} />
+        </ElementWrapper>
+      </div>
     </>
   );
 };
