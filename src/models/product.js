@@ -153,6 +153,19 @@ export default class Product {
     );
     return await NetworkCall.fetch(request, true);
   }
+ // Stripe Create Payment Intent
+ static async stripeCreatePaymentIntent(body) {
+  const request = new Request(
+    K.Network.URL.Stripe.CreatePaymentIntent,
+    K.Network.Method.POST,
+    body,
+    K.Network.Header.Type.Json,
+    {},
+    false,
+  );
+  return await NetworkCall.fetch(request, true);
+}
+  CreatePaymentIntent
 
   // Stripe Delete Card
   static async deleteCard() {

@@ -26,7 +26,7 @@ import ProductModal from "./productModal";
 import ElementWrapper from "../stripeForm/wrapper";
 import StripeModalWithSaveCard from "../stripeForm/stripeModalWithSaveCard";
 import CheckoutForm from "../stripeForm/checkoutForm";
-// import { Elements } from "@stripe/react-stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 const ProductAntd = () => {
   const [form] = Form.useForm();
@@ -51,10 +51,7 @@ const ProductAntd = () => {
   const userData = useSelector(selectUser);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [serverErrors, setServerErrors] = useState([]);
-  // const [clientSecret, setClientSecret] = useState("");
-  // const stripePromise = loadStripe(
-  //   "pk_test_51O2UHMG9aw8LuACQpfTv0d5ruJjE7NbLmpRcm1DzIZH3l5Tkcq0P17PYazWkKjm08aBcTqh3sZhZtL67ErqrncpK00llOIE5F3",
-  // );
+  const [clientSecret, setClientSecret] = useState("");
   const stripePromise = loadStripe(K.Stripe.Key);
   const rowSelection = {
     selectedRowKeys,
@@ -370,7 +367,13 @@ const ProductAntd = () => {
                   </Button>
                 </Popconfirm>
 
-                <Button type="link" className="p-0" onClick={StripeOwnModal}>
+                <Button
+                  type="link"
+                  className="p-0"
+                  onClick={() => {
+                    StripeOwnModal(record.price);
+                  }}
+                >
                   Buy Now
                 </Button>
                 <Button
@@ -466,8 +469,13 @@ const ProductAntd = () => {
   const showCsvModal = () => {
     setisCsvModalOpen(true);
   };
-  const StripeOwnModal = () => {
+  const StripeOwnModal = (amount) => {
     setIsStripeOwnModalOpen(true);
+    getClientSecret(amount);
+  };
+
+  const CloseStripeOwnModel = () => {
+    setIsStripeOwnModalOpen(false);
   };
   const handleStripCancel = () => {
     setIsStripModalOpen(false);
@@ -477,18 +485,28 @@ const ProductAntd = () => {
     setisCsvModalOpen(false);
     setServerErrors([]);
   };
-
-  const appearance = {
-    theme: "stripe",
-  };
-  const options = {
-    // clientSecret,
-    appearance,
+  let showChildMessage = (message) => {
+    message.success(message);
   };
 
   useEffect(() => {
     fetchProductDetails();
   }, [payload]);
+
+  const getClientSecret = async (amount) => {
+    const body = {
+      amount,
+    };
+    const response = await Product.stripeCreatePaymentIntent(body);
+    setClientSecret(response.clientSecret);
+  };
+  const appearance = {
+    theme: "stripe",
+  };
+  const options = {
+    clientSecret,
+    appearance,
+  };
 
   return (
     <>
@@ -557,11 +575,16 @@ const ProductAntd = () => {
           handleStripCancel={handleStripCancel}
         />
       </ElementWrapper>
-      <div className="App">
-        <ElementWrapper options={options} stripe={stripePromise}>
-          <CheckoutForm isStripeOwnModalOpen={isStripeOwnModalOpen} />
-        </ElementWrapper>
-      </div>
+      {clientSecret && (
+        <Elements options={options} stripe={stripePromise}>
+          <CheckoutForm
+            isStripeOwnModalOpen={isStripeOwnModalOpen}
+            CloseStripeOwnModel={CloseStripeOwnModel}
+            parentMessage={showChildMessage}
+          />
+        </Elements>
+      )}
+      {<div>{clientSecret}</div>}
     </>
   );
 };
