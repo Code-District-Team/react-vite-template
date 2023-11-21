@@ -124,7 +124,7 @@ const columns = [
 ];
 ```
 
-5. Add following methods in the `ProductsCRUD`
+4. Add following methods in the `ProductsCRUD`
 
 - `createNewProduct` used for adding a new product.
 - `updateProduct` used for updating existing product.
@@ -172,13 +172,22 @@ const deleteProduct = async (id) => {
   }
 };
 
+const fetchProducts = async () => {
+  try {
+    const res = await Product.getAll();
+    setProducts(res);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 useEffect(() => {
   fetchProducts();
   // Will be executed on component render and changing of refetch flag
 }, [refetch]);
 ```
 
-6. Create a new file named `ProductFormModal.jsx` and paste the following code in it.
+5. Create a new file named `ProductFormModal.jsx` and paste the following code in it.
 
 The `ProductFormModal` component is a React modal that serves as a form for creating and editing product information.
 It allows users to input the product's name, quantity, and price.
@@ -270,7 +279,7 @@ export default function ProductFormModal({
 }
 ```
 
-7. In the final step add return statements with following jsx code in `ProductsCRUD` component.
+6. In the final step add return statements with following jsx code in `ProductsCRUD` component.
 
 ```jsx
 return (

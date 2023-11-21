@@ -1,12 +1,14 @@
+import { Suspense } from "react";
 import {
   RouterProvider as Provider,
   Route,
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
+import ErrorBoundary from "~/common/errorBoundary/errorBoundary";
+import Spinner from "~/common/spinner/spinner";
 import AccessControl from "./accessControl";
 import routes from "./routes";
-import ErrorBoundary from "~/common/errorBoundary/errorBoundary";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,7 +30,9 @@ const router = createBrowserRouter(
           element={
             route.layout ? (
               <route.layout>
-                <route.component route={route} />
+                <Suspense fallback={<Spinner />}>
+                  <route.component route={route} />
+                </Suspense>
               </route.layout>
             ) : (
               <route.component route={route} />
