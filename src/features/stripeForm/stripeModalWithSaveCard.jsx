@@ -39,6 +39,7 @@ const StripeModalWithSaveCard = ({
   handleStripCancel,
   setIsStripeCardModalOpen,
   setCardLastFour,
+  setBrand,
 }) => {
   const options = useOptions();
   const stripe = useStripe();
@@ -60,12 +61,13 @@ const StripeModalWithSaveCard = ({
       const response = await Product.stripeAddCard({
         paymentMethodId: payload.paymentMethod.id,
       });
-
+      console.log(response);
       const last4Digit = response.card.last4;
-
+      const brand = response.card.brand + ".png";
       message.success("Card Successfully Attached");
       setCardLastFour(last4Digit);
       setIsStripeCardModalOpen(false);
+      setBrand(brand);
     } catch {
       message.error("Could not save card");
     }
@@ -77,6 +79,7 @@ const StripeModalWithSaveCard = ({
       open={isStripeModalOpen}
       title="Stripe Checkout"
       footer={false}
+      destroyOnClose
     >
       <form onSubmit={handleSubmit} className="split-form-wrapper">
         <div className="split-form-items" style={{ marginBottom: "20px" }}>

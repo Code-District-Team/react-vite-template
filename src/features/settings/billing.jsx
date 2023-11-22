@@ -19,7 +19,7 @@ const Billing = () => {
       const response = await Product.getStripePaymentMethod({});
 
       setCardLastFour(response?.data[0]?.card?.last4);
-      const brand = response?.data[0]?.card?.brand;
+      const brand = response?.data[0]?.card?.brand + ".png";
       setBrand(brand);
     } catch {
       message.error("stripe payment not working");
@@ -87,6 +87,7 @@ const Billing = () => {
             handleStripCancel={handleStripeCancel}
             setCardLastFour={setCardLastFour}
             setIsStripeCardModalOpen={setIsStripeCardModalOpen}
+            setBrand={setBrand}
           />
         </ElementWrapper>
       </div>
