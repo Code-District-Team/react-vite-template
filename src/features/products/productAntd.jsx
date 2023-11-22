@@ -32,7 +32,6 @@ const ProductAntd = () => {
   const [form] = Form.useForm();
   const editId = useRef(null);
   const searchInput = useRef(null);
-
   const [payload, setPayload] = useState({
     page: 1,
     limit: 10,
@@ -489,16 +488,16 @@ const ProductAntd = () => {
     message.success(message);
   };
 
-  useEffect(() => {
-    fetchProductDetails();
-  }, [payload]);
-
   const getClientSecret = async (amount) => {
     const body = {
       amount,
     };
-    const response = await Product.stripeCreatePaymentIntent(body);
-    setClientSecret(response.clientSecret);
+    try {
+      const response = await Product.stripeCreatePaymentIntent(body);
+      setClientSecret(response.clientSecret);
+    } catch (error) {
+      message.error("unable to get Client Secret");
+    }
   };
   const appearance = {
     theme: "stripe",
@@ -508,6 +507,9 @@ const ProductAntd = () => {
     appearance,
   };
 
+  useEffect(() => {
+    fetchProductDetails();
+  }, [payload]);
   return (
     <>
       <Card
