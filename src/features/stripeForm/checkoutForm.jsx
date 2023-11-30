@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+// import "../stripeForm/stripe.css";
+
 import {
   PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 
 export default function CheckoutForm({
   isStripeOwnModalOpen,
@@ -93,7 +95,12 @@ export default function CheckoutForm({
     >
       <form id="payment-form" onSubmit={handleSubmit}>
         <PaymentElement id="payment-element" options={paymentElementOptions} />
-        <button disabled={isLoading || !stripe || !elements} id="submit">
+        <Button
+          disabled={isLoading || !stripe || !elements}
+          id="submit"
+          type="primary"
+          size="large"
+        >
           <span id="button-text">
             {isLoading ? (
               <div className="spinner" id="spinner"></div>
@@ -101,7 +108,8 @@ export default function CheckoutForm({
               "Pay now"
             )}
           </span>
-        </button>
+        </Button>
+
         {/* Show any error or success messages */}
         {message && <div id="payment-message">{message}</div>}
       </form>

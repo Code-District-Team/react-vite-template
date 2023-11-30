@@ -577,16 +577,18 @@ const ProductAntd = () => {
           handleStripCancel={handleStripCancel}
         />
       </ElementWrapper>
-      {clientSecret && (
-        <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm
-            isStripeOwnModalOpen={isStripeOwnModalOpen}
-            CloseStripeOwnModel={CloseStripeOwnModel}
-            parentMessage={showChildMessage}
-          />
-        </Elements>
-      )}
-      {<div>{clientSecret}</div>}
+
+      <div className="stripe">
+        {clientSecret && (
+          <Elements options={options} stripe={stripePromise}>
+            <CheckoutForm
+              isStripeOwnModalOpen={isStripeOwnModalOpen}
+              CloseStripeOwnModel={CloseStripeOwnModel}
+              parentMessage={showChildMessage}
+            />
+          </Elements>
+        )}
+      </div>
     </>
   );
 };
