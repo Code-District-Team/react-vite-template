@@ -61,7 +61,6 @@ const StripeModalWithSaveCard = ({
       const response = await Product.stripeAddCard({
         paymentMethodId: payload.paymentMethod.id,
       });
-      console.log(response);
       const last4Digit = response.card.last4;
       const brand = response.card.brand + ".png";
       message.success("Card Successfully Attached");
