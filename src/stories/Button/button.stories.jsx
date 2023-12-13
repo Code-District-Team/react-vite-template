@@ -1,4 +1,4 @@
-import { LocalFiltersAntd } from "./LocalFiltersAntd";
+import { LocalFiltersAntd } from "../LocalFilters/LocalFiltersAntd";
 
 export default {
   title: "Features/Button",
