@@ -4,33 +4,34 @@ import { Meta, Primary, Controls, Story } from "@storybook/blocks";
 
 # Client Side Filters Ant Design Table
 
-The `LocalFiltersAntd` component is a React component that showcases the use of the Ant Design (antd) library for creating a data table with local filtering and sorting.
-It provides features such as searching, filtering, and pagination for displaying data efficiently on the client side.
+This story demonstrates the usage of the Ant Design (antd) library to create a React component.
+It showcases features like local filtering and sorting for efficient data presentation on the client side, including searching, filtering, and pagination.
 
 ## Features
 
-The `LocalFiltersAntd` offers the following features:
+The story offers the following features:
 
 - Client-side data filtering, sorting, and searching.
 - A search input to quickly filter data.
 - Customizable column configuration.
-- Filtering data using Ag-Grid's filter options.
 - Pagination support.
 
 ## Component Structure
 
-The code for the `LocalFiltersAntd` component is structured as follows:
+The code for this component is structured as follows:
 
 - Import statements for required dependencies, including Ant Design components, lodash for debouncing, and utility functions.
-- Definition of column configuration (`columns`) to set up table columns with filtering and sorting options.
-- Handling of user input with the `onSearch` function and client-side filtering logic.
-- Fetching user data using the `fetchUsers` function.
-- Usage of Ant Design's `Table` component to display the data table within a `Card` component.
+- Column configuration defines how table columns are set up, including options for filtering and sorting..
+- Handling of user input with the `onSearch` function for filtering the listing.
+- Fetching users listing using the `fetchUsers` function.
+- Usage of Ant Design's `Table` component wrapped in `Card` component to display the data.
 
 ## Usage
 
 This component is designed to showcase the use of Ant Design for client-side data filtering, sorting, and display.
 You can customize and integrate it into your React application to provide a user-friendly data table with advanced features.
+
+To use this React Component, you can follow these **steps**:
 
 1. Import the necessary dependencies into your React application.
 
@@ -53,8 +54,8 @@ export default function LocalFiltersAntd() {
   //Column definition
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
+      title: "ID", // Display as title of columns.
+      dataIndex: "id", // Display field of the data record
       sorter: (a, b) => stringSorting(a, b, "id"),
     },
     {
@@ -82,7 +83,7 @@ export default function LocalFiltersAntd() {
 }
 ```
 
-3. Add following methods in the `LocalFiltersAntd`
+3. Add following methods in the your React component
 
 - `onSearch` used for searching in users listing.
 - `onTableFilter` will be called on user searching by Ant Design.
@@ -90,6 +91,7 @@ export default function LocalFiltersAntd() {
 
 ```jsx
 const onTableFilter = (value, record) => {
+  // Used `toLowerCase()` for case sensitive search
   return (
     [record.id, record.age].includes(+value) ||
     record.firstName?.toLowerCase().includes(value.toLowerCase()) ||
@@ -100,12 +102,17 @@ const onTableFilter = (value, record) => {
 };
 
 const onSearch = (evt) => {
+  // Set user input in state
   setSearchedText(evt.target.value);
 };
+
+// * API Calls are using `NetworkCall` class and `Product` model available in react template
 
 const fetchUsers = async () => {
   try {
     const res = await User.getAll();
+    // `res` contains array of object.
+    // Keys in object: id, firstName, lastName, email, password, address, profileImageUrl, workPhone, mobilePhone, status
     setUsers(res.data);
   } catch (err) {
     console.error(err);
@@ -117,7 +124,7 @@ useEffect(() => {
 }, []);
 ```
 
-4. In the final step add return statements with following jsx code in `LocalFiltersAgGrid` component.
+4. In the final step add return statements with following jsx code in your React component.
 
 ```jsx
 return (
