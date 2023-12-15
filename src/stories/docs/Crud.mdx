@@ -143,6 +143,7 @@ const onFinish = async (values) => {
 const createNewProduct = async (values) => {
   try {
     const data = await Product.create(values);
+    // Get newly added product in `data`
     message.success(`Product Created Successfully`);
     setProducts((prev) => [...prev, data]); // Add newly added product in table listing.
     setIsModalOpen(false);
@@ -189,14 +190,14 @@ useEffect(() => {
 
 5. Create a new file named `ProductFormModal.jsx` and paste the following code in it.
 
-The `ProductFormModal` component is a React modal that serves as a form for creating and editing product information.
+This file contains a React component that serves modal for creating and editing product information.
 It allows users to input the product's name, quantity, and price.
 
-Import the `ProductFormModal` into your `ProductsCRUD` component.
+Import this component into your parent component.
 
 ##### Props:
 
-The **ProductFormModal** component accepts the following props:
+This custom **Modal** component accepts the following props:
 
 - `form` (object): A Form instance provided by Ant Design's Form component, used for managing form state and validation.
 - `onFinish` (function): A callback function to handle the form submission.
