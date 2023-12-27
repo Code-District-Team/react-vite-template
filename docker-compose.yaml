@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  client:
+    image: template-img
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: template-container
+    ports:
+      - "4173:80"
+    environment:
+      - NODE_ENV=production

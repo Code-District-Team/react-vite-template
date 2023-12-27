@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
       port: 4173, // Default port for build preview
     },
     server: {
-      open: true,
+      // open: true,
       https: env.VITE_CLIENT_PROTOCOL === "https",
       host: env.VITE_CLIENT_BASE_HOST,
       port: env.VITE_CLIENT_BASE_PORT,
