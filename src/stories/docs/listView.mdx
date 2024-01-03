@@ -1,0 +1,126 @@
+import { Meta, Primary, Controls, Story } from "@storybook/blocks";
+
+<Meta title="Features/Lazy Loading/List View/Frontend Docs" />
+
+# List View for Products
+
+This story demonstrates the usage of grid view of products with infinite scrolling.
+
+## Features
+
+- Display a list view of products.
+- Supports infinite scrolling for loading more products.
+- Shows loading skeleton while loading data.
+- Automatically loads more products when scrolling to the bottom.
+- Displays product details such as name, quantity, and price.
+
+## Component Structure
+
+The code for this React component is organized into different sections, including:
+
+- Import statements for required components and dependencies.
+- The main `ProductListView` component, which manages the list of products, including fetching on scroll.
+
+## Usage
+
+This component is designed to create a user-friendly product list view that allows users to load products on scrolling.
+The component can be customized and integrated into your larger React application.
+
+To use the this component, you can follow these **steps**:
+
+1. Import the necessary dependencies into your React application.
+
+```jsx
+import { Card, Divider, List, Skeleton } from "antd";
+import { useEffect, useRef, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Product from "~/models/product";
+```
+
+2. Create a React component and add following necessary statements.
+
+```jsx
+export const ProductListView = () => {
+  const pageNumber = useRef(0);
+  const [data, setData] = useState({ products: [], total: 0 });
+};
+```
+
+3. Add following methods in the your React component.
+
+- `fetchProductDetails` called from useEffect on render.
+
+```jsx
+const fetchProductDetails = async () => {
+  try {
+    pageNumber.current = pageNumber.current + 1;
+    const payload = {
+      page: pageNumber.current,
+      limit: 6,
+      filterType: "antd",
+    };
+    const response = await Product.getByFilters(payload);
+    setData((prevData) => ({
+      products: [...prevData.products, ...response.data.products],
+      total: response.data.total,
+    }));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+useEffect(() => {
+  fetchProductDetails();
+}, []);
+```
+
+4. In the final step add return statements with following jsx code in your component.
+
+```jsx
+return (
+  <Card className="card-wrapper">
+    <div id="scrollableDiv">
+      <InfiniteScroll
+        height={450}
+        dataLength={data.products?.length || 0} // Safely access the length
+        next={fetchProductDetails}
+        hasMore={data.products?.length < data.total} // Compare against the total value
+        loader={
+          <Skeleton
+            avatar
+            paragraph={{
+              rows: 1,
+            }}
+            active
+          />
+        }
+        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+        scrollableTarget="scrollableDiv"
+      >
+        <List
+          dataSource={data.products}
+          renderItem={(item) => (
+            <List.Item key={item.id}>
+              <List.Item.Meta
+                title={
+                  <div style={{ fontWeight: 500 }}>
+                    <span style={{ fontSize: "1rem" }}>{item.name}</span>
+                    <span>
+                      <div>Qty: {item.quantity}</div>
+                    </span>
+                  </div>
+                }
+              />
+              <p>Price: {item.price}</p>
+            </List.Item>
+          )}
+        />
+      </InfiniteScroll>
+    </div>
+  </Card>
+);
+```
+
+## Note
+
+This component relies on external dependencies, such as Ant Design components and `react-infinite-scroll-component`. Make sure to import and configure these dependencies in your project.

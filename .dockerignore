@@ -1,0 +1,8 @@
+README.md
+dist
+node_modules
+LICENSE
+yarn.lock
+.git
+.DS_Store
+.env

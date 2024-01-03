@@ -1,0 +1,147 @@
+import { Meta, Primary, Controls, Story } from "@storybook/blocks";
+
+<Meta title="Features/Client Side Filters/Ag Grid/Frontend Docs" />
+
+# Client Side Filters Ag-Grid Table
+
+This story demonstrates the usage of the use of Ag-Grid for creating a data table with local filtering.
+It provides features such as searching, filtering, and sorting data efficiently on the client side.
+
+## Features
+
+The story offers the following features:
+
+- Client-side data filtering, sorting, and searching.
+- A search input to quickly filter data.
+- Customizable column configuration.
+- Filtering data using Ag-Grid's filter options.
+- Pagination support.
+
+## Component Structure
+
+The code for the this component is structured as follows:
+
+- Import statements for required dependencies, including Ag-Grid, Ant Design components.
+- Definition of `columnDefs` to configure the table columns.
+- Configuration of default column settings.
+- Definition of the `onSearch` function to handle search queries and set quick filters.
+- Fetching of user data using the `fetchUsers` function.
+
+## Usage
+
+This component is designed to showcase the use of Ag-Grid for local filtering and displaying data efficiently on the client side.
+You can customize and integrate it into your React application to provide a rich user experience for managing data.
+
+To use the this React component, you can follow these **steps**:
+
+1. Import the necessary dependencies into your React application.
+
+```jsx
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+// import above ag-grid css if not included in your app's top-level
+import { AgGridReact } from "ag-grid-react";
+import { Card, Input } from "antd";
+import { debounce } from "lodash";
+import { useEffect, useMemo, useRef, useState } from "react";
+import User from "~/models/user";
+```
+
+2. Create a React component and add following necessary statements and methods.
+
+```jsx
+export default function LocalFiltersAgGrid() {
+  const gridRef = useRef(null);
+  const [users, setUsers] = useState([]);
+
+  const defaultColDef = useMemo(
+    () => ({
+      sortable: true,
+      filter: true,
+      flex: 1,
+    }),
+    [],
+  );
+
+  // Column definitions
+  const columnDefs = [
+    {
+      headerName: "ID",
+      field: "id",
+    },
+    {
+      headerName: "First Name",
+      field: "firstName",
+    },
+    {
+      headerName: "Last Name",
+      field: "lastName",
+    },
+    {
+      headerName: "Email",
+      field: "email",
+    },
+    {
+      headerName: "Status",
+      field: "status",
+    },
+  ];
+}
+```
+
+3. Add following methods in the your component.
+
+- `onSearch` called on input search within table.
+- `fetchUsers` called from useEffect on render.
+
+```jsx
+const onSearch = (evt) => {
+  gridRef.current.api.setQuickFilter(evt.target.value);
+};
+
+const fetchUsers = async () => {
+  try {
+    const res = await User.getAll();
+    setUsers(res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+useEffect(() => {
+  fetchUsers();
+}, []);
+```
+
+4. In the final step add return statements with following jsx code in your component.
+
+```jsx
+return (
+  <Card
+    title={
+      <Input
+        allowClear
+        placeholder="Search in table"
+        size="large"
+        onChange={debounce(onSearch, 500)}
+      />
+    }
+  >
+    <div className="ag-theme-alpine" style={{ height: 400, maxwidth: 100 }}>
+      <AgGridReact
+        ref={gridRef}
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
+        rowData={users}
+        pagination
+        paginationPageSize={10}
+      />
+    </div>
+  </Card>
+);
+```
+
+## Note
+
+- Ensure you have the required dependencies, including Ag-Grid, Ant Design, lodash, installed in your project to use this component effectively.
+- Customize the component to match your specific data source and UI requirements.

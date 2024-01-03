@@ -1,0 +1,192 @@
+import { Meta, Primary, Controls, Story } from "@storybook/blocks";
+
+<Meta title="Features/Server Side Filters/Ag Grid/Frontend Docs" />
+
+# Server-Side Ag-Grid Table
+
+This story demonstrates the React component that showcases the use of the Ag-Grid library for creating a server-side data table.
+It allows for searching, sorting, and filtering data efficiently.
+
+## Features
+
+The story offers the following features:
+
+- Server-side data fetching for handling large datasets efficiently.
+- Search functionality with a debounce delay for optimal user experience.
+- Sorting of data by different columns.
+- Filtering data using Ag-Grid's filter options.
+- Pagination support.
+
+## Component Structure
+
+The code for the this component is organized into different sections, including:
+
+- Import statements for required dependencies, including Ag-Grid and Ant Design components.
+- Definition of `columnDefs` to configure the table columns and filters.
+- Configuration of default column settings.
+- Definition of the `onSearch` function to handle search queries.
+- Definition of the `datasource` function to fetch server-side data.
+- Handling of the `onGridReady` event to set the server-side datasource.
+
+## Usage
+
+This component is designed to showcase the use of Ag-Grid in a server-side data table.
+It can be customized and integrated into your React application to efficiently handle large datasets while providing advanced features like searching and filtering.
+
+To use the this component, you can follow these steps:
+
+1. Import the necessary dependencies into your React application.
+
+```jsx
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-enterprise";
+// import above ag-grid css & enterprise if not included in your app's top-level
+import { AgGridReact } from "ag-grid-react";
+import { Card, Input } from "antd";
+import { debounce } from "lodash";
+import { useCallback, useMemo, useRef, useState } from "react";
+import Product from "~/models/product";
+```
+
+2. Create a React component and add following necessary statements and methods.
+
+```jsx
+export default function ServerSideAgGrid() {
+  const gridRef = useRef(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Default attributes applies to every column of Ag-Grid
+  const defaultColDef = useMemo(
+    () => ({
+      sortable: true,
+      filter: true,
+      flex: 1,
+    }),
+    [],
+  );
+
+  // Column definitions
+  const columnDefs = [
+    {
+      field: "id",
+    },
+    {
+      field: "name",
+      filter: "agTextColumnFilter",
+    },
+    {
+      field: "price",
+      filter: "agNumberColumnFilter",
+    },
+    {
+      field: "quantity",
+      filter: "agNumberColumnFilter",
+    },
+    {
+      field: "createdAt",
+      filter: "agDateColumnFilter",
+    },
+    {
+      field: "updatedAt",
+    },
+  ];
+
+  // function called on input change for searching products
+  const onSearch = (evt) => {
+    setSearchQuery(evt.target.value);
+  };
+
+  // Called by ag-grid once data is rendered
+  const onGridReady = (params) => {
+    params.api.setServerSideDatasource(datasource);
+  };
+}
+```
+
+3. Configure the `dataSource` for fetch data from API and display it into the grid.
+
+```jsx
+const datasource = useCallback(
+  {
+    async getRows(params) {
+      const { startRow, endRow } = params.request;
+      const limit = endRow - startRow; // Calculating limit/pageSize
+      const page = startRow / limit + 1; // Calculating current page no.
+
+      // Formatting ag-grid filter response for API body.
+      const payload = Object.keys(params.request.filterModel).map((key) =>
+        "condition1" in params.request.filterModel[key]
+          ? {
+              field: key,
+              ...params.request.filterModel[key],
+            }
+          : {
+              field: key,
+              condition1: params.request.filterModel[key],
+            },
+      );
+
+      const body = {
+        page,
+        limit,
+        filterType: "ag-grid",
+        query: searchQuery,
+        sortBy: params.request.sortModel[0]?.colId ?? undefined,
+        sortOrder: params.request.sortModel[0]?.sort.toUpperCase() ?? undefined,
+        agGrid: payload.length ? payload : undefined,
+      };
+
+      try {
+        const { data } = await Product.getByFilters(body);
+        // supply rows for requested page to grid
+        params.success({
+          rowData: data.products,
+          rowCount: data.total,
+        });
+      } catch (err) {
+        // inform grid request failed
+        params.fail();
+      }
+    },
+  },
+  // dataSource will be called on render and when user search for the product.
+  [searchQuery],
+);
+```
+
+4. In the final step add return statements with following jsx code in the component.
+
+```jsx
+return (
+  <Card
+    title={
+      <Input
+        allowClear
+        placeholder="Search in table"
+        size="large"
+        onChange={debounce(onSearch, 500)}
+      />
+    }
+  >
+    <div className="ag-theme-alpine" style={{ height: 400, maxwidth: 100 }}>
+      <AgGridReact
+        ref={gridRef}
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
+        pagination={true} // Enable pagination
+        paginationPageSize={10} // Setting pageSize
+        cacheBlockSize={10} // This sets the block size to 10, thus rows are read back 10 at a time.
+        rowModelType="serverSide" // Enabling server-side row model
+        onGridReady={onGridReady}
+        serverSideDatasource={datasource}
+      />
+    </div>
+  </Card>
+);
+```
+
+## Note
+
+- Ensure you have the required dependencies, including Ag-Grid, Ag-Grid Enterprise, Ant Design, lodash, installed in your project to use this component effectively.
+- Customize the component to match your specific data source and UI requirements.
