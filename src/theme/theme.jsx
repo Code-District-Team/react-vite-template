@@ -1,15 +1,5 @@
 import React from "react";
-import {
-  Button,
-  ColorPicker,
-  ConfigProvider,
-  Divider,
-  Form,
-  Input,
-  InputNumber,
-  Space,
-  Switch,
-} from "antd";
+import { Button, ColorPicker, ConfigProvider, Divider, Form } from "antd";
 const defaultData = {
   borderRadius: 6,
   colorPrimary: "#1677ff",
@@ -35,12 +25,7 @@ const Theme = () => {
             },
           },
         }}
-      >
-        <Space>
-          <Input />
-          <Button type="primary">Button</Button>
-        </Space>
-      </ConfigProvider>
+      ></ConfigProvider>
       <Divider />
       <Form
         form={form}
@@ -59,33 +44,31 @@ const Theme = () => {
         }}
       >
         <Form.Item
-          name="colorPrimary"
+          name={["Button", "colorPrimary"]}
           label="Primary Color"
           trigger="onChangeComplete"
           getValueFromEvent={(color) => color.toHexString()}
         >
           <ColorPicker />
         </Form.Item>
-        <Form.Item name="borderRadius" label="Border Radius">
-          <InputNumber />
+
+        <Form.Item
+          name={["Button", "colorPrimary"]}
+          label="Secondary Color"
+          trigger="onChangeComplete"
+          getValueFromEvent={(color) => color.toHexString()}
+        >
+          <ColorPicker />
         </Form.Item>
-        <Form.Item label="Button">
-          <Form.Item
-            name={["Button", "algorithm"]}
-            valuePropName="checked"
-            label="algorithm"
-          >
-            <Switch />
-          </Form.Item>
-          <Form.Item
-            name={["Button", "colorPrimary"]}
-            label="Primary Color"
-            trigger="onChangeComplete"
-            getValueFromEvent={(color) => color.toHexString()}
-          >
-            <ColorPicker />
-          </Form.Item>
+        <Form.Item
+          name={["Button", "colorPrimary"]}
+          label="Text Color"
+          trigger="onChangeComplete"
+          getValueFromEvent={(color) => color.toHexString()}
+        >
+          <ColorPicker />
         </Form.Item>
+
         <Form.Item
           name="submit"
           wrapperCol={{

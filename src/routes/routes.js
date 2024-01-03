@@ -12,11 +12,11 @@ import Register from "~/features/register/register";
 import SetPassword from "~/features/setPassword/setPassword";
 import Settings from "~/features/settings/settings";
 import StripeSuccessPage from "~/features/stripeForm/stripeSuccessPage";
-import Subscriptions from "~/features/stripeForm/subscriptions";
 import Unauthorized from "~/features/unauthorized/unauthorized";
 import CreateUser from "~/features/users/createUser";
 import GuestPageLayout from "~/layout/guestPageLayout";
 import LoggedInPageLayout from "~/layout/loggedInPageLayout";
+import Theme from "~/theme/theme";
 import K from "~/utilities/constants";
 
 const Users = lazy(() => import("~/features/users/users"));
@@ -201,20 +201,20 @@ const routes = [
     component: Settings,
     layout: LoggedInPageLayout,
   },
+  {
+    path: "/config/theme",
+    name: "Theme",
+    // permission: K.Permissions.Admin,
+    authenticated: true,
+    component: Theme,
+    layout: LoggedInPageLayout,
+  },
 
   {
     path: "/stripe/success-page",
     name: "SuccessPage",
     authenticated: true,
     component: StripeSuccessPage,
-    layout: LoggedInPageLayout,
-  },
-
-  {
-    path: "/products/subscriptions",
-    name: "Subscriptions",
-    authenticated: true,
-    component: Subscriptions,
     layout: LoggedInPageLayout,
   },
 

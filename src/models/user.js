@@ -114,6 +114,7 @@ export default class User {
     const body = {
       password,
     };
+
     const request = new Request(
       K.Network.URL.Auth.ResetPassword + "/" + token,
       K.Network.Method.POST,
