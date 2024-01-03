@@ -1,6 +1,6 @@
 import { Button, Card, Col, Form, Input, Row, Upload, message } from "antd";
 import ImgCrop from "antd-img-crop";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import image from "~/assets/images/images.jpeg";
 import User from "~/models/user";
 import K from "~/utilities/constants";
@@ -70,6 +70,17 @@ export default function ProfilePage() {
     }
   };
 
+  const profileData = async () => {
+    try {
+      const response = await User.profileData();
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    profileData();
+  }, []);
   return (
     <div className="profile-container">
       <Card className="card-wrapper" title="User Profile">
