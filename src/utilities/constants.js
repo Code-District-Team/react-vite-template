@@ -56,7 +56,7 @@ const K = {
         DeleteCard: "/stripe/remove-payment-method",
         GetPaymentMethods: "stripe/payment-methods",
         VerifyPayment: "stripe/verify-payment",
-        CreatePaymentIntent:"stripe/create-payment-intent"
+        CreatePaymentIntent: "stripe/create-payment-intent",
       },
 
       Roles: "/roles",

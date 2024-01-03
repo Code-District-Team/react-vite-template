@@ -117,7 +117,7 @@ export default class Product {
   }
 
   // Stripe Payment Method
-  static async  getStripePaymentMethod() {
+  static async getStripePaymentMethod() {
     const request = new Request(
       K.Network.URL.Stripe.GetPaymentMethods,
       K.Network.Method.GET,
@@ -128,10 +128,9 @@ export default class Product {
     return await NetworkCall.fetch(request, true);
   }
 
-
-   // Stripe Verify Payment
-   static async  stripeVerifyPayment(id, client_secret, status) {
-    const url = `?payment_intent=${id}&payment_intent_client_secret=${client_secret}&redirect_status=${status}`
+  // Stripe Verify Payment
+  static async stripeVerifyPayment(id, client_secret, status) {
+    const url = `?payment_intent=${id}&payment_intent_client_secret=${client_secret}&redirect_status=${status}`;
     const request = new Request(
       K.Network.URL.Stripe.VerifyPayment + url,
       K.Network.Method.GET,
@@ -153,19 +152,19 @@ export default class Product {
     );
     return await NetworkCall.fetch(request, true);
   }
- // Stripe Create Payment Intent
- static async stripeCreatePaymentIntent(body) {
-  const request = new Request(
-    K.Network.URL.Stripe.CreatePaymentIntent,
-    K.Network.Method.POST,
-    body,
-    K.Network.Header.Type.Json,
-    {},
-    false,
-  );
-  return await NetworkCall.fetch(request, true);
-}
-  CreatePaymentIntent
+  // Stripe Create Payment Intent
+  static async stripeCreatePaymentIntent(body) {
+    const request = new Request(
+      K.Network.URL.Stripe.CreatePaymentIntent,
+      K.Network.Method.POST,
+      body,
+      K.Network.Header.Type.Json,
+      {},
+      false,
+    );
+    return await NetworkCall.fetch(request, true);
+  }
+  CreatePaymentIntent;
 
   // Stripe Delete Card
   static async deleteCard() {
@@ -178,6 +177,4 @@ export default class Product {
     );
     return await NetworkCall.fetch(request, true);
   }
-
-  
 }
