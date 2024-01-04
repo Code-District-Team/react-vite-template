@@ -1,8 +1,8 @@
 import { Meta } from "@storybook/blocks";
 
-<Meta title="Features/Server Side Filters/Ag Grid/Backend Docs"/>
+<Meta title="Features/Server Side Filters/Ant Design/Backend Docs"/>
 
-# AgGrid Backend Docs
+# Ant Design Backend Docs
 
 This is the entity class for `Product` table. We'll use this entity to create a new product and fetch the list of products.
 ```ts filename="product.entity.ts"
@@ -170,52 +170,20 @@ This is the basic syntax to call this endpoint.
 {
     "page": 1,
     "limit": 10,
-    "filterType": "ag-grid",
-    "agGrid": []
+    "filterType": "antd",
+	"filters": {
+		"name": null,
+		"price": null,
+		"quantity": null,
+		"createdAt": [
+			"2023-09-01 00:00:00"
+		]
+	}
 }
 ```
-To pass the filters, you need to pass the `agGrid` property in body. `filterType` is used to tell the backend that which
-type of filter is passed in body. Currently, it supports `ag-grid` and `ant-d` filters. You can pass any number of
-filters in `agGrid` property. The basic syntax of `agGrid` filter is given below.
-```json
-{
-    "field": "name",
-    "condition1": {
-        "filterType": "text",
-        "type": "contains",
-        "filter": "product"
-    }
-}
-```
-`field` is the name of the column on which filter is applied. `condition1` is the first condition. You can pass any
-number of conditions in `agGrid` property. `filterType` is the type of filter. Currently, it supports `text`, `number`,
-`date` and `boolean` filters. `type` is the type of filter to be applied. It supports all the filters which are
-supported by `ag-grid`. `filter` is the value of the filter. It can be any type of value depending on the type of filter.
-`condition2` is also supported at the same level as `condition1`. But with `operator` property. `operator` can be `AND`
-or `OR`.
-```json
-{
-	"page": 1,
-	"limit": 10,
-	"filterType": "ag-grid",
-	"agGrid": [
-		{
-			"field": "createdAt",
-			"condition1": {
-				"filterType": "date",
-				"type": "greaterThan",
-				"dateFrom": "2023-09-04 00:00:00"
-			},
-			"operator": "AND",
-			"condition2": {
-				"filterType": "date",
-				"type": "greaterThan",
-				"dateFrom": "2023-09-04 00:00:00"
-			}
-		}
-	]
-}
-```
+`filters` is the object with keys as column names and values as filter values. These keys-values are applied on the entity
+and `and` operator is used to join them. If you want to use `or` operator, you can use `or` key in `filters` object.
+
 
 ## Update a Product
 We don't create a new dto for updating a product. We'll use the same dto which we used for creating a new product. But
