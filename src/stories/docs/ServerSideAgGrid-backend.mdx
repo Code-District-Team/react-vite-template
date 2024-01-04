@@ -1,0 +1,296 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Features/Server Side Filters/Ag Grid/Backend Docs" />
+
+# AgGrid Backend Docs
+
+This is the entity class for `Product` table. We'll use this entity to create a new product and fetch the list of products.
+
+```ts filename="product.entity.ts"
+// filename: product.ts
+@Entity({ name: "products" })
+export class Product {
+  @ApiProperty({ type: String })
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @ApiProperty({ type: String })
+  @Column({ length: 250 })
+  name: string;
+
+  @ApiProperty({ type: Number })
+  @Column({ precision: 10, scale: 2, type: "decimal" })
+  price: number;
+
+  @ApiProperty({ type: Number })
+  @Column({ type: "int" })
+  quantity: number;
+
+  @ApiProperty({ type: Date })
+  @CreateDateColumn({
+    type: "timestamp",
+    name: "created_at",
+    default: () => "now()",
+  })
+  createdAt: Date;
+
+  @ApiProperty({ type: Date })
+  @UpdateDateColumn({ type: "timestamp", name: "updated_at" })
+  updatedAt: Date;
+}
+```
+
+## Create a new Product
+
+Create a dto for creating a new product. We'll use `class-validator` to validate the incoming request body. All the
+properties in the dto are decorated with swagger decorators. It's not necessary to use swagger decorators but it's
+recommended to use them. Since we're using exposing the swagger docs, it'll be easy for the frontend developers to
+understand the request body.
+
+```ts filename="create-product.dto.ts"
+// filename: create-product.dto.ts
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+} from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+
+export class CreateProductDto {
+  @ApiProperty({
+    description: "name",
+    example: "product 1",
+    maximum: 255,
+    minimum: 1,
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(1, {
+    message: "name must be longer than or equal to 1 characters",
+  })
+  @MaxLength(255, {
+    message: "name must be shorter than or equal to 255 characters",
+  })
+  name: string;
+
+  @ApiProperty({
+    description: "quantity",
+    example: 1,
+    maximum: 2_147_483_647,
+    minimum: 0,
+    required: true,
+  })
+  @IsInt()
+  @Min(0, { message: "quantity must be greater than or equal to 0" })
+  @Max(2_147_483_647, {
+    message: "quantity must be less than or equal to 2,147,483,647",
+  })
+  quantity: number;
+
+  @ApiProperty({
+    description: "price",
+    example: 1.99,
+    maximum: 99_999_999.99,
+    minimum: 0,
+    required: true,
+  })
+  @IsNumber(
+    {
+      maxDecimalPlaces: 2,
+      allowNaN: false,
+      allowInfinity: false,
+    },
+    { message: "price must be at most 2 decimal places" },
+  )
+  @Max(99_999_999.99, {
+    message: "price must be less than or equal to 99,999,999.99",
+  })
+  price: number;
+}
+```
+
+Now, create a new endpoint of type `POST` to create a new product in `product.controller.ts` file.
+
+```ts filename="product.controller.ts"
+// filename: product.controller.ts
+@ApiOperation({ summary: "Create a new product" })
+@ApiBody({ type: CreateProductDto })
+@ApiResponse({ status: 201, type: Product })
+@Post()
+async addProduct(@Body(CustomPipe) createProductDto: CreateProductDto) {
+  const added = await this.productService.addProduct(createProductDto);
+  if (added) return added;
+  throw new InternalServerErrorException("Something went wrong");
+}
+```
+
+Also, add the method in `product.service.ts` file.
+
+```ts filename="product.service.ts"
+addProduct(createProductDto: CreateProductDto): Promise<Product> {
+  return this.productRepository.save(this.productRepository.create(createProductDto));
+}
+```
+
+## Fetch Records
+
+In this `GET` call, we just need to create an endpoint with empty body. We'll use `@PaginateEntity` decorator to fetch the
+rows from table.
+
+```ts filename='product.controller.ts'
+// product.controller.ts
+@ApiOperation({ summary: "Fetch paginated products" })
+@ApiBody({ type: QueryCollateralTypeDto })
+@RolesPermissions([RoleEnum.USER], [PermissionEnum.WRITE_PRODUCT])
+@HttpCode(HttpStatus.OK)
+@Post("/get")
+@PaginateEntity({ table: Product }, [])
+async getAllProducts(@Body(validationPipe) query: QueryCollateralTypeDto) {}
+```
+
+`@PaginateEntity({ table: Product }, [])` decorator is used to paginate any entity. It takes two arguments, first is
+the entity class and second is the array of relations to be joined. In this case we are not joining any relation so we
+are passing empty array.
+
+```ts
+{
+  table: EntityClass,
+  select: ["column1", "column2"], // optional
+}
+```
+
+The basic usage of `@PaginateEntity` is given below. It will paginate the entity and return the result with total count
+without any filter. In the example below, it is joining the `tenant` entity with `product` entity where `tenant.id` is
+given in `condition` and `tenantId` is passed in `parameters`.
+
+```ts
+@PaginateEntity({ table: Product, select: ["id", "name"] }, [{
+  joinType: "inner",
+  property: "tenant",
+  alias: "tenant",
+  select: ["tenant.id", "tenant.name"],
+  condition: "tenant.id = :tenantId",
+  parameters: { tenantId: "tenant.id" }
+}])
+```
+
+`property`: name of the entity to be joined<br/>
+`joinType`: type of join to be applied with table in first argument<br/>
+`alias`: alias name of the joined entity<br/>
+`select`: array of columns to be selected from joined entity, alias name is used to select columns.<br/>
+`condition`: condition to be applied on join<br/>
+`parameters`: parameters to be passed in condition<br/>
+
+You can use this decorator for any entity. Remember to pass the `QueryCollateralTypeDto` as body of the request. Currently,
+it only supports `ant-d` and `ag-grid` filters. You can use any of them.<br/>
+You can pass any number of joins in second argument of `@PaginateEntity` decorator. It will automatically join the
+with the table in first argument.
+
+### How to call this endpoint?
+
+This is the basic syntax to call this endpoint.
+
+```json
+{
+  "page": 1,
+  "limit": 10,
+  "filterType": "ag-grid",
+  "agGrid": []
+}
+```
+
+To pass the filters, you need to pass the `agGrid` property in body. `filterType` is used to tell the backend that which
+type of filter is passed in body. Currently, it supports `ag-grid` and `ant-d` filters. You can pass any number of
+filters in `agGrid` property. The basic syntax of `agGrid` filter is given below.
+
+```json
+{
+  "field": "name",
+  "condition1": {
+    "filterType": "text",
+    "type": "contains",
+    "filter": "product"
+  }
+}
+```
+
+`field` is the name of the column on which filter is applied. `condition1` is the first condition. You can pass any
+number of conditions in `agGrid` property. `filterType` is the type of filter. Currently, it supports `text`, `number`,
+`date` and `boolean` filters. `type` is the type of filter to be applied. It supports all the filters which are
+supported by `ag-grid`. `filter` is the value of the filter. It can be any type of value depending on the type of filter.
+`condition2` is also supported at the same level as `condition1`. But with `operator` property. `operator` can be `AND`
+or `OR`.
+
+```json
+{
+  "page": 1,
+  "limit": 10,
+  "filterType": "ag-grid",
+  "agGrid": [
+    {
+      "field": "createdAt",
+      "condition1": {
+        "filterType": "date",
+        "type": "greaterThan",
+        "dateFrom": "2023-09-04 00:00:00"
+      },
+      "operator": "AND",
+      "condition2": {
+        "filterType": "date",
+        "type": "greaterThan",
+        "dateFrom": "2023-09-04 00:00:00"
+      }
+    }
+  ]
+}
+```
+
+## Update a Product
+
+We don't create a new dto for updating a product. We'll use the same dto which we used for creating a new product. But
+the difference is that we'll make all the properties optional. The way to do this is:
+
+```ts filename="update-product.dto.ts"
+// filename: update-product.dto.ts
+export class UpdateProductDto extends PartialType(CreateProductDto) {}
+```
+
+And then, we'll use this dto in `@Body` decorator in `PATCH` endpoint. `id` is passed in `@Param` decorator.
+
+```ts filename="product.controller.ts"
+// filename: product.controller.ts
+@ApiOperation({
+  summary: "Update a product",
+  description: "All fields in the body are optional. Fields are available in create product endpoint"
+})
+@ApiParam({ name: "id", type: String, required: true })
+@ApiBody({ type: UpdateProductDto })
+@Patch(":id")
+async updateProduct(
+  @Param(CustomPipe) deleteProductDto: DeleteProductDto,
+  @Body(CustomPipe) updateProductDto: UpdateProductDto
+) {
+  const updated = await this.productService.updateProduct(deleteProductDto.id, updateProductDto);
+  if (updated.affected) return "Product Updated Successfully.";
+  throw new NotFoundException("Couldn't update any row");
+}
+```
+
+And this is what we write in `product.service.ts` file.
+
+```ts filename="product.service.ts"
+// filename: product.service.ts
+updateProduct(id: string, updateProductDto: UpdateProductDto): Promise<UpdateResult> {
+  return this.productRepository.update({ id }, updateProductDto);
+}
+```
+
+## Required Dependencies
+
+`@nestjs/swagger`, `class-validator` and `@nestjs/mapped-types` is required for generating swagger docs.

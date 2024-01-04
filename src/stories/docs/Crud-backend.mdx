@@ -1,0 +1,185 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Features/CRUD Operations/Backend Docs" />
+
+```ts filename="Product.ts"
+// filename: product.ts
+@Entity({ name: "products" })
+export class Product {
+  @ApiProperty({ type: String })
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @ApiProperty({ type: String })
+  @Column({ length: 250 })
+  name: string;
+
+  @ApiProperty({ type: Number })
+  @Column({ precision: 10, scale: 2, type: "decimal" })
+  price: number;
+
+  @ApiProperty({ type: Number })
+  @Column({ type: "int" })
+  quantity: number;
+
+  @ApiProperty({ type: Date })
+  @CreateDateColumn({
+    type: "timestamp",
+    name: "created_at",
+    default: () => "now()",
+  })
+  createdAt: Date;
+
+  @ApiProperty({ type: Date })
+  @UpdateDateColumn({ type: "timestamp", name: "updated_at" })
+  updatedAt: Date;
+}
+```
+
+## Create a new Product
+
+Create a dto for creating a new product. We'll use `class-validator` to validate the incoming request body.
+
+```ts filename="create-product.dto.ts"
+// filename: create-product.dto.ts
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+} from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+
+export class CreateProductDto {
+  @ApiProperty({
+    description: "name",
+    example: "product 1",
+    maximum: 255,
+    minimum: 1,
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(1, {
+    message: "name must be longer than or equal to 1 characters",
+  })
+  @MaxLength(255, {
+    message: "name must be shorter than or equal to 255 characters",
+  })
+  name: string;
+
+  @ApiProperty({
+    description: "quantity",
+    example: 1,
+    maximum: 2_147_483_647,
+    minimum: 0,
+    required: true,
+  })
+  @IsInt()
+  @Min(0, { message: "quantity must be greater than or equal to 0" })
+  @Max(2_147_483_647, {
+    message: "quantity must be less than or equal to 2,147,483,647",
+  })
+  quantity: number;
+
+  @ApiProperty({
+    description: "price",
+    example: 1.99,
+    maximum: 99_999_999.99,
+    minimum: 0,
+    required: true,
+  })
+  @IsNumber(
+    {
+      maxDecimalPlaces: 2,
+      allowNaN: false,
+      allowInfinity: false,
+    },
+    { message: "price must be at most 2 decimal places" },
+  )
+  @Max(99_999_999.99, {
+    message: "price must be less than or equal to 99,999,999.99",
+  })
+  price: number;
+}
+```
+
+Now, create a new endpoint of type `POST` to create a new product in `product.controller.ts` file.
+
+```ts filename="product.controller.ts"
+// filename: product.controller.ts
+@ApiOperation({ summary: "Create a new product" })
+@ApiBody({ type: CreateProductDto })
+@ApiResponse({ status: 201, type: Product })
+@Post()
+async addProduct(@Body(CustomPipe) createProductDto: CreateProductDto) {
+  const added = await this.productService.addProduct(createProductDto);
+  if (added) return added;
+  throw new InternalServerErrorException("Something went wrong");
+}
+```
+
+Also, add the method in `product.service.ts` file.
+
+```ts filename="product.service.ts"
+addProduct(createProductDto: CreateProductDto): Promise<Product> {
+  return this.productRepository.save(this.productRepository.create(createProductDto));
+}
+```
+
+## Listing
+
+```ts filename="product.controller.ts"
+// filename: product.controller.ts
+@ApiOperation({ summary: "fetch all products without pagination" })
+@ApiResponse({ status: 200, type: [Product] })
+@Get("/get-all")
+getAllProductsWithoutPagination() {
+  return this.productService.getAllProductsWithoutPagination();
+}
+```
+
+**Note:** Make sure you've injected product service in product controller.
+
+```ts filename="product.service.ts"
+// filename: product.service.ts
+getAllProductsWithoutPagination() {
+  return this.productRepository.find({ take: 100 });
+}
+```
+
+**Note:** Make sure you've injected product repository in product service.
+
+All the fields that are in `CreateProductDto` are optional and available in `UpdateProductDto` as well. This is how we can make fields optional by extending the dto.
+
+```ts filename="update-product.dto.ts"
+export class UpdateProductDto extends PartialType(CreateProductDto) {}
+```
+
+## Update
+
+```ts filename="product.controller.ts"
+@ApiOperation({
+  summary: "Update a product",
+  description: "All fields in the body are optional. Fields are available in create product endpoint"
+})
+@ApiParam({ name: "id", type: String, required: true })
+@ApiBody({ type: UpdateProductDto })
+@Patch(":id")
+async updateProduct(
+  @Param(CustomPipe) deleteProductDto: DeleteProductDto,
+  @Body(CustomPipe) updateProductDto: UpdateProductDto
+) {
+  const updated = await this.productService.updateProduct(deleteProductDto.id, updateProductDto);
+  if (updated.affected) return "Product Updated Successfully.";
+  throw new NotFoundException("Couldn't update any row");
+}
+```
+
+## Required Dependencies
+
+`@nestjs/swagger`, `class-validator` is required for generating swagger docs.
