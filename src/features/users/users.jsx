@@ -21,7 +21,7 @@ export default function Users() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const [roles, setRoles] = useState([]);
-  const [status , setStatus] = useState(null);
+  const [status, setStatus] = useState(null);
   const userDataUpdate = useSelector(selectUser);
 
   const getUserRolesData = async (values) => {
@@ -144,14 +144,13 @@ export default function Users() {
             { value: "active", label: "Active" },
             { value: "inActive", label: "In Active" },
           ]}
-          
-          style={{width: "100%"}}
+          style={{ width: "100%" }}
           size="large"
           value={status}
           placeholder={"Status"}
           onChange={(value) => {
             getAllUsers(value);
-            setStatus(value)
+            setStatus(value);
           }}
         ></Select>
       ),
@@ -197,8 +196,25 @@ export default function Users() {
         }
         extra={
           <>
-            <Button type="primary" onClick={() => { editId.current = false; showModal() }}>Create User </Button> &nbsp;
-            <Button type="primary" onClick={() => { getAllUsers() ; setStatus(null)}}>Reset Filter</Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                editId.current = false;
+                showModal();
+              }}
+            >
+              Create User{" "}
+            </Button>{" "}
+            &nbsp;
+            <Button
+              type="primary"
+              onClick={() => {
+                getAllUsers();
+                setStatus(null);
+              }}
+            >
+              Reset Filter
+            </Button>
           </>
         }
       >

@@ -172,7 +172,7 @@ export default class User {
   static async getAll(status) {
     let url = K.Network.URL.Users.GetUser;
     if (status !== undefined && status !== null) {
-        url += `?status=${encodeURIComponent(status)}`;
+      url += `?status=${encodeURIComponent(status)}`;
     }
 
     const request = new Request(

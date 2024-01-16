@@ -168,8 +168,6 @@ const ProductAGGrid = () => {
       filter: false,
       floatingfilter: false,
       sortable: false,
-
-
     },
   ];
 

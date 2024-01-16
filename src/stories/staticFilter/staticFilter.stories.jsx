@@ -1,4 +1,4 @@
-import StaticFilter  from "./staticFilter";
+import StaticFilter from "./staticFilter";
 
 export default {
   title: "Features/Static Filter",
