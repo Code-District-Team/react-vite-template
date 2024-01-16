@@ -165,6 +165,11 @@ const ProductAGGrid = () => {
     {
       field: "actions",
       cellRenderer: actionRenderer,
+      filter: false,
+      floatingfilter: false,
+      sortable: false,
+
+
     },
   ];
 

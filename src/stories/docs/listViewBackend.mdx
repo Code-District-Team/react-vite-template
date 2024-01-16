@@ -1,16 +1,44 @@
-import { Meta } from "@storybook/blocks";
+import { Meta, Primary, Controls, Story } from "@storybook/blocks";
 
-<Meta title="Features/Server Side Filters/Ant Design/Backend Docs" />
+<Meta title="Features/Lazy Loading/List View/Backend Docs" />
 
-# Ant Design Backend Docs
+# List View for Products Backend Doc
 
-This guide offers high-level instructions for implementing server-side filtering in Ant Design, focusing on setup requirements, entity management, and efficient data fetching with pagination and diverse filter options, utilizing the @PaginateEntity decorator for optimal data handling in Ant Design environments.
+This is the entity class for `Product` table. We'll use this entity to create a new product and fetch the list of products.
 
+```ts filename="product.entity.ts"
+// filename: product.ts
+@Entity({ name: "products" })
+export class Product {
+  @ApiProperty({ type: String })
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-## Required Dependencies
+  @ApiProperty({ type: String })
+  @Column({ length: 250 })
+  name: string;
 
-`@nestjs/swagger`, `class-validator` and `@nestjs/mapped-types` is required for generating swagger docs.
+  @ApiProperty({ type: Number })
+  @Column({ precision: 10, scale: 2, type: "decimal" })
+  price: number;
 
+  @ApiProperty({ type: Number })
+  @Column({ type: "int" })
+  quantity: number;
+
+  @ApiProperty({ type: Date })
+  @CreateDateColumn({
+    type: "timestamp",
+    name: "created_at",
+    default: () => "now()",
+  })
+  createdAt: Date;
+
+  @ApiProperty({ type: Date })
+  @UpdateDateColumn({ type: "timestamp", name: "updated_at" })
+  updatedAt: Date;
+}
+```
 
 
 ## Fetch Records
@@ -66,6 +94,8 @@ You can use this decorator for any entity. Remember to pass the `QueryCollateral
 it only supports `ant-d` and `ag-grid` filters. You can use any of them.<br/>
 You can pass any number of joins in second argument of `@PaginateEntity` decorator. It will automatically join the
 with the table in first argument.
+
+
 
 ## Paginated Decorator
 
@@ -274,6 +304,7 @@ export class ConditionQueryDto {
 
 ```
 
+
 ### How to call this endpoint?
 
 This is the basic syntax to call this endpoint.
@@ -282,16 +313,14 @@ This is the basic syntax to call this endpoint.
 {
   "page": 1,
   "limit": 10,
-  "filterType": "antd",
-  "filters": {
-    "name": null,
-    "price": null,
-    "quantity": null,
-    "createdAt": ["2023-09-01 00:00:00"]
-  }
+  "filterType": "antd"
 }
 ```
 
 `filters` is the object with keys as column names and values as filter values. These keys-values are applied on the entity
 and `and` operator is used to join them. If you want to use `or` operator, you can use `or` key in `filters` object.
 
+
+## Required Dependencies
+
+`@nestjs/swagger`, `class-validator` and `@nestjs/mapped-types` is required for generating swagger docs.

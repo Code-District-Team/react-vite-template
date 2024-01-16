@@ -2,8 +2,20 @@ import { Meta } from "@storybook/blocks";
 
 <Meta title="Features/CRUD Operations/Backend Docs" />
 
-```ts filename="Product.ts"
-// filename: product.ts
+# CRUD Operations for Product Management
+
+This documentation outlines the backend implementation of CRUD (Create, Read, Update, Delete) operations for a product management system. It includes details about the `entity model`, `Data Transfer Objects (DTOs)`, and `controller methods`.
+
+## Required Dependencies
+
+`@nestjs/swagger`, `class-validator` is required for generating swagger docs.
+
+## Product Entity
+
+The `Product` entity represents the structure of product data in the database. It includes various fields with appropriate types and decorators.
+
+```ts
+// filename: Product.ts
 @Entity({ name: "products" })
 export class Product {
   @ApiProperty({ type: String })
@@ -36,9 +48,9 @@ export class Product {
 }
 ```
 
-## Create a new Product
+## Create Product DTO
 
-Create a dto for creating a new product. We'll use `class-validator` to validate the incoming request body.
+The `CreateProductDto` is used for validating the a new product before adding it to database. It includes validations for each field using `class-validator`.
 
 ```ts filename="create-product.dto.ts"
 // filename: create-product.dto.ts
@@ -108,6 +120,14 @@ export class CreateProductDto {
 }
 ```
 
+# Product Controller
+
+The product controller handles HTTP requests for CRUD operations. Below are some of the methods defined in the controller.
+
+## Add Product
+
+This endpoint creates a new product.
+
 Now, create a new endpoint of type `POST` to create a new product in `product.controller.ts` file.
 
 ```ts filename="product.controller.ts"
@@ -126,12 +146,15 @@ async addProduct(@Body(CustomPipe) createProductDto: CreateProductDto) {
 Also, add the method in `product.service.ts` file.
 
 ```ts filename="product.service.ts"
+// filename: product.service.ts
 addProduct(createProductDto: CreateProductDto): Promise<Product> {
   return this.productRepository.save(this.productRepository.create(createProductDto));
 }
 ```
 
-## Listing
+## Get All Products
+
+Fetches all products without pagination.
 
 ```ts filename="product.controller.ts"
 // filename: product.controller.ts
@@ -144,6 +167,8 @@ getAllProductsWithoutPagination() {
 ```
 
 **Note:** Make sure you've injected product service in product controller.
+
+Add this method in `product.service.ts` file.
 
 ```ts filename="product.service.ts"
 // filename: product.service.ts
@@ -160,9 +185,12 @@ All the fields that are in `CreateProductDto` are optional and available in `Upd
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
 ```
 
-## Update
+## Update Product
+
+This endpoint is used to updates a product's details.
 
 ```ts filename="product.controller.ts"
+//product.controller.ts
 @ApiOperation({
   summary: "Update a product",
   description: "All fields in the body are optional. Fields are available in create product endpoint"
@@ -178,8 +206,40 @@ async updateProduct(
   if (updated.affected) return "Product Updated Successfully.";
   throw new NotFoundException("Couldn't update any row");
 }
+
 ```
 
-## Required Dependencies
+Add this method in `product.service.ts` file.
 
-`@nestjs/swagger`, `class-validator` is required for generating swagger docs.
+```ts filename="product.service.ts"
+// filename: product.service.ts
+updateProduct(id: string, updateProductDto: UpdateProductDto): Promise<UpdateResult> {
+  return this.productRepository.update({ id }, updateProductDto);
+}
+```
+
+## Delete Product
+
+Now, we have to create the endpoint to delete the product
+
+```ts filename="product.controller.ts"
+//product.controller.ts
+@ApiOperation({ summary: "Delete a product" })
+@ApiParam({ name: "id", type: String, required: true })
+@Delete(":id")
+async deleteProduct(@Param(CustomPipe) deleteProductDto: DeleteProductDto) {
+  const deleteResult = await this.productService.deleteProduct(deleteProductDto.id);
+  if (deleteResult.affected) return "Product deleted successfully";
+  throw new NotFoundException("Product not found");
+}
+
+```
+
+Add this method in `product.service.ts` file.
+
+```ts filename="product.service.ts"
+// filename: product.service.ts
+deleteProduct(id: string): Promise<DeleteResult> {
+  return this.productRepository.delete({ id });
+}
+```

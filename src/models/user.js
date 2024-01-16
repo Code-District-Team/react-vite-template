@@ -169,9 +169,14 @@ export default class User {
     return await NetworkCall.fetch(request, true);
   }
 
-  static async getAll() {
+  static async getAll(status) {
+    let url = K.Network.URL.Users.GetUser;
+    if (status !== undefined && status !== null) {
+        url += `?status=${encodeURIComponent(status)}`;
+    }
+
     const request = new Request(
-      K.Network.URL.Users.GetUser,
+      url,
       K.Network.Method.GET,
       null,
       K.Network.Header.Type.Json,

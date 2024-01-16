@@ -1,0 +1,105 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Features/Static Filter/Backend Docs" />
+
+# Static Filter Backend Docs
+
+This section serves as the primary documentation for the backend implementation of a static filter feature.
+It details the necessary components and their interactions.
+
+## Required Dependencies
+
+This part lists the essential dependencies needed for the backend feature to work properly.
+It includes libraries like @nestjs/swagger, class-validator, and @nestjs/mapped-types, which are crucial for generating Swagger documentation.
+
+## User DTO
+
+The Data Transfer Object (DTO) section defines the structure and validation rules for user-related data.
+It uses decorators from `class-validator` to ensure data integrity.
+
+```ts filename='getUsers.dto.ts'
+// getUsers.dto.ts
+import { IsEmail, IsNumber, IsString } from "class-validator";
+import { PartialType } from "@nestjs/mapped-types";
+
+export class GetUserRequestDto {
+  @IsString()
+  status: string;
+}
+```
+
+## Custom decorator
+
+A custom parameter decorator to extract the current user from the request.
+
+- It retrieves the user object from the request body and, if a specific data field is requested,
+- returns that particular value from the user object.
+- If no user is found in the request, or the specified data field does not exist, it returns null.
+
+```ts filename='current-user.decorator.ts'
+// filename: current-user.decorator.ts
+
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+
+export const CurrentUser = createParamDecorator(
+  (data: string, ctx: ExecutionContext) => {
+    const user = ctx.switchToHttp().getRequest().body.user;
+    if (!user) {
+      return null;
+    }
+    return data ? user[data] : user;
+  },
+);
+```
+
+## User Controller
+
+In the `UserController` class retrieves all users based on the given filters. The method uses `GetUserRequestDto` for querying and incorporates a custom `CurrentUser` decorator to access the current user's data.
+
+```ts filename='user.controller.ts'
+// user.controller.ts
+
+import { GetUserRequestDto } from './dto/getUsers.dto';
+import { CurrentUser } from "../../decorators/current-user.decorator";
+import { UsersService } from './users.service';
+import { Query } from '@nestjs/common';
+
+  constructor(private readonly userService: UsersService) {}
+
+  @Get('/get-all')
+  getUsers(@Query() getUsersDto: GetUserRequestDto, @CurrentUser() user: User) {
+    return this.userService.getAllUsers(getUsersDto, user);
+  }
+
+```
+
+## User Services
+
+In `userService` it perform database queries using these filters, and structure the response. The method handles ordering, and filtering based on the user's tenant ID and email, as well as the user's status.
+
+```ts filename='user.services.ts'
+// user.services.ts
+  async getAllUsers(filters: GetUserRequestDto, user: User) {
+    const { status } = filters;
+
+    const where = { tenantId: user.tenant.id, email: Not(user.email) };
+
+    if (status)
+      where['status'] = status.toUpperCase();
+
+    const options: FindManyOptions<User> = {
+      order: {
+        id: 'DESC',
+      },
+      where: where,
+      relations: ['roles']
+    }
+
+
+    const [data, total] = await this.userRepository.findAndCount(options);
+    return {
+      data,
+      total,
+    };
+  }
+```
