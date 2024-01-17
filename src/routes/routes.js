@@ -5,9 +5,14 @@ import Counter from "~/features/counter/Counter";
 import Dashboard from "~/features/dashboard/dashboard";
 import ForgotPassword from "~/features/forgotPassword/forgotPassword";
 import Login from "~/features/login/login";
+import Tenants from "~/features/multiTenants/tenants";
+import UserTenants from "~/features/multiTenants/userTenants";
 import NotFound from "~/features/notFound/notFound";
 import Register from "~/features/register/register";
 import SetPassword from "~/features/setPassword/setPassword";
+import Settings from "~/features/settings/settings";
+import StripeSuccessPage from "~/features/stripeForm/stripeSuccessPage";
+import Subscriptions from "~/features/stripeForm/subscriptions";
 import Unauthorized from "~/features/unauthorized/unauthorized";
 import CreateUser from "~/features/users/createUser";
 import GuestPageLayout from "~/layout/guestPageLayout";
@@ -172,6 +177,47 @@ const routes = [
     component: RolesPermission,
     layout: LoggedInPageLayout,
   },
+  {
+    path: "/config/tenants",
+    name: "Tenants",
+    // permission: K.Permissions.Admin,
+    authenticated: true,
+    component: Tenants,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/config/user-tenants/:id",
+    name: "TenantsName",
+    // permission: K.Permissions.Admin,
+    authenticated: true,
+    component: UserTenants,
+    layout: LoggedInPageLayout,
+  },
+  {
+    path: "/config/settings",
+    name: "Settings",
+    // permission: K.Permissions.Admin,
+    authenticated: true,
+    component: Settings,
+    layout: LoggedInPageLayout,
+  },
+
+  {
+    path: "/stripe/success-page",
+    name: "SuccessPage",
+    authenticated: true,
+    component: StripeSuccessPage,
+    layout: LoggedInPageLayout,
+  },
+
+  {
+    path: "/products/subscriptions",
+    name: "Subscriptions",
+    authenticated: true,
+    component: Subscriptions,
+    layout: LoggedInPageLayout,
+  },
+
   {
     path: "*",
     name: "Not Found",

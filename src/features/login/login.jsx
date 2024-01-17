@@ -21,7 +21,6 @@ export default function Login() {
   const paramJson = qs.parse(location.search, { ignoreQueryPrefix: true });
 
   useEffect(() => {
-    console.log("paramJson: ", paramJson);
     if (paramJson.err) {
       message.error(paramJson.err);
       deleteQueryParam("err");

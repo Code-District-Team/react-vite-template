@@ -1,0 +1,19 @@
+.card-display {
+    background-color: #f0f2f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+  }
+  
+  .card-icon {
+    font-size: 16px;
+    margin-right: 16px;
+    color: #1890ff; /* Color for the icon */
+  }
+  
+  .card-number {
+    font-size: 20px;
+    font-family: 'Courier New', Courier, monospace; /* Styling to make it look like a card number */
+  }
+  

@@ -23,12 +23,15 @@ import K from "~/utilities/constants";
 import { isPermissionPresent } from "~/utilities/generalUtility";
 import CsvModal from "./csvModal";
 import ProductModal from "./productModal";
-
+import ElementWrapper from "../stripeForm/wrapper";
+import StripeModalWithSaveCard from "../stripeForm/stripeModalWithSaveCard";
+import CheckoutForm from "../stripeForm/checkoutForm";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 const ProductAntd = () => {
   const [form] = Form.useForm();
   const editId = useRef(null);
   const searchInput = useRef(null);
-
   const [payload, setPayload] = useState({
     page: 1,
     limit: 10,
@@ -39,14 +42,16 @@ const ProductAntd = () => {
   });
   const [productData, setProductData] = useState({ products: [], total: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isStripeModalOpen, setIsStripModalOpen] = useState(false);
+  const [isStripeOwnModalOpen, setIsStripeOwnModalOpen] = useState(false);
   const [isCsvModalOpen, setisCsvModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const userData = useSelector(selectUser);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [serverErrors, setServerErrors] = useState([]);
-  const [uploadedFile, setUploadedFile] = useState([]);
-
+  const [clientSecret, setClientSecret] = useState("");
+  const stripePromise = loadStripe(K.Stripe.Key);
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedKeys) => {
@@ -98,6 +103,7 @@ const ProductAntd = () => {
     try {
       await Product.importCsvFile(formData);
       setisCsvModalOpen(false);
+      message.success("Product Created successfully");
       fetchProductDetails();
     } catch (error) {
       const serverErrors = error?.error?.data?.errors || null;
@@ -132,6 +138,44 @@ const ProductAntd = () => {
   const handleReset = (clearFilters) => {
     clearFilters();
     setSearchText("");
+  };
+
+  const handleBuyWithSavedCard = async (amount) => {
+    const body = {
+      amount,
+    };
+    try {
+      const response = await Product.stripeDeductAmount(body);
+
+      if (response.status === "succeeded") {
+        message.success("Payment successful");
+      }
+
+      if (response.status === "requires_action") {
+        const { id, url, client_secret, status } = response;
+
+        let paymentWindow = window.open(
+          url,
+          "PopupWindow",
+          "width=600,height=400,scrollbars=no,resizable=no",
+        );
+
+        // Define the event listener function
+        const handleMessage = async (event) => {
+          if (event.data === "paymentCompleted") {
+            paymentWindow.close();
+            window.removeEventListener("message", handleMessage);
+
+            await Product.stripeVerifyPayment(id, client_secret, status);
+          }
+        };
+
+        // Add the event listener
+        window.addEventListener("message", handleMessage);
+      }
+    } catch (error) {
+      message.error("Payment was not successful");
+    }
   };
 
   const getColumnSearchProps = (dataIndex) => ({
@@ -321,12 +365,24 @@ const ProductAntd = () => {
                     Delete
                   </Button>
                 </Popconfirm>
+
                 <Button
                   type="link"
                   className="p-0"
-                  onClick={() => console.log("stripedata", record)}
+                  onClick={() => {
+                    StripeOwnModal(record.price);
+                  }}
                 >
                   Buy Now
+                </Button>
+                <Button
+                  type="link"
+                  className="p-0"
+                  onClick={() => {
+                    handleBuyWithSavedCard(record.price);
+                  }}
+                >
+                  Buy with Saved Card
                 </Button>
               </Space>
             ),
@@ -412,17 +468,48 @@ const ProductAntd = () => {
   const showCsvModal = () => {
     setisCsvModalOpen(true);
   };
+  const StripeOwnModal = (amount) => {
+    setIsStripeOwnModalOpen(true);
+    getClientSecret(amount);
+  };
+
+  const CloseStripeOwnModel = () => {
+    setIsStripeOwnModalOpen(false);
+  };
+  const handleStripCancel = () => {
+    setIsStripModalOpen(false);
+  };
 
   const handleCsvCancelButton = () => {
     setisCsvModalOpen(false);
-    setUploadedFile([]);
     setServerErrors([]);
+  };
+  let showChildMessage = (message) => {
+    message.success(message);
+  };
+
+  const getClientSecret = async (amount) => {
+    const body = {
+      amount,
+    };
+    try {
+      const response = await Product.stripeCreatePaymentIntent(body);
+      setClientSecret(response.clientSecret);
+    } catch (error) {
+      message.error("unable to get Client Secret");
+    }
+  };
+  const appearance = {
+    theme: "stripe",
+  };
+  const options = {
+    clientSecret,
+    appearance,
   };
 
   useEffect(() => {
     fetchProductDetails();
   }, [payload]);
-
   return (
     <>
       <Card
@@ -479,13 +566,29 @@ const ProductAntd = () => {
         editId={editId}
       />
       <CsvModal
-        uploadedFile={uploadedFile}
-        setUploadedFile={setUploadedFile}
         serverErrors={serverErrors}
         handleUpload={handleUpload}
         isCsvModalOpen={isCsvModalOpen}
         handleCancel={handleCsvCancelButton}
       />
+      <ElementWrapper>
+        <StripeModalWithSaveCard
+          isStripeModalOpen={isStripeModalOpen}
+          handleStripCancel={handleStripCancel}
+        />
+      </ElementWrapper>
+
+      <div className="stripe">
+        {clientSecret && (
+          <Elements options={options} stripe={stripePromise}>
+            <CheckoutForm
+              isStripeOwnModalOpen={isStripeOwnModalOpen}
+              CloseStripeOwnModel={CloseStripeOwnModel}
+              parentMessage={showChildMessage}
+            />
+          </Elements>
+        )}
+      </div>
     </>
   );
 };

@@ -35,6 +35,8 @@ const K = {
         InviteUser: "/user/invite-user",
         UploadProfilePicture: "user/upload-picture",
         DeleteProfilePicture: "user/profile-picture",
+        GetTenant: "/tenant",
+        GetTenantByID: "/tenant",
       },
       Csv: {
         ImportCsvFile: "/product/bulk-import",
@@ -47,6 +49,14 @@ const K = {
         CreateProducts: "/product",
         UpdateProducts: "/product",
         DeleteProducts: "/product",
+      },
+      Stripe: {
+        AddCard: "stripe/add-payment-method",
+        Buy: "stripe/deduct-amount",
+        DeleteCard: "/stripe/remove-payment-method",
+        GetPaymentMethods: "stripe/payment-methods",
+        VerifyPayment: "stripe/verify-payment",
+        CreatePaymentIntent: "stripe/create-payment-intent",
       },
 
       Roles: "/roles",
@@ -96,6 +106,9 @@ const K = {
     WriteUser: "Write.User",
     ReadProducts: "Read.Product",
     WriteProducts: "Write.Product",
+  },
+  Stripe: {
+    Key: "pk_test_51O2UHMG9aw8LuACQpfTv0d5ruJjE7NbLmpRcm1DzIZH3l5Tkcq0P17PYazWkKjm08aBcTqh3sZhZtL67ErqrncpK00llOIE5F3",
   },
 };
 export default K;
