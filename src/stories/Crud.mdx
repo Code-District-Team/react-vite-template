@@ -1,0 +1,320 @@
+import { Meta, Primary, Controls, Story } from "@storybook/blocks";
+
+<Meta title="Features/CRUD Operations/Frontend Docs" />
+
+# CRUD Component for Product Management
+
+The `ProductsCRUD` is a React component that provides a Create, Read, Update, and Delete (CRUD) interface for managing a list of products. It utilizes Ant Design components and React to create a user-friendly product management system.
+
+## Features
+
+The `ProductsCRUD` offers the following features:
+
+- Display a list of products with details such as product name, price, quantity, creation date, and last update date.
+- Create a new product with a user-friendly form within a modal.
+- Update existing products using a modal.
+- Delete products with a confirmation prompt.
+
+## Component Structure
+
+The code for the `ProductsCRUD` is organized into different sections, including:
+
+- Import statements for required components and dependencies.
+- The `ProductFormModal` component, used for creating and updating products.
+- The main `ProductsCRUD` component, which manages the list of products, including fetching, creating, updating, and deleting products.
+
+## Usage
+
+This component is designed to create a user-friendly product management interface that allows users to perform CRUD operations on a list of products.
+The component can be customized and integrated into your larger React application.
+
+To use the `ProductsCRUD`, you can follow these steps:
+
+1. Import the necessary dependencies into your React application.
+
+```jsx
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+  message,
+} from "antd";
+import "antd/dist/reset.css"; // import antd css if not included in your app's top-level
+import { useEffect, useRef, useState } from "react";
+```
+
+2. Create a React component and add following necessary statements.
+
+```jsx
+export default function ProductsCRUD() {
+  // Ant Design's `useForm` hook for submiting and populating values in form.
+  const [form] = Form.useForm();
+
+  // `useRef` to save productID for editing the product.
+  const editId = useRef(null);
+
+  // States for product listing, refetch flag for refetching products on update and show/hide Modal.
+  const [products, setProducts] = useState([]);
+  const [refetch, setRefetch] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+}
+```
+
+3. Declare an array of object named `columns` for Ant Design table columns
+
+```jsx
+const columns = [
+  {
+    title: "ID",
+    dataIndex: "id",
+  },
+  {
+    title: "Product Name",
+    dataIndex: "name",
+  },
+  {
+    title: "Price",
+    dataIndex: "price",
+    render: (text) => `$${text.toLocaleString("en")}`,
+    // Parse the price of product, add $ sign and add comas in price.
+  },
+  {
+    title: "Quantity",
+    dataIndex: "quantity",
+  },
+  {
+    title: "Created At",
+    dataIndex: "createdAt",
+  },
+  {
+    title: "Updated At",
+    dataIndex: "updatedAt",
+  },
+  {
+    // Action column contains Edit & Delete buttons.
+    title: "Action",
+    render: (_, record) => (
+      <Space>
+        <Button
+          onClick={() => {
+            editId.current = record.id; // Set productID in a ref
+            setIsModalOpen(true);
+            form.setFieldsValue(record); // Populate form with existing product data
+          }}
+        >
+          Edit
+        </Button>
+        <Popconfirm
+          description="Are you sure to delete this product?"
+          onConfirm={() => handleButtonDelete(record.id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button danger>Delete</Button>
+        </Popconfirm>
+      </Space>
+    ),
+  },
+];
+```
+
+4. Add following methods in the `ProductsCRUD`
+
+- `createNewProduct` used for adding a new product.
+- `updateProduct` used for updating existing product.
+- `deleteProduct` used for deleting the product.
+- `fetchProducts` called from useEffect on render.
+- `onFinish` will called on submission of product form.
+
+```jsx
+// * API Calls are using `NetworkCall` class and `Product` model available in react template
+
+const onFinish = async (values) => {
+  if (editId.current) updateProduct(editId.current, values);
+  else createNewProduct(values);
+};
+
+const createNewProduct = async (values) => {
+  try {
+    const data = await Product.create(values);
+    message.success(`Product Created Successfully`);
+    setProducts((prev) => [...prev, data]); // Add newly added product in table listing.
+    setIsModalOpen(false);
+  } catch (err) {
+    message.error("Failed to create");
+  }
+};
+
+const updateProduct = async (id, values) => {
+  try {
+    const res = await Product.update(id, values);
+    message.success(res);
+    setIsModalOpen(false);
+    setRefetch(!refetch); // Refetch the products
+  } catch (err) {
+    message.error("Failed to update");
+  }
+};
+
+const deleteProduct = async (id) => {
+  try {
+    const res = await Product.delete(id);
+    message.success(res);
+    setProducts((prev) => prev.filter((item) => item.id !== id)); // Remove the deleted product from table listing
+  } catch (error) {
+    message.error("Failed to delete product");
+  }
+};
+
+const fetchProducts = async () => {
+  try {
+    const res = await Product.getAll();
+    setProducts(res);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+useEffect(() => {
+  fetchProducts();
+  // Will be executed on component render and changing of refetch flag
+}, [refetch]);
+```
+
+5. Create a new file named `ProductFormModal.jsx` and paste the following code in it.
+
+The `ProductFormModal` component is a React modal that serves as a form for creating and editing product information.
+It allows users to input the product's name, quantity, and price.
+
+Import the `ProductFormModal` into your `ProductsCRUD` component.
+
+##### Props:
+
+The **ProductFormModal** component accepts the following props:
+
+- `form` (object): A Form instance provided by Ant Design's Form component, used for managing form state and validation.
+- `onFinish` (function): A callback function to handle the form submission.
+- `isModalOpen` (boolean): A boolean that controls whether the modal is open.
+- `setIsModalOpen` (function): A function to set the modal's open state.
+
+```jsx
+// Filename:  ProductFormModal.jsx
+export default function ProductFormModal({
+  form,
+  onFinish,
+  isModalOpen,
+  setIsModalOpen,
+}) {
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <Modal
+      centered
+      title="Product Form"
+      open={isModalOpen}
+      okText="Save"
+      onOk={form.submit}
+      onCancel={handleCancel}
+      afterClose={() => {
+        // Clear the form fields
+        form.resetFields();
+      }}
+    >
+      <Form name="product-form" form={form} onFinish={onFinish}>
+        <Form.Item
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: "Please enter product name",
+            },
+          ]}
+        >
+          <Input placeholder="Name" />
+        </Form.Item>
+        <Form.Item
+          name="quantity"
+          rules={[
+            {
+              required: true,
+              message: "Please enter Quantity",
+            },
+          ]}
+        >
+          <InputNumber
+            style={{ width: "100%" }}
+            placeholder="Quantity"
+            min={1}
+          />
+        </Form.Item>
+        <Form.Item
+          name="price"
+          rules={[
+            {
+              required: true,
+              message: "Please enter price",
+            },
+          ]}
+        >
+          <InputNumber
+            style={{ width: "100%" }}
+            placeholder="Price"
+            min={1}
+            formatter={(value) =>
+              `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+          />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+}
+```
+
+6. In the final step add return statements with following jsx code in `ProductsCRUD` component.
+
+```jsx
+return (
+  <>
+    <Card
+      extra={
+        <Button
+          type="primary"
+          size="large"
+          onClick={() => {
+            editId.current = null;
+            setIsModalOpen(true);
+          }}
+        >
+          Create Product
+        </Button>
+      }
+    >
+      <Table
+        rowKey="id"
+        columns={columns}
+        dataSource={products}
+        scroll={{ x: 900 }}
+      />
+    </Card>
+    <ProductFormModal
+      form={form}
+      onFinish={onFinish}
+      isModalOpen={isModalOpen}
+      setIsModalOpen={setIsModalOpen}
+    />
+  </>
+);
+```
+
+## Note
+
+Make sure you have the required dependencies, such as Ant Design components, installed in your project to use this component effectively.

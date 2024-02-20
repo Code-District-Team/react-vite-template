@@ -1,5 +1,5 @@
 import { AgGridReact } from "ag-grid-react";
-import { Button, Card, Form, Input, Space, message } from "antd";
+import { Button, Card, Form, Input, Modal, Space, message } from "antd";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Product from "~/models/product";
@@ -99,13 +99,26 @@ const ProductAGGrid = () => {
   };
 
   const handleButtonDelete = async (id) => {
-    try {
-      await Product.delete(id);
-      setRefreshTable(!refreshTable);
-    } catch (error) {
-      console.error(error);
-    }
+    Modal.confirm({
+      title: "Are you sure you want to delete this product?",
+      content: "This operation cannot be undone.",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk: async () => {
+        try {
+          await Product.delete(id);
+          setRefreshTable(!refreshTable);
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
   };
+
   const handleButtonEdit = async (values) => {
     try {
       await Product.update(productId, values);

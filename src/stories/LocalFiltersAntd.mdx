@@ -1,0 +1,148 @@
+import { Meta, Primary, Controls, Story } from "@storybook/blocks";
+
+<Meta title="Features/Client Side Filters/Ant Design/Frontend Docs" />
+
+# Client Side Filters Ant Design Table
+
+The `LocalFiltersAntd` component is a React component that showcases the use of the Ant Design (antd) library for creating a data table with local filtering and sorting.
+It provides features such as searching, filtering, and pagination for displaying data efficiently on the client side.
+
+## Features
+
+The `LocalFiltersAntd` offers the following features:
+
+- Client-side data filtering, sorting, and searching.
+- A search input to quickly filter data.
+- Customizable column configuration.
+- Filtering data using Ag-Grid's filter options.
+- Pagination support.
+
+## Component Structure
+
+The code for the `LocalFiltersAntd` component is structured as follows:
+
+- Import statements for required dependencies, including Ant Design components, lodash for debouncing, and utility functions.
+- Definition of column configuration (`columns`) to set up table columns with filtering and sorting options.
+- Handling of user input with the `onSearch` function and client-side filtering logic.
+- Fetching user data using the `fetchUsers` function.
+- Usage of Ant Design's `Table` component to display the data table within a `Card` component.
+
+## Usage
+
+This component is designed to showcase the use of Ant Design for client-side data filtering, sorting, and display.
+You can customize and integrate it into your React application to provide a user-friendly data table with advanced features.
+
+1. Import the necessary dependencies into your React application.
+
+```jsx
+import { Card, Input, Table } from "antd";
+import "antd/dist/reset.css"; // import antd css if not included in your app's top-level
+import { debounce } from "lodash";
+import { useEffect, useState } from "react";
+import User from "~/models/user";
+import { stringSorting } from "~/utilities/generalUtility";
+```
+
+2. Create a React component and add following necessary statements.
+
+```jsx
+export default function LocalFiltersAntd() {
+  const [searchedText, setSearchedText] = useState("");
+  const [users, setUsers] = useState([]);
+
+  //Column definition
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      sorter: (a, b) => stringSorting(a, b, "id"),
+    },
+    {
+      title: "First Name",
+      dataIndex: "firstName",
+      filteredValue: [searchedText], // Value to search within listing
+      onFilter: onTableFilter, // Called when above `filteredValue` will change
+      sorter: (a, b) => stringSorting(a, b, "firstName"),
+    },
+    {
+      title: "Last Name",
+      dataIndex: "lastName",
+      sorter: (a, b) => stringSorting(a, b, "lastName"),
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      sorter: (a, b) => stringSorting(a, b, "email"),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+    },
+  ];
+}
+```
+
+3. Add following methods in the `LocalFiltersAntd`
+
+- `onSearch` used for searching in users listing.
+- `onTableFilter` will be called on user searching by Ant Design.
+- `fetchUsers` called from useEffect on render.
+
+```jsx
+const onTableFilter = (value, record) => {
+  return (
+    [record.id, record.age].includes(+value) ||
+    record.firstName?.toLowerCase().includes(value.toLowerCase()) ||
+    record.lastName?.toLowerCase().includes(value.toLowerCase()) ||
+    record.email?.toLowerCase().includes(value.toLowerCase()) ||
+    record.address?.toLowerCase().includes(value.toLowerCase())
+  );
+};
+
+const onSearch = (evt) => {
+  setSearchedText(evt.target.value);
+};
+
+const fetchUsers = async () => {
+  try {
+    const res = await User.getAll();
+    setUsers(res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+useEffect(() => {
+  fetchUsers();
+}, []);
+```
+
+4. In the final step add return statements with following jsx code in `LocalFiltersAgGrid` component.
+
+```jsx
+return (
+  <Card
+    title={
+      <Input
+        allowClear
+        placeholder="Search in table"
+        size="large"
+        onChange={debounce(onSearch, 500)}
+      />
+    }
+  >
+    <Table
+      rowKey="id"
+      bordered
+      pagination
+      columns={columns}
+      dataSource={users}
+    />
+  </Card>
+);
+```
+
+## Note
+
+- Ensure you have the required dependencies, including Ant Design, lodash, and dayjs, installed in your project to use this component effectively.
+- Customize the component to match your specific data source and UI requirements.

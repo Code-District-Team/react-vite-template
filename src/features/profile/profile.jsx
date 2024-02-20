@@ -128,6 +128,7 @@ export default function ProfilePage() {
               <Form.Item label="Status" name="status">
                 <Input size="middle" disabled />
               </Form.Item>
+
               <Form.Item
                 wrapperCol={{
                   offset: 12,

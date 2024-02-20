@@ -26,7 +26,6 @@ export default function RolesPermission() {
           type="link"
           onClick={() => {
             handleEdit(record.id);
-            console.log("hsbrecordid", record.id);
           }}
         >
           Edit

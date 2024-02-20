@@ -46,11 +46,26 @@ const productChildren = (basePath) => [
     name: "List-View",
     roles: [K.Permissions.Admin],
   },
+  {
+    path: `${basePath}/subscriptions`,
+    name: "Subscriptions",
+    roles: [K.Permissions.Admin],
+  },
 ];
 const rolePermissionChildren = (basePath) => [
   {
     path: `${basePath}`,
     name: "Roles & Permissions",
+    roles: [K.Permissions.Admin],
+  },
+  {
+    path: `${basePath}/tenants`,
+    name: "Tenants",
+    roles: [K.Permissions.Admin],
+  },
+  {
+    path: `${basePath}/settings`,
+    name: "Settings",
     roles: [K.Permissions.Admin],
   },
 ];
