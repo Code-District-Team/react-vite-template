@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input, Modal, Table, message } from "antd";
+import { Button, Card, Form, Input, Modal, Select, Table, message } from "antd";
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -21,7 +21,9 @@ export default function Users() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const [roles, setRoles] = useState([]);
+  const [status, setStatus] = useState(null);
   const userDataUpdate = useSelector(selectUser);
+
   const getUserRolesData = async (values) => {
     try {
       const response = await User.getUserRoles(values);
@@ -31,9 +33,9 @@ export default function Users() {
     }
   };
 
-  const getAllUsers = async () => {
+  const getAllUsers = async (status) => {
     try {
-      const response = await User.getAll();
+      const response = await User.getAll(status);
       setUserData(response.data);
     } catch (err) {
       console.error(err);
@@ -135,7 +137,24 @@ export default function Users() {
       sorter: (a, b) => stringSorting(a, b, "address"),
     },
     {
-      title: "Status",
+      // title: "Status",
+      title: (
+        <Select
+          options={[
+            { value: "active", label: "Active" },
+            { value: "inActive", label: "In Active" },
+          ]}
+          style={{ width: "100%" }}
+          size="large"
+          value={status}
+          placeholder={"Status"}
+          onChange={(value) => {
+            getAllUsers(value);
+            setStatus(value);
+          }}
+        ></Select>
+      ),
+
       key: "status",
       dataIndex: "status",
     },
@@ -176,15 +195,27 @@ export default function Users() {
           />
         }
         extra={
-          <Button
-            type="primary"
-            onClick={() => {
-              editId.current = false;
-              showModal();
-            }}
-          >
-            Create User
-          </Button>
+          <>
+            <Button
+              type="primary"
+              onClick={() => {
+                editId.current = false;
+                showModal();
+              }}
+            >
+              Create User{" "}
+            </Button>{" "}
+            &nbsp;
+            <Button
+              type="primary"
+              onClick={() => {
+                getAllUsers();
+                setStatus(null);
+              }}
+            >
+              Reset Filter
+            </Button>
+          </>
         }
       >
         <Table rowKey="id" bordered columns={columns} dataSource={userData} />

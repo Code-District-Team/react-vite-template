@@ -1,0 +1,236 @@
+import { Meta, Primary, Controls, Story } from "@storybook/blocks";
+
+<Meta title="Features/Import & Export/Backend Docs" />
+
+# Import & Export of Products
+
+This story showcases an API that offers a comprehensive feature set for streamlining the import and export of products.
+
+## Bulk Import
+
+In this storybook, we will explore how to import multiple products from a CSV file into the database.
+
+## Product Controller
+
+This controller is response for handling the HHTP request and then forward the request tto the service.
+
+```ts filename ts:"product.controller.ts"
+// filename: product.controller.ts
+
+import { multerOptionsCSV } from "../../generalUtils/helper";
+
+  @Post("bulk-import")
+  @UseInterceptors(FileInterceptor("file", multerOptionsCSV))
+  async bulkImportProducts(@UploadedFile() file: Express.Multer.File) {
+    const products = await this.productService.bulkImportProducts(file);
+    if (products) return products;
+    throw new InternalServerErrorException("Something went wrong");
+  }
+```
+
+## Helper Function
+
+The helper function uploading files, specifically focusing on CSV files. It uses `multer`.
+
+- **Limits File Size:** It ensures that the size of the uploaded file doesn't exceed 100 MB
+
+- **Checks File Type:** It only allows files with a .csv extension to be uploaded. If someone tries to upload a file with a different format, the system will reject it and give an error message stating that the file type is unsupported.
+
+- **Handles File Storage:** It creates a unique name for each file to avoid naming conflicts and stores them in a specified directory (./public in this case). If the directory doesn't exist, it will create it.
+
+Overall, this code is about safely and efficiently managing the upload of CSV files to a server.
+
+```ts filename ts:"helper.ts
+//filename: helper.ts
+
+import { extname } from "path";
+import { existsSync, mkdirSync } from "fs";
+import { diskStorage } from "multer";
+import { v4 as uuid } from "uuid";
+import { HttpException, HttpStatus } from "@nestjs/common";
+const _ = require("lodash");
+
+// multer upload options (csv) - don't save file to disk
+export const multerOptionsCSV = {
+  // Enable file size limits (100 MB)
+  limits: {
+    fileSize: 100 * 1024 * 1024,
+  },
+  // Check the mimetypes to allow for upload
+  fileFilter: (req: any, file: any, cb: any) => {
+    if (file.mimetype.match(/\/(csv)$/)) {
+      // Allow storage of file
+      cb(null, true);
+    } else {
+      // Reject file
+      cb(
+        new HttpException(
+          `Unsupported file type ${extname(file.originalname)}`,
+          HttpStatus.BAD_REQUEST,
+        ),
+        false,
+      );
+    }
+  },
+  // Storage properties
+  storage: diskStorage({
+    // Destination storage path details
+    destination: (req: any, file: any, cb: any) => {
+      const uploadPath = "./public";
+      // Create folder if doesn't exist
+      if (!existsSync(uploadPath)) {
+        mkdirSync(uploadPath);
+      }
+      cb(null, uploadPath);
+    },
+    // File modification details
+    filename: (req: any, file: any, cb: any) => {
+      // Calling the callback passing the random name generated with the original extension name
+      cb(null, `${uuid()}${extname(file.originalname)}`);
+    },
+  }),
+};
+```
+
+## Product Service
+
+The `bulkImportProducts` function in `product.service.ts` is designed to handle the bulk import of products into a system using data from a CSV file.
+
+- **Reading the CSV File:** It first reads the CSV file that has been uploaded. The file's path is used to access and read the data.
+
+- **Validating Data:** As it processes each row, the function validates the data.
+
+- **Handling Errors:** If any errors are found in a row, they are recorded. These errors include missing required fields or invalid data formats.
+
+- **Creating Product Entries:** If a row has no errors, a new product object is created with the provided data and added to a list of products.
+
+- **Cleaning Up:** After processing, the CSV file is deleted from the server to clean up storage.
+
+```ts filename="product.service.ts"
+// filename: product.service.ts
+async bulkImportProducts(csvFile: Express.Multer.File) {
+    const path = csvFile.path;
+    const products: Product[] = [];
+    const csvData = await csv().fromFile(path);
+    const errors = []; // row, columns, error
+    csvData.forEach((row, index) => {
+      const error: { row: number, errors: string[] } = {
+        row: index + 1,
+        errors: [],
+      };
+      const { name, price, quantity } = row;
+      if (!name && !price && !quantity)
+        error.errors.push("name, price and quantity are required");
+      if (isNaN(+price))
+        error.errors.push("price should be a number");
+      if (+price > 9999999999.99)
+        error.errors.push("price should be less than 9999999999.99");
+      if (isNaN(+quantity) || +quantity % 1 !== 0)
+        error.errors.push("quantity should be a number");
+      if (+quantity > 2147483648)
+        error.errors.push("quantity should be less than 2147483648");
+      if (name.length > 255)
+        error.errors.push("name should be less than 255 characters");
+      if (error.errors.length) {
+        errors.push(error);
+        return;
+      }
+      const newProduct = new Product();
+      newProduct.name = name;
+      newProduct.price = +price;
+      newProduct.quantity = +quantity;
+      products.push(newProduct);
+    });
+    fs.unlinkSync(path);
+    if (errors.length) {
+      throw new BadRequestException({ errors });
+    }
+    return this.productRepository.save(products);
+  }
+```
+
+## Bulk Export
+
+In this section, we'll describe how to export multiple products from a database into a CSV file.
+
+## Product Controller
+
+This method is exporting a selection of products, identified by their IDs, to a CSV file and sends it as a downloadable CSV file.
+
+```ts filename="products.controller.ts"
+// filename product.controller.ts
+
+import { ExportProductDto } from "./dto/export-product.dto";
+import { newLineToSpace } from "../../generalUtils/helper";
+
+
+  @Post("bulk-export")
+  @HttpCode(HttpStatus.OK)
+  async bulkExportProducts(@Body(validationPipe) { ids }: ExportProductDto, @Res() res: any) {
+    const products = await this.productService.bulkExportProducts(ids);
+    res.set('Content-type', 'application/csv');
+    res.attachment(`Products.csv`);
+    return await pipeline(
+      products,
+      newLineToSpace,
+      csv.stringify({ header: true, quoted: true, encoding: 'utf8' }),
+      res
+    );
+  }
+```
+
+## DTO
+
+The `ExportProductDto` class in `export-product.dto.ts` defines the structure for product IDs, which are used in the `bulkExportProducts`
+method in `product.controller.ts` for exporting selected products to a CSV file.
+
+```ts filename="export-product.dto.ts"
+//filename: export-product.dto.ts
+
+import { IsArray, IsNotEmpty, IsUUID } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+
+export class ExportProductDto {
+  @ApiProperty({ type: [String] })
+  @IsNotEmpty()
+  @IsArray()
+  @IsUUID("4", { each: true })
+  ids: string[];
+}
+```
+
+## Helper Function
+
+This function processes data streams by replacing newline characters in strings with spaces, ensuring text data is correctly formatted for CSV files.
+
+```ts filename="helper.ts"
+// foldername/filename: generalUtils/helper.ts
+
+export const newLineToSpace = async function* (source) {
+  for await (const chunk of source) {
+    yield _.mapValues(chunk, (value) =>
+      typeof value === "string" ? value.replace(/\n/g, " ") : value,
+    );
+  }
+};
+```
+
+## Product.service
+
+This method exporting products where it queries the database for products matching a list of IDs and streams the results.
+
+```ts filename="product.service.ts"
+
+// filename: product.service.ts
+// `<Product>` is the `Product Entity`.
+
+  constructor(@InjectRepository(Product) private readonly productRepository: Repository<Product>) {}
+  
+  async bulkExportProducts(ids: string[]) {
+    return this.productRepository.createQueryBuilder("product")
+      .where("product.id IN (:...ids)", { ids })
+      .stream();
+  }
+
+
+```

@@ -4,6 +4,22 @@ import { Meta } from "@storybook/blocks";
 
 # AgGrid Backend Docs
 
+This guide offers high-level instructions for implementing server-side filtering in AG Grid, focusing on setup requirements, entity management, and efficient data fetching with pagination and diverse filter options, utilizing the @PaginateEntity decorator for optimal data handling in AG Grid environments.
+
+
+
+
+
+
+
+
+
+## Required Dependencies
+
+`@nestjs/swagger`, `class-validator` and `@nestjs/mapped-types` is required for generating swagger docs.
+
+
+## Product Entity
 This is the entity class for `Product` table. We'll use this entity to create a new product and fetch the list of products.
 
 ```ts filename="product.entity.ts"
@@ -40,103 +56,6 @@ export class Product {
 }
 ```
 
-## Create a new Product
-
-Create a dto for creating a new product. We'll use `class-validator` to validate the incoming request body. All the
-properties in the dto are decorated with swagger decorators. It's not necessary to use swagger decorators but it's
-recommended to use them. Since we're using exposing the swagger docs, it'll be easy for the frontend developers to
-understand the request body.
-
-```ts filename="create-product.dto.ts"
-// filename: create-product.dto.ts
-import {
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  Max,
-  MaxLength,
-  Min,
-  MinLength,
-} from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
-
-export class CreateProductDto {
-  @ApiProperty({
-    description: "name",
-    example: "product 1",
-    maximum: 255,
-    minimum: 1,
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(1, {
-    message: "name must be longer than or equal to 1 characters",
-  })
-  @MaxLength(255, {
-    message: "name must be shorter than or equal to 255 characters",
-  })
-  name: string;
-
-  @ApiProperty({
-    description: "quantity",
-    example: 1,
-    maximum: 2_147_483_647,
-    minimum: 0,
-    required: true,
-  })
-  @IsInt()
-  @Min(0, { message: "quantity must be greater than or equal to 0" })
-  @Max(2_147_483_647, {
-    message: "quantity must be less than or equal to 2,147,483,647",
-  })
-  quantity: number;
-
-  @ApiProperty({
-    description: "price",
-    example: 1.99,
-    maximum: 99_999_999.99,
-    minimum: 0,
-    required: true,
-  })
-  @IsNumber(
-    {
-      maxDecimalPlaces: 2,
-      allowNaN: false,
-      allowInfinity: false,
-    },
-    { message: "price must be at most 2 decimal places" },
-  )
-  @Max(99_999_999.99, {
-    message: "price must be less than or equal to 99,999,999.99",
-  })
-  price: number;
-}
-```
-
-Now, create a new endpoint of type `POST` to create a new product in `product.controller.ts` file.
-
-```ts filename="product.controller.ts"
-// filename: product.controller.ts
-@ApiOperation({ summary: "Create a new product" })
-@ApiBody({ type: CreateProductDto })
-@ApiResponse({ status: 201, type: Product })
-@Post()
-async addProduct(@Body(CustomPipe) createProductDto: CreateProductDto) {
-  const added = await this.productService.addProduct(createProductDto);
-  if (added) return added;
-  throw new InternalServerErrorException("Something went wrong");
-}
-```
-
-Also, add the method in `product.service.ts` file.
-
-```ts filename="product.service.ts"
-addProduct(createProductDto: CreateProductDto): Promise<Product> {
-  return this.productRepository.save(this.productRepository.create(createProductDto));
-}
-```
 
 ## Fetch Records
 
@@ -191,6 +110,199 @@ You can use this decorator for any entity. Remember to pass the `QueryCollateral
 it only supports `ant-d` and `ag-grid` filters. You can use any of them.<br/>
 You can pass any number of joins in second argument of `@PaginateEntity` decorator. It will automatically join the
 with the table in first argument.
+
+## Paginated Decorator
+
+This is a custom decorated and it can handle any time of filters and paginations.
+
+```ts filename: paginated.decorator.ts
+// filename: paginated.decorator.ts
+
+export function PaginateEntity(repo: RepoSelect, relations: RelationFilter[] = []) {
+  return function (target: any, key: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
+    descriptor.value = async function (...args: any[]) {
+
+      const query: QueryCollateralTypeDto = args[0];
+
+      console.log(query.filterType, "filterType");
+      const isInitialized = dataSource.isInitialized;
+      if (!isInitialized) await dataSource.initialize();
+
+      const repository = dataSource.getRepository(repo.table);
+      const tableName = repository.metadata.tableName;
+      const builder = repository.createQueryBuilder(tableName);
+      if (repo.select)
+        builder.select(repo.select.map((s: string) => `${tableName}.${s}`));
+
+      relations.forEach((relation) => {
+        if (relation.joinType === "inner")
+          builder.innerJoin(relation.property, relation.alias, relation.condition, relation.parameters);
+        else
+          builder.leftJoin(relation.property, relation.alias, relation.condition, relation.parameters);
+        if (relation.select)
+          builder.addSelect(relation.select.map((s) => s));
+      });
+
+
+      if (query.query) {
+        builder.where(`${tableName}.name ILIKE :query`, { query: `%${query.query}%` });
+      }
+
+      const columns = new Map<string, ColumnType>();
+      repository.metadata.columns.forEach((column) => {
+        // name [Function: String]
+        if (column.type instanceof Function) {
+          columns.set(column.propertyName, "text");
+        } else
+          columns.set(column.propertyName, column.type);
+      });
+
+      if (query.filterType === "ag-grid") {
+        query.agGrid?.forEach((agGrid, index) => {
+          const field = `${tableName}.${agGrid.field}`;
+          const condition1 = agGrid.condition1;
+          const condition2 = agGrid.condition2;
+
+          if (!columns.has(agGrid.field))
+            throw new BadRequestException(`Field ${agGrid.field} does not exist in ${tableName} table`);
+          // check if requested type and actual type are the same
+          if (condition1.filterType === "date" && columns.get(agGrid.field) !== "timestamp")
+            throw new BadRequestException(`Field ${agGrid.field} is not of type date`);
+          // else if (condition1.filterType === "number" && columns.get(agGrid.field) !== "number")
+          //   throw new BadRequestException(`Field ${agGrid.field} is not of type number`);
+          // else if (condition1.filterType === "text" && columns.get(agGrid.field) !== "string")
+          //   throw new BadRequestException(`Field ${agGrid.field} is not of type text`);
+
+          if (condition2) {
+            builder.andWhere(new Brackets((qb) => {
+              composeQuery(qb, index, field, condition1);
+              composeQuery(qb, index + 1000, field, condition2, agGrid.operator);
+            }));
+          } else {
+            composeQuery(builder, index, field, condition1);
+          }
+        });
+      }
+
+      query.sortBy = query.sortBy ?? "created_at";
+      if (query.sortBy)
+        builder.orderBy(`${tableName}.${query.sortBy}`, query.sortOrder ?? "ASC");
+
+      builder.limit(query.limit).offset((query.page - 1) * query.limit);
+
+      const results = await builder.getManyAndCount();
+      
+      return {
+        data: {
+          total: results[1],
+          [camelCase(tableName)]: results[0],
+        },
+      };
+    };
+    return descriptor;
+  };
+}
+```
+
+## Utils
+There are few Dependencies which is required to use the paginated decorator are the DTO and interface which is imported from generalUtils
+```ts filename:global.dtos.ts
+
+// folderName/fileName: generalUtils/global.dtos.ts
+
+import { Transform, Type } from "class-transformer";
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsDate,
+  IsEnum,
+  IsNotEmptyObject,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  Max,
+  MaxLength,
+  Min,
+  ValidateIf,
+  ValidateNested
+} from "class-validator";
+import { AgGridFilter, AgGridFilterValues, SortOrders, SortOrderValues } from "./types";
+import { IsStringOrNull } from "../pipe/string-or-null.pip";
+import { ApiProperty } from "@nestjs/swagger";
+
+/**
+ * This is a generic dto for querying a list of entities.
+ * Please extend and override the sortBy property to allow only valid sort fields.
+ */
+export class QueryCollateralTypeDto {
+  @ApiProperty({})
+  @Transform(({ value }) => parseInt(value))
+  @IsNumber()
+  @Min(1)
+  page: number;
+
+  @Transform(({ value }) => parseInt(value))
+  @IsNumber()
+  @Min(1)
+  @Max(100, { message: "limit must not be greater than 100, we can't bear that much load." })
+  limit: number;
+
+  @IsOptional()
+  sortBy: string;
+
+  @IsOptional()
+  @IsEnum(SortOrderValues, { message: "sortOrder must be one of the following " + SortOrderValues.join(", ") })
+  sortOrder: SortOrders;
+
+  @IsOptional()
+  @MaxLength(100, { message: "query must not be greater than 100 characters." })
+  query: string;
+
+  // @IsOptional()
+  @IsEnum(["ag-grid", "antd"], { message: "filterType must be one of the following ag-grid, antd" })
+  filterType: "ag-grid" | "antd";
+
+  @ValidateIf((o) => o.filterType === "antd")
+  @IsOptional()
+  @IsObject()
+  @IsNotEmptyObject()
+  filters: Object;
+
+  @ValidateIf((o) => o.filterType === "ag-grid")
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => AgGridQueryDto)
+  agGrid: AgGridQueryDto[];
+}
+
+export class ConditionQueryDto {
+  @IsEnum(["text", "number", "date"], { message: "type must be one of the following text, number, date" })
+  @MaxLength(250, { message: "type must not be greater than 250 characters." })
+  filterType: "text" | "number" | "date";
+
+  @IsEnum(AgGridFilterValues, { message: "filterModel must be one of the following " + AgGridFilterValues.join(", ") })
+  type: AgGridFilter;
+
+  @ValidateIf((o) => o.filterType !== "date" && o.type !== "empty" && o.type !== "notEmpty")
+  @IsStringOrNull()
+  filter: string | number;
+
+  @ValidateIf((o) => o.filterType === "date")
+  @Type(() => Date)
+  @IsDate()
+  dateFrom: Date;
+
+  @ValidateIf((o) => o.filterType === "date" && o.type === "inRange")
+  @Type(() => Date)
+  @IsDate()
+  dateTo: Date;
+}
+
+```
+
 
 ### How to call this endpoint?
 
@@ -251,46 +363,4 @@ or `OR`.
 }
 ```
 
-## Update a Product
 
-We don't create a new dto for updating a product. We'll use the same dto which we used for creating a new product. But
-the difference is that we'll make all the properties optional. The way to do this is:
-
-```ts filename="update-product.dto.ts"
-// filename: update-product.dto.ts
-export class UpdateProductDto extends PartialType(CreateProductDto) {}
-```
-
-And then, we'll use this dto in `@Body` decorator in `PATCH` endpoint. `id` is passed in `@Param` decorator.
-
-```ts filename="product.controller.ts"
-// filename: product.controller.ts
-@ApiOperation({
-  summary: "Update a product",
-  description: "All fields in the body are optional. Fields are available in create product endpoint"
-})
-@ApiParam({ name: "id", type: String, required: true })
-@ApiBody({ type: UpdateProductDto })
-@Patch(":id")
-async updateProduct(
-  @Param(CustomPipe) deleteProductDto: DeleteProductDto,
-  @Body(CustomPipe) updateProductDto: UpdateProductDto
-) {
-  const updated = await this.productService.updateProduct(deleteProductDto.id, updateProductDto);
-  if (updated.affected) return "Product Updated Successfully.";
-  throw new NotFoundException("Couldn't update any row");
-}
-```
-
-And this is what we write in `product.service.ts` file.
-
-```ts filename="product.service.ts"
-// filename: product.service.ts
-updateProduct(id: string, updateProductDto: UpdateProductDto): Promise<UpdateResult> {
-  return this.productRepository.update({ id }, updateProductDto);
-}
-```
-
-## Required Dependencies
-
-`@nestjs/swagger`, `class-validator` and `@nestjs/mapped-types` is required for generating swagger docs.

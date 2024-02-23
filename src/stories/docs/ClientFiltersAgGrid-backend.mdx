@@ -1,0 +1,86 @@
+import { Meta, Primary, Controls, Story } from "@storybook/blocks";
+
+<Meta title="Features/Client Side Filters/Ag Grid/Backend Docs" />
+
+# Client Side Filters Ag-Grid Table Backend Docs
+
+This story focuses on developing an API for fetching paginated records from a database, while searching, filtering, and sorting functionalities are handled efficiently on the client side using Ag-Grid.
+
+```ts filename="user.entity.ts"
+// filename: user.entity.ts
+import { StatusEnum } from "../../../common/enums/status.enum";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+
+import { ApiProperty } from "@nestjs/swagger";
+
+@Entity({ name: "users" })
+export class User {
+  @ApiProperty({ example: "1", description: "Unique identifier", type: String })
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @ApiProperty({ example: "First Name", type: String })
+  @Column({ length: 255, name: "first_name" })
+  firstName: string;
+
+  @ApiProperty({ example: "Last Name", type: String })
+  @Column({ length: 255, name: "last_name" })
+  lastName: string;
+
+  @ApiProperty({ example: "Email", type: String })
+  @Column({
+    unique: true,
+  })
+  email: string;
+
+  @ApiProperty({ enum: StatusEnum, type: String, default: StatusEnum.INACTIVE })
+  @Column({
+    type: "enum",
+    enum: StatusEnum,
+    enumName: "StatusEnum",
+    default: StatusEnum.INACTIVE,
+  })
+  status: StatusEnum;
+}
+```
+
+# User Controller
+
+## Get all users
+
+Fetches all users without filters.
+
+
+```ts filename=user.entity.ts
+// filename: user.controller.ts
+
+  @Get('/get-all')
+  getUsers(@CurrentUser() user: User) {
+    return this.userService.getAllUsers(user);
+  }
+
+```
+
+**Note:** Make sure you've injected user service in user controller.
+
+Add this method in user.service.ts file.
+
+```ts filename=user.service.ts
+
+// filename: user.service.ts
+
+  async getAllUsers(user: User) {
+
+    const where = { tenantId: user.tenant.id, email: Not(user.email) };
+    const options: FindManyOptions<User> = {
+      order: {
+        id: 'DESC',
+      },
+      where: where,
+      relations: ['roles']
+    }
+    const [data, total] = await this.userRepository.findAndCount(options);
+    return { data, total };
+  }
+
+```
