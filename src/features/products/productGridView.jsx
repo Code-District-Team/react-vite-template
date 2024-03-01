@@ -30,42 +30,40 @@ const ProductGridView = () => {
   }, []);
 
   return (
-    <>
-      <div id="scrollableDiv" className="scrollableDivStyle">
-        <InfiniteScroll
-          height={500}
-          dataLength={data.products?.length || 0} // Safely access the length
-          next={fetchProductDetails}
-          hasMore={data.products?.length < data.total} // Compare against the total value
-          loader={
-            <Skeleton
-              avatar
-              paragraph={{
-                rows: 1,
-              }}
-              active
-            />
-          }
-          endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-          scrollableTarget="scrollableDiv"
-          className="infiniteScrollStyle"
-        >
-          <List
-            grid={{ gutter: 8, column: 4 }}
-            dataSource={data.products}
-            renderItem={(item) => (
-              <List.Item key={item.id}>
-                <Card title={item.name}>
-                  <List.Item.Meta />
-                  <p>Qty: {item.quantity}</p>
-                  <p>Price: {item.price}</p>
-                </Card>
-              </List.Item>
-            )}
+    <div id="scrollableDiv" className="scrollableDivStyle">
+      <InfiniteScroll
+        height={500}
+        dataLength={data.products?.length || 0} // Safely access the length
+        next={fetchProductDetails}
+        hasMore={data.products?.length < data.total} // Compare against the total value
+        loader={
+          <Skeleton
+            avatar
+            paragraph={{
+              rows: 1,
+            }}
+            active
           />
-        </InfiniteScroll>
-      </div>
-    </>
+        }
+        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+        scrollableTarget="scrollableDiv"
+        className="infiniteScrollStyle"
+      >
+        <List
+          grid={{ gutter: 8, column: 4 }}
+          dataSource={data.products}
+          renderItem={(item) => (
+            <List.Item key={item.id}>
+              <Card title={item.name}>
+                <List.Item.Meta />
+                <p>Qty: {item.quantity}</p>
+                <p>Price: {item.price}</p>
+              </Card>
+            </List.Item>
+          )}
+        />
+      </InfiniteScroll>
+    </div>
   );
 };
 
