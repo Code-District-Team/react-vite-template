@@ -371,8 +371,8 @@ export default class User {
   }
 
   static getFullName() {
-    const { firstName, lastName } = this.getUserObjectFromCookies().user;
-    return firstName?.concat(" ", lastName) ?? "";
+    const user = this.getUserObjectFromCookies().user;
+    return `${user?.firstName ?? ""} ${user?.lastName ?? ""}`;
   }
 
   static getEmail() {
@@ -383,6 +383,6 @@ export default class User {
     return this.getUserObjectFromCookies().tenant?.domainPrefix ?? "";
   }
   static getRole() {
-    return this.getUserObjectFromCookies()?.user?.roles ?? null;
+    return this.getUserObjectFromCookies()?.user?.roles ?? [];
   }
 }
